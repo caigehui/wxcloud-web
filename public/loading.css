@@ -1,0 +1,131 @@
+#wx-loading {
+  background-color: #f4f6f8;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 1001;
+  margin-top: 0px;
+  top: 0px;
+  transition: opacity 0.3s;
+}
+#wx-loading-center {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+#wx-loading-center-absolute {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 60px;
+  width: 60px;
+  margin-top: -30px;
+  margin-left: -30px;
+  -webkit-animation: wx-loading-center-absolute 1s infinite;
+  animation: wx-loading-center-absolute 1s infinite;
+}
+.wx-object {
+  width: 20px;
+  height: 20px;
+  background-color: #3949ab;
+  float: left;
+  -moz-border-radius: 50% 50% 50% 50%;
+  -webkit-border-radius: 50% 50% 50% 50%;
+  border-radius: 50% 50% 50% 50%;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+.wx-object:nth-child(2n + 0) {
+  margin-right: 0px;
+}
+#wx-object_one {
+  -webkit-animation: wx-object_one 1s infinite;
+  animation: wx-object_one 1s infinite;
+}
+#wx-object_two {
+  -webkit-animation: wx-object_two 1s infinite;
+  animation: wx-object_two 1s infinite;
+}
+#wx-object_three {
+  -webkit-animation: wx-object_three 1s infinite;
+  animation: wx-object_three 1s infinite;
+}
+#wx-object_four {
+  -webkit-animation: wx-object_four 1s infinite;
+  animation: wx-object_four 1s infinite;
+}
+
+@-webkit-keyframes wx-loading-center-absolute {
+  100% {
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes wx-loading-center-absolute {
+  100% {
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes wx-object_one {
+  50% {
+    -ms-transform: translate(20px, 20px);
+    -webkit-transform: translate(20px, 20px);
+    transform: translate(20px, 20px);
+  }
+}
+@keyframes wx-object_one {
+  50% {
+    -ms-transform: translate(20px, 20px);
+    -webkit-transform: translate(20px, 20px);
+    transform: translate(20px, 20px);
+  }
+}
+
+@-webkit-keyframes wx-object_two {
+  50% {
+    -ms-transform: translate(-20px, 20px);
+    -webkit-transform: translate(-20px, 20px);
+    transform: translate(-20px, 20px);
+  }
+}
+@keyframes wx-object_two {
+  50% {
+    -ms-transform: translate(-20px, 20px);
+    -webkit-transform: translate(-20px, 20px);
+    transform: translate(-20px, 20px);
+  }
+}
+
+@-webkit-keyframes wx-object_three {
+  50% {
+    -ms-transform: translate(20px, -20px);
+    -webkit-transform: translate(20px, -20px);
+    transform: translate(20px, -20px);
+  }
+}
+@keyframes wx-object_three {
+  50% {
+    -ms-transform: translate(20px, -20px);
+    -webkit-transform: translate(20px, -20px);
+    transform: translate(20px, -20px);
+  }
+}
+
+@-webkit-keyframes wx-object_four {
+  50% {
+    -ms-transform: translate(-20px, -20px);
+    -webkit-transform: translate(-20px, -20px);
+    transform: translate(-20px, -20px);
+  }
+}
+@keyframes wx-object_four {
+  50% {
+    -ms-transform: translate(-20px, -20px);
+    -webkit-transform: translate(-20px, -20px);
+    transform: translate(-20px, -20px);
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "prettier.configPath": ".prettierrc",
+  "editor.tabSize": 2,
+  "files.exclude": {
+    "**/.umi/**": true,
+    ".editorconfig": true,
+    "logs/**": true,
+    "logs_wxapi/**": true,
+    "logs_wxjob/**": true
+  }
+}

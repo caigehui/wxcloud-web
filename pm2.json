@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "wxeap",
+      "script": "node_modules/@wxsoft/wxboot/bin/wxboot.js",
+      "instances": 2,
+      "exec_mode": "cluster",
+      "args": "web",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}
