@@ -1,6 +1,7 @@
 FROM node:alpine as builder
 WORKDIR /app
 COPY package.json ./
+COPY .npmrc ./
 COPY yarn.lock ./
 RUN yarn --production --registry=https://registry.npm.taobao.org
 
