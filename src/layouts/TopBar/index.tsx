@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, SvgIcon } from '@material-ui/core';
 import { Menu as MenuIcon } from 'react-feather';
 import Account from './Account';
-import { THEME } from '@wxsoft/wxcomponents/lib/constants';
+import { THEME } from '@/constants';
 // import KeepAliveTabs from './KeepAliveTabs';
 
 const useStyles = makeStyles(theme => ({

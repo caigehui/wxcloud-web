@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { STRING_EXCLUSIVELY_RULES } from '@/constants';
+// import { STRING_EXCLUSIVELY_RULES } from '@/constants';
 import { Checkbox, TextField, useTheme, MenuItem, Box } from '@material-ui/core';
 import { EditComponentProps } from 'material-table';
 import ReactJson from 'react-json-view';
 import { DateTimePicker, LocalizationProvider } from '@material-ui/pickers';
 import DateFnsAdapter from '@material-ui/pickers/adapter/date-fns';
 import day from 'dayjs';
-import { THEME } from '@wxsoft/wxcomponents/lib/constants';
+import { THEME } from '@/constants';
 
 export function validateVarName(name: string, names: string[]) {
   if (!name) return false;
@@ -38,29 +38,29 @@ export function validateVarName(name: string, names: string[]) {
   return true;
 }
 
-/**
- * 判断排他字段
- * @param ruleName
- * @param rowData
- */
-export function setExclusiveRule(ruleName: string, rowData) {
-  if (!rowData.columnRule) rowData.columnRule = {};
-  rowData.columnRule[ruleName] = !rowData?.columnRule[ruleName];
+// /**
+//  * 判断排他字段
+//  * @param ruleName
+//  * @param rowData
+//  */
+// export function setExclusiveRule(ruleName: string, rowData) {
+//   if (!rowData.columnRule) rowData.columnRule = {};
+//   rowData.columnRule[ruleName] = !rowData?.columnRule[ruleName];
 
-  // 排他
-  if (STRING_EXCLUSIVELY_RULES.some(i => i === ruleName) && rowData?.columnRule[ruleName]) {
-    for (const key in rowData?.columnRule || {}) {
-      if (
-        key !== ruleName &&
-        STRING_EXCLUSIVELY_RULES.some(i => i === key) &&
-        rowData?.columnRule[key]
-      ) {
-        rowData.columnRule[key] = false;
-      }
-    }
-  }
-  return { ...rowData };
-}
+//   // 排他
+//   if (STRING_EXCLUSIVELY_RULES.some(i => i === ruleName) && rowData?.columnRule[ruleName]) {
+//     for (const key in rowData?.columnRule || {}) {
+//       if (
+//         key !== ruleName &&
+//         STRING_EXCLUSIVELY_RULES.some(i => i === key) &&
+//         rowData?.columnRule[key]
+//       ) {
+//         rowData.columnRule[key] = false;
+//       }
+//     }
+//   }
+//   return { ...rowData };
+// }
 
 /**
  * 排他Checkbox组件

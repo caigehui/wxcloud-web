@@ -15,8 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
 import { useRequest } from 'ahooks';
+import WxLoading from '@/components/WxLoading';
 import { useModel } from 'umi';
-import { WxLoading } from '@wxsoft/wxcomponents';
 
 function Copyright() {
   return (

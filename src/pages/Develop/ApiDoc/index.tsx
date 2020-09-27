@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useWxApi } from '@wxsoft/wxcomponents';
+import useWxApi from '@/hooks/useWxApi';
 import {
   Box,
   makeStyles,

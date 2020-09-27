@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, MenuItem } from '@material-ui/core';
-import { WxEmpty, WxTableWithApi } from '@wxsoft/wxcomponents';
 import { WxLogApi } from '@wxapi/wxeap-admin';
 import { JSONViewer } from '../../utils/devleop';
+import WxTableWithApi from '@/components/WxTableWithApi';
+import WxEmpty from '@/components/WxEmpty';
 
 function Log({ tab, current }: any) {
   const [item, setItem] = useState<any>(current.properties?.[0]);

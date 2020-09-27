@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { makeStyles, Tabs, Tab, Box, Paper } from '@material-ui/core';
-import { WxEmpty } from '@wxsoft/wxcomponents';
 import Test from './Test';
 import Log from './Log';
+import WxEmpty from '@/components/WxEmpty';
 
 interface DetailProps {
   current: any;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import WxTable, { WxTableProps } from '../WxTable';
-import { WxRequest, requestWxApi } from '@wxsoft/wxcomponents';
+import requestWxApi, { WxRequest } from '@/utils/requestWxApi';
 
 export interface WxTableWithApiProps {
   onWxApi: (filterOptions: FilterOptions) => WxRequest;

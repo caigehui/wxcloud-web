@@ -1,10 +1,10 @@
 {
-  "name": "@wxsoft/wxeap-admin-web",
   "version": "1.0.0",
   "scripts": {
     "start": "umi dev",
     "build": "cross-env NODE_ENV=production umi build",
     "sync": "wxboot sync",
+    "postinstall": "umi generate tmp",
     "web": "wxboot web",
     "lint": "eslint --ext .ts,.tsx src server ",
     "prettier": "prettier --write '{src,server}/**/*.{js,jsx,tsx,ts,less,md,json}'"
@@ -21,36 +21,50 @@
     ]
   },
   "dependencies": {
-    "@wxsoft/wxboot": "^1.0.70"
+    "@wxsoft/wxboot": "^1.0.100"
   },
   "devDependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
-    "@material-ui/pickers": "^4.0.0-alpha.12",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@material-ui/pickers": "^4.0.0-alpha.12",
     "@types/fs-extra": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^3.7.0",
-    "@umijs/plugin-initial-state": "^2.2.1",
-    "@umijs/plugin-model": "^2.5.3",
     "@umijs/test": "^3.2.10",
     "@wxsoft/parse": "2.15.3",
+    "@wxsoft/parse-dashboard": "^2.1.0",
     "@wxsoft/parse-server": "4.3.7",
     "ahooks": "^2.6.0",
     "cross-env": "^7.0.2",
+    "dotenv-flow-webpack": "^1.1.0",
     "eslint": "^7.5.0",
     "eslint-plugin-react": "^7.20.3",
-    "jspdf": "^2.1.1",
     "lint-staged": "^10.0.7",
-    "@wxsoft/parse-dashboard": "^2.1.0",
+    "notistack": "^1.0.0",
     "prettier": "^1.19.1",
     "react-feather": "^2.0.8",
     "react-hook-form": "^6.0.8",
     "react-json-view": "^1.19.1",
     "react-simple-resizer": "^2.1.0",
     "react-sortable-hoc": "^1.11.0",
-    "umi": "^3.2.19",
     "use-socketio": "^2.0.3",
-    "yorkie": "^2.0.0"
-  }
+    "yorkie": "^2.0.0",
+    "axios": "^0.20.0",
+    "dayjs": "^1.8.35",
+    "lodash": "^4.17.20",
+    "material-table": "^1.68.1",
+    "nprogress": "^0.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.13.1",
+    "compression-webpack-plugin": "^6.0.0",
+    "dotenv-flow": "^3.2.0",
+    "@umijs/plugin-initial-state": "^2.2.1",
+    "@umijs/plugin-model": "^2.5.4",
+    "umi": "^3.2.20"
+  },
+  "resolutions": {
+    "material-table/jspdf": "^2.1.1"
+  },
+  "license": "ISC"
 }

@@ -18,8 +18,8 @@ import {
   useTheme,
 } from '@material-ui/core';
 import ReactJson from 'react-json-view';
-import { requestWxApi } from '@wxsoft/wxcomponents';
-import { THEME } from '@wxsoft/wxcomponents/lib/constants';
+import requestWxApi from '@/utils/requestWxApi';
+import { THEME } from '@/constants';
 import request from '@wxsoft/wxboot/helpers/request';
 
 function getInitialEditSrc(parameters) {

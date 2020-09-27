@@ -10,7 +10,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useModel } from 'umi';
-import { THEME } from '@wxsoft/wxcomponents/lib/constants';
+import { THEME } from '@/constants';
 
 const useStyles = makeStyles(theme => ({
   avatar: {

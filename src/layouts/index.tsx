@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
 import { Helmet } from 'react-helmet';
-import { getMenuItemNameByKey } from '@wxsoft/wxcomponents';
+import { getMenuItemNameByKey } from '@/utils';
 import last from 'lodash/last';
 
 const useStyles = makeStyles(theme => ({

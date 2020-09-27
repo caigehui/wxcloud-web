@@ -1,11 +1,15 @@
 import React, { useMemo } from 'react';
 import { Container, Section, Bar } from 'react-simple-resizer';
 import { makeStyles, Hidden, useTheme } from '@material-ui/core';
-import { WxPage, WxEmpty, WxTable, useWxApi, flatChildren } from '@wxsoft/wxcomponents';
+import { flatChildren } from '@/utils';
 import { DesktopWindows } from '@material-ui/icons';
 import { WxDevelopApi } from '@wxapi/wxeap-admin';
 import { useSessionStorageState } from 'ahooks';
 import Detail from './components/Detail';
+import WxPage from '@/components/WxPage';
+import WxEmpty from '@/components/WxEmpty';
+import WxTable from '@/components/WxTable';
+import useWxApi from '@/hooks/useWxApi';
 
 function Controller({ menu }: any) {
   const theme = useTheme();

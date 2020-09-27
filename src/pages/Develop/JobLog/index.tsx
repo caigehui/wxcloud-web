@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { WxLogApi } from '@wxapi/wxeap-admin';
 import { LevelPicker } from '../utils/devleop';
 import { TextField } from '@material-ui/core';
-import WxPage from '@wxsoft/wxcomponents/lib/WxPage';
-import WxTableWithApi from '@wxsoft/wxcomponents/lib/WxTableWithApi';
+import WxPage from '@/components/WxPage';
+import WxTableWithApi from '@/components/WxTableWithApi';
 
 function JobLog({ menu }: any) {
   const [level, setLevel] = useState('all');

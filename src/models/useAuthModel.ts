@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { history } from 'umi';
 import { useLocalStorageState, useTimeout } from 'ahooks';
-import { requestWxApi } from '@wxsoft/wxcomponents';
+import requestWxApi from '@/utils/requestWxApi';
 import isEqual from 'lodash/isEqual';
 import { WxUserApi, WxCommonApi } from '@wxapi/wxeap-admin';
 import WxUser from '@wxsoft/wxboot/entities/WxUser';

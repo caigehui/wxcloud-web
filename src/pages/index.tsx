@@ -1,12 +1,7 @@
 import React from 'react';
-import { MicroApp } from 'umi';
 
 function Index() {
-  return (
-    <div>
-      <MicroApp name="wxboot" />
-    </div>
-  );
+  return <div></div>;
 }
 
 export default Index;

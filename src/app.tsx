@@ -6,16 +6,10 @@ import { SnackbarProvider } from 'notistack';
 import { useModel } from 'umi';
 import { SocketIOProvider } from 'use-socketio';
 import { hideLoader } from './utils/globalLoader';
-import {
-  SnackbarUtilsConfigurator,
-  waitFor,
-  createTheme,
-  useGlobalStyles,
-  getServerUrl,
-} from '@wxsoft/wxcomponents';
-import { THEME, THEME_KEY } from '@wxsoft/wxcomponents/lib/constants';
-import { useLocalStorageState } from 'ahooks';
-import { getDefaultTheme } from './utils';
+import { waitFor, getServerUrl } from '@/utils';
+import { SnackbarUtilsConfigurator } from '@/components/WxSnackBar';
+import { createTheme } from '@/theme';
+import useGlobalStyles from '@/theme/global';
 
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY);
 Parse.serverURL = getServerUrl();
@@ -24,25 +18,6 @@ type AppProps = {
   children: React.ReactNode;
 };
 
-export const qiankun = waitFor(1).then(() => {
-  return {
-    apps: [
-      {
-        name: 'wxboot',
-        entry: '//localhost:8000/wxboot-boilerplate-web/',
-      },
-    ],
-  };
-});
-
-export function useQiankunStateForSlave() {
-  const [theme, setTheme] = useLocalStorageState<THEME>(THEME_KEY, getDefaultTheme());
-  return {
-    theme,
-    setTheme,
-  };
-}
-
 export async function getInitialState() {
   await waitFor(1000);
   hideLoader();
@@ -50,7 +25,7 @@ export async function getInitialState() {
 }
 
 const App = ({ children }: AppProps) => {
-  const { theme } = useModel('@@qiankunStateForSlave');
+  const { theme } = useModel('useSettingModel');
   return (
     <ThemeProvider theme={createTheme(theme)}>
       <GlobalStyles>
