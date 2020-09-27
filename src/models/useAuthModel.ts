@@ -6,11 +6,12 @@ import isEqual from 'lodash/isEqual';
 import WxUser from '@wxsoft/wxboot/entities/WxUser';
 import request from '@wxsoft/wxboot/helpers/request';
 import { WX_USER_KEY, WX_MENU_KEY, WX_SESSION_TOKEN_KEY } from '@/constants';
+import checkPermission from '@wxsoft/wxboot/helpers/checkPermission';
 
 function useAuthModel() {
   const [userJSON, setUserJSON] = useLocalStorageState(WX_USER_KEY, null);
   const [user, setUser] = useState(userJSON ? new WxUser(userJSON) : null);
-  const [menu, setMenu] = useLocalStorageState(WX_MENU_KEY, []);
+  const [menu, setMenu] = useLocalStorageState<[]>(WX_MENU_KEY, []);
 
   const getCurrentUser = useCallback(async () => {
     const userData = await requestWxApi((sessionToken?: string) =>
@@ -28,6 +29,10 @@ function useAuthModel() {
     if (!isEqual(menu, data)) {
       setMenu(data);
     }
+  }, []);
+
+  const getPermission = useCallback(async (code, key) => {
+    return checkPermission(user.permissions, [code], key);
   }, []);
 
   useTimeout(async () => {
@@ -72,6 +77,7 @@ function useAuthModel() {
     menu,
     logIn,
     logOut,
+    getPermission,
   };
 }
 export default useAuthModel;

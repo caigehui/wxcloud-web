@@ -2728,6 +2728,11 @@
   dependencies:
     source-map "^0.6.1"
 
+"@types/validator@^13.1.0":
+  version "13.1.0"
+  resolved "https://registry.npmjs.org/@types/validator/-/validator-13.1.0.tgz#3d776127dbce7dd31fc06f86d3428b072e631eba"
+  integrity sha512-gHUHI6pJaANIO2r6WcbT7+WMgbL9GZooR4tWpuBOETpDIqFNxwaJluE+6rj6VGYe8k6OkfhbHz2Fkm8kl06Igw==
+
 "@types/webpack-bundle-analyzer@3.8.0":
   version "3.8.0"
   resolved "https://registry.npmjs.org/@types/webpack-bundle-analyzer/-/webpack-bundle-analyzer-3.8.0.tgz#d1f196f95159254f76a3c2283c4677585bdf354d"
@@ -3509,10 +3514,10 @@
     ws "7.3.1"
     xmlhttprequest "1.8.0"
 
-"@wxsoft/wxboot@^1.0.103":
-  version "1.0.103"
-  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.103.tgz#d99e818428cb2780fbc9b45f16355457c54f8856"
-  integrity sha512-D+1aNo1eCe6/N3bxe2ER5qM78LxR9xUTOEmxVSW5TYKkuvKuBU4x4DpryvP8iD/TVGX2cYD8v9ebR9Pd4iY2Xg==
+"@wxsoft/wxboot@^1.0.106":
+  version "1.0.106"
+  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.106.tgz#2c92f8280a3f884e61d2c67f3d8474837f8d6ea7"
+  integrity sha512-P/R/s4wPs7HIx4mrdIjXiApor4y6GySu7xn9FEtKbYL8oYma8BhxCECV/n38lcsUW/KmOyMw/Zu/ZH13T0hmiw==
   dependencies:
     "@wxsoft/parse" "^2.15.7"
     "@wxsoft/parse-server" "^4.3.15"

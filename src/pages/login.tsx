@@ -1,5 +1,4 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -16,7 +15,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { useRequest } from 'ahooks';
 import WxLoading from '@/components/WxLoading';
 import { useModel } from 'umi';
-import SvgIcon from '@material-ui/icons/LockOutlined';
 import { ReactComponent as Logo } from '@/assets/logo.svg';
 
 function Copyright() {
@@ -96,7 +94,7 @@ export default function SignInSide() {
                 <Logo width={100} height={100} />
               </Box>
               <Typography color="inherit" variant="h3">
-                登录
+                网欣云登录
               </Typography>
               <form className={classes.form} onSubmit={handleSubmit(run)}>
                 {!!error && <Alert severity="error">{error?.message}</Alert>}
@@ -121,7 +119,7 @@ export default function SignInSide() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="密码"
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -144,7 +142,7 @@ export default function SignInSide() {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" variant="body2">
+                    <Link variant="body2">
                       忘记密码？
                     </Link>
                   </Grid>

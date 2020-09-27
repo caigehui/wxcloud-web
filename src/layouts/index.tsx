@@ -6,11 +6,13 @@ import TopBar from './TopBar';
 import { Helmet } from 'react-helmet';
 import { getMenuItemNameByKey } from '@/utils';
 import last from 'lodash/last';
+import Sidebar, { SIDEBAR_WIDTH } from './Sidebar';
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background['dark'],
     display: 'flex',
+    flexDirection: 'row',
     height: '100%',
     overflow: 'hidden',
     width: '100%',
@@ -21,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     paddingTop: 64,
     [theme.breakpoints.up('lg')]: {
-      paddingLeft: 256,
+      paddingLeft: SIDEBAR_WIDTH,
     },
   },
   contentContainer: {
@@ -42,8 +44,6 @@ export default function Layout({ children, location }: IRouteComponentProps) {
   if (location.pathname === '/login') return children;
   const classes = useStyles();
   const { user, menu } = useModel('useAuthModel');
-  const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-
   if (user) {
     return (
       <div className={classes.root}>
@@ -52,8 +52,8 @@ export default function Layout({ children, location }: IRouteComponentProps) {
             {getMenuItemNameByKey(last(location.pathname.split('/')), menu) || ''} - WxEAP
           </title>
         </Helmet>
-        <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
-        <NavBar onMobileClose={() => setMobileNavOpen(false)} openMobile={isMobileNavOpen} />
+        <TopBar />
+        <Sidebar />
         <div className={classes.wrapper}>
           <div className={classes.contentContainer}>
             <div className={classes.content}>{React.cloneElement(children, { menu })}</div>

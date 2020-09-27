@@ -5,28 +5,18 @@ import clsx from 'clsx';
 import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, SvgIcon } from '@material-ui/core';
 import { Menu as MenuIcon } from 'react-feather';
 import Account from './Account';
-import { THEME } from '@/constants';
-// import KeepAliveTabs from './KeepAliveTabs';
+import { SIDEBAR_WIDTH } from '../Sidebar';
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  appBar: {
     zIndex: theme.zIndex.drawer + 100,
-    ...(theme['name'] === THEME.LIGHT
-      ? {
-          boxShadow: 'none',
-          backgroundColor: theme.palette.primary.main,
-        }
-      : {}),
-    ...(theme['name'] === THEME.ONE_DARK
-      ? {
-          backgroundColor: theme.palette.background.default,
-        }
-      : {}),
+    width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+    backgroundColor: theme.palette.background.paper,
   },
   toolbar: {
     minHeight: 64,
     display: 'flex',
-    width: '100vw',
+    width: '100%',
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -37,24 +27,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function TopBar({ className, onMobileNavOpen, ...rest }: { [key: string]: any }) {
+function TopBar() {
   const classes = useStyles();
 
   return (
-    <AppBar className={clsx(classes.root, className)} {...rest}>
+    <AppBar className={classes.appBar}>
       <Toolbar disableGutters className={classes.toolbar}>
-        <Hidden lgUp>
-          <IconButton className={classes.menuButton} color="inherit" onClick={onMobileNavOpen}>
+        {/* <Hidden lgUp>
+          <IconButton className={classes.menuButton} color="inherit">
             <SvgIcon fontSize="small">
               <MenuIcon />
             </SvgIcon>
           </IconButton>
           <Box flexGrow={1} />
-        </Hidden>
-        <Hidden mdDown>
+        </Hidden> */}
+        {/* <Hidden mdDown>
           <RouterLink className={classes.logo} to="/"></RouterLink>
-          <Box flexGrow={1} flexShrink={1} alignSelf="flex-end"></Box>
-        </Hidden>
+          
+        </Hidden> */}
+        <Box flexGrow={1} flexShrink={1} alignSelf="flex-end"></Box>
         <Box mx={2}>
           <Account />
         </Box>

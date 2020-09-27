@@ -48,7 +48,7 @@ function Account() {
       >
         <Avatar alt="User" className={classes.avatar} src="" />
         <Hidden smDown>
-          <Typography variant="h6" color="inherit">
+          <Typography variant="h6" color="textPrimary">
             {user?.nickname}
           </Typography>
         </Hidden>
