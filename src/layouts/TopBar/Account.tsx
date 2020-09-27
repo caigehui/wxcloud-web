@@ -28,8 +28,7 @@ function Account() {
   const ref = useRef(null);
   const [isOpen, setOpen] = useState(false);
   const { user, logOut } = useModel('useAuthModel');
-  const { theme, setTheme } = useModel('@@qiankunStateForSlave');
-
+  const { theme, setTheme } = useModel('useSettingModel');
   const handleOpen = () => {
     setOpen(true);
   };

@@ -2,7 +2,8 @@ import { createMuiTheme, responsiveFontSizes, ThemeOptions } from '@material-ui/
 import { colors } from '@material-ui/core';
 import typography from './typography';
 import { softShadows, strongShadows } from './shadows';
-import { THEME } from '../constants';
+import { PRIMARY_COLOR, SECONDARY_COLOR, THEME } from '../constants';
+
 
 const baseConfig = {
   direction: 'ltr',
@@ -73,10 +74,10 @@ const themeConfigs = [
         bar: 'rgb(200, 200, 200)!important',
       },
       primary: {
-        main: colors.indigo[500],
+        main: PRIMARY_COLOR,
       },
       secondary: {
-        main: '#5850EC',
+        main: SECONDARY_COLOR,
       },
       text: {
         primary: colors.blueGrey[900],
@@ -113,10 +114,10 @@ const themeConfigs = [
         bar: 'rgb(120, 120, 120)!important',
       },
       primary: {
-        main: '#8a85ff',
+        main: PRIMARY_COLOR,
       },
       secondary: {
-        main: '#8a85ff',
+        main: SECONDARY_COLOR,
       },
       text: {
         primary: '#e6e5e8',
@@ -128,47 +129,7 @@ const themeConfigs = [
       },
     },
     shadows: strongShadows,
-  },
-  {
-    name: THEME.UNICORN,
-    overrides: {
-      MuiTypography: {
-        root: {
-          textTransform: 'none',
-          color: '#e6e5e8',
-        },
-      },
-      ...baseConfig.overrides,
-    },
-    palette: {
-      type: '',
-      action: {
-        active: 'rgba(255, 255, 255, 0.54)',
-        hover: 'rgba(255, 255, 255, 0.04)',
-        selected: 'rgba(255, 255, 255, 0.08)',
-        disabled: 'rgba(255, 255, 255, 0.26)',
-        disabledBackground: 'rgba(255, 255, 255, 0.12)',
-        focus: 'rgba(255, 255, 255, 0.12)',
-      },
-      background: {
-        default: '#2a2d3d',
-        dark: '#222431',
-        paper: '#2a2d3d',
-        bar: 'rgb(120, 120, 120)!important',
-      },
-      primary: {
-        main: '#a67dff',
-      },
-      secondary: {
-        main: '#a67dff',
-      },
-      text: {
-        primary: '#f6f5f8',
-        secondary: '#9699a4',
-      },
-    },
-    shadows: strongShadows,
-  },
+  }
 ];
 
 export function createTheme(name: string) {

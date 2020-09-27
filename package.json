@@ -21,7 +21,7 @@
     ]
   },
   "dependencies": {
-    "@wxsoft/wxboot": "^1.0.100"
+    "@wxsoft/wxboot": "^1.0.103"
   },
   "devDependencies": {
     "@material-ui/core": "^4.11.0",

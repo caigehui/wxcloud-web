@@ -3,16 +3,28 @@ import { history } from 'umi';
 import { useLocalStorageState, useTimeout } from 'ahooks';
 import requestWxApi from '@/utils/requestWxApi';
 import isEqual from 'lodash/isEqual';
-import { WxUserApi, WxCommonApi } from '@wxapi/wxeap-admin';
 import WxUser from '@wxsoft/wxboot/entities/WxUser';
+import request from '@wxsoft/wxboot/helpers/request';
+import { WX_USER_KEY, WX_MENU_KEY, WX_SESSION_TOKEN_KEY } from '@/constants';
 
 function useAuthModel() {
-  const [userData, setUserData] = useLocalStorageState('wx_user', null);
-  const [user, setUser] = useState(userData ? new WxUser(userData) : null);
-  const [menu, setMenu] = useLocalStorageState('wx_menu', []);
+  const [userJSON, setUserJSON] = useLocalStorageState(WX_USER_KEY, null);
+  const [user, setUser] = useState(userJSON ? new WxUser(userJSON) : null);
+  const [menu, setMenu] = useLocalStorageState(WX_MENU_KEY, []);
+
+  const getCurrentUser = useCallback(async () => {
+    const userData = await requestWxApi((sessionToken?: string) =>
+      request({ method: 'GET', url: '/WxUser/getCurrentUser' }, sessionToken),
+    );
+    const user = new WxUser(userData);
+    setUser(user);
+    setUserJSON(userData);
+  }, []);
 
   const getMenu = useCallback(async () => {
-    const data = await requestWxApi(WxCommonApi.getMenu());
+    const data = await requestWxApi((sessionToken?: string) =>
+      request({ method: 'GET', url: '/WxCommon/getMenu' }, sessionToken),
+    );
     if (!isEqual(menu, data)) {
       setMenu(data);
     }
@@ -21,8 +33,7 @@ function useAuthModel() {
   useTimeout(async () => {
     if (user) {
       try {
-        localStorage.setItem('sessionToken', userData.sessionToken);
-        await WxUser.become(userData.sessionToken);
+        await getCurrentUser();
         await getMenu();
       } catch (error) {
         logOut();
@@ -31,13 +42,14 @@ function useAuthModel() {
   }, 1);
 
   const logIn = useCallback(async data => {
-    const ret = await requestWxApi(WxUserApi.signIn(data));
-    console.log(ret);
-    localStorage.setItem('sessionToken', ret);
-    await WxUser.become(ret);
+    const sessionToken = await requestWxApi(() =>
+      request({ data, method: 'POST', url: '/WxUser/signIn' }),
+    );
+    localStorage.setItem(WX_SESSION_TOKEN_KEY, sessionToken);
+    await getCurrentUser();
     await getMenu();
-    setUser(WxUser.me());
-    setUserData(WxUser.me().toJSON());
+
+    // 回到returnUrl或者/
     history.replace(history.location.query.returnUrl || '/');
   }, []);
 
@@ -45,8 +57,11 @@ function useAuthModel() {
     try {
       await WxUser.logOut();
       setUser(null);
-      setUserData(null);
-      localStorage.removeItem('sessionToken');
+      setUserJSON(null);
+      setMenu([]);
+      localStorage.removeItem(WX_SESSION_TOKEN_KEY);
+      localStorage.removeItem(WX_USER_KEY);
+      localStorage.removeItem(WX_MENU_KEY);
     } catch (error) {
       console.log(error.stack);
     }
@@ -55,7 +70,6 @@ function useAuthModel() {
   return {
     user,
     menu,
-    getMenu,
     logIn,
     logOut,
   };

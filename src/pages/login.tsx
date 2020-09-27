@@ -10,13 +10,14 @@ import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Alert from '@material-ui/lab/Alert';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
 import { useRequest } from 'ahooks';
 import WxLoading from '@/components/WxLoading';
 import { useModel } from 'umi';
+import SvgIcon from '@material-ui/icons/LockOutlined';
+import { ReactComponent as Logo } from '@/assets/logo.svg';
 
 function Copyright() {
   return (
@@ -83,7 +84,6 @@ export default function SignInSide() {
   });
 
   const { loading, error, run } = useRequest(logIn, { manual: true });
-
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -92,10 +92,10 @@ export default function SignInSide() {
         <Grid item direction="column" container>
           <Grid item xs>
             <div className={classes.paper}>
-              <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-              </Avatar>
-              <Typography color="inherit" component="h1" variant="h5">
+              <Box mb={1}>
+                <Logo width={100} height={100} />
+              </Box>
+              <Typography color="inherit" variant="h3">
                 登录
               </Typography>
               <form className={classes.form} onSubmit={handleSubmit(run)}>

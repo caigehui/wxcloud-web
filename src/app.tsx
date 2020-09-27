@@ -4,7 +4,6 @@ import Parse from '@wxsoft/parse';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
 import { useModel } from 'umi';
-import { SocketIOProvider } from 'use-socketio';
 import { hideLoader } from './utils/globalLoader';
 import { waitFor, getServerUrl } from '@/utils';
 import { SnackbarUtilsConfigurator } from '@/components/WxSnackBar';
@@ -31,7 +30,7 @@ const App = ({ children }: AppProps) => {
       <GlobalStyles>
         <SnackbarProvider>
           <SnackbarUtilsConfigurator />
-          <SocketIOProvider url={`http://localhost:8000`}>{children}</SocketIOProvider>
+          {children}
         </SnackbarProvider>
       </GlobalStyles>
     </ThemeProvider>

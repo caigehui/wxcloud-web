@@ -1,6 +1,8 @@
 import nprogress from 'nprogress';
 import { AxiosPromise } from 'axios';
 import { history } from 'umi';
+import WxSnackBar from '@/components/WxSnackBar';
+import { WX_SESSION_TOKEN_KEY } from '@/constants';
 
 export type WxRequest = (sessionToken?: string) => AxiosPromise<any>;
 export type WxApi = (data?: any) => WxRequest;
@@ -12,14 +14,14 @@ export type WxApi = (data?: any) => WxRequest;
  */
 async function requestWxApi(wxRequest: WxRequest, whole?: boolean) {
   try {
-    const sessionToken = localStorage.getItem('sessionToken') || '';
+    const sessionToken = localStorage.getItem(WX_SESSION_TOKEN_KEY) || '';
     nprogress.start();
     const { data: ret } = await wxRequest(sessionToken);
     nprogress.done();
     if (ret.code === 0) {
       return whole ? ret : ret.data;
     } else {
-      //WxSnackBar.error(JSON.stringify(ret.message));
+      WxSnackBar.error(JSON.stringify(ret.message));
       if (ret.code === 1001) {
         history.push('/logout');
       }

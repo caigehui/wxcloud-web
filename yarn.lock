@@ -3509,10 +3509,10 @@
     ws "7.3.1"
     xmlhttprequest "1.8.0"
 
-"@wxsoft/wxboot@^1.0.100":
-  version "1.0.101"
-  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.101.tgz#2b7843cfa960f1c2267d061dff36d25ae06adbe4"
-  integrity sha512-6VK7CMYH7UGN8F9zfcpEO2iBERbpYXGmqL17FR20nM9WA2A/5qAol8XAbodkxqPJ41FW+/u5m7fk0eu/UGqNIQ==
+"@wxsoft/wxboot@^1.0.103":
+  version "1.0.103"
+  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.103.tgz#d99e818428cb2780fbc9b45f16355457c54f8856"
+  integrity sha512-D+1aNo1eCe6/N3bxe2ER5qM78LxR9xUTOEmxVSW5TYKkuvKuBU4x4DpryvP8iD/TVGX2cYD8v9ebR9Pd4iY2Xg==
   dependencies:
     "@wxsoft/parse" "^2.15.7"
     "@wxsoft/parse-server" "^4.3.15"
