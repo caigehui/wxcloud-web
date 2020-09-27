@@ -1,5 +1,7 @@
-export const TOKEN_KEY = 'wxeap_token';
+export const THEME_KEY = 'wxeap_theme';
 
-export const READONLY_ENTITIES = ['WxUser', 'WxSchedule'];
-
-export const STRING_EXCLUSIVELY_RULES = ['isPhoneNumber', 'isEmail'];
+export enum THEME {
+  LIGHT = 'LIGHT',
+  ONE_DARK = 'ONE_DARK',
+  UNICORN = 'UNICORN',
+}

@@ -36,7 +36,6 @@
     "@umijs/test": "^3.2.10",
     "@wxsoft/parse": "2.15.3",
     "@wxsoft/parse-server": "4.3.7",
-    "@wxsoft/wxcomponents": "^1.0.15",
     "ahooks": "^2.6.0",
     "cross-env": "^7.0.2",
     "eslint": "^7.5.0",

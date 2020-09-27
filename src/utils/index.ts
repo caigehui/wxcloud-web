@@ -1,4 +1,4 @@
-import { THEME } from '@wxsoft/wxcomponents/lib/constants';
+import { THEME } from '@/constants';
 
 export function getServerUrl() {
   return `${location.origin}/${process.env.APP_NAME}`;
@@ -61,6 +61,29 @@ export function flatChildren<T extends { parent?: string }>(
 }
 
 export function getDefaultTheme() {
+  let defaultTheme = THEME.LIGHT;
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    defaultTheme = THEME.ONE_DARK;
+  }
+  return defaultTheme;
+}
+
+export const getMenuItemNameByKey = (key: string, menu: any[]) => {
+  if (!Array.isArray(menu)) return '';
+  for (const i of menu) {
+    if (i.key === key) return i.name;
+    else if (i.children) {
+      const ret = getMenuItemNameByKey(key, i.children);
+      if (ret) return ret;
+    }
+  }
+};
+
+export function waitFor(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function getSystemTheme() {
   let defaultTheme = THEME.LIGHT;
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     defaultTheme = THEME.ONE_DARK;
