@@ -5,6 +5,8 @@ import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { randomBytes } from 'crypto';
 import validator from 'validator';
+import requestWxApi from '@/utils/requestWxApi';
+import request from '@wxsoft/wxboot/helpers/request';
 
 interface FormData {
   code: string;
@@ -13,24 +15,43 @@ interface FormData {
   url: string;
 }
 
-export default ({ current, onClose }: any) => {
+export default ({ current, onClose, refresh }: any) => {
   const theme = useTheme();
   const isNew = current?.isNew;
 
   const { handleSubmit, errors, control, reset } = useForm<FormData>({
     mode: 'onChange',
-    defaultValues: Object.assign({}, current, {
-      secret: current?.secret || randomBytes(32).toString('hex'),
-    }),
   });
 
   useEffect(() => {
-    reset(current);
+    reset(
+      Object.assign({}, current, {
+        secret: current?.secret || randomBytes(16).toString('hex'),
+      }),
+    );
   }, [current]);
 
-  const submit = handleSubmit(data => {
+  const submit = handleSubmit(async data => {
+    await requestWxApi((token: string) =>
+      request(
+        {
+          method: 'POST',
+          url: current?.isNew ? '/WxRegister/create' : '/WxRegister/update',
+          data: {
+            item: {
+              ...current,
+              ...data,
+              id: current?.objectId,
+              className: 'WxRegister',
+            },
+          },
+        },
+        token,
+      ),
+    );
+    console.log(111);
+    refresh();
     onClose();
-    return;
   });
 
   return (
@@ -39,7 +60,7 @@ export default ({ current, onClose }: any) => {
       open={!!current}
       onClose={onClose}
       titleIcon={<Edit />}
-      title={`${isNew ? '新增' : '修改'} 服务`}
+      title={`${isNew ? '注册' : '修改'}服务`}
       actions={
         <>
           <Box color={theme.palette.text.hint}>
@@ -85,25 +106,7 @@ export default ({ current, onClose }: any) => {
             }}
             required
             fullWidth
-            label="Url"
-            variant="outlined"
-          />
-        </Grid>
-
-        <Grid item xs>
-          <Controller
-            name="secret"
-            margin="dense"
-            as={TextField}
-            control={control}
-            helperText={errors?.secret?.message}
-            error={!!errors.secret}
-            rules={{
-              required: { value: true, message: '请输入Secret' },
-            }}
-            required
-            fullWidth
-            label="Secret"
+            label="单位代号"
             variant="outlined"
           />
         </Grid>
@@ -118,12 +121,32 @@ export default ({ current, onClose }: any) => {
             error={!!errors.url}
             rules={{
               required: { value: true, message: '请输入url' },
-              validate: data => validator.isURL(data),
+              validate: data => {
+                return validator.isURL(data, { require_tld: false });
+              },
             }}
             fullWidth
             multiline
             rowsMax={3}
             label="url"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            disabled
+            name="secret"
+            margin="dense"
+            as={TextField}
+            control={control}
+            helperText={errors?.secret?.message || 'tip: 请使用该Secret部署wxeap-admin服务'}
+            error={!!errors.secret}
+            rules={{
+              required: { value: true, message: '请输入Secret' },
+            }}
+            required
+            fullWidth
+            label="Secret"
             variant="outlined"
           />
         </Grid>

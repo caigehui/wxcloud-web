@@ -96,6 +96,9 @@ export default function Title({
               inputFormat="yyyy-MM-dd"
               renderInput={(startProps, endProps) => (
                 <React.Fragment>
+                  {dateRangeFilter.label && (
+                    <DateRangeDelimiter> {dateRangeFilter.label} </DateRangeDelimiter>
+                  )}
                   <TextField
                     {...startProps}
                     variant="outlined"

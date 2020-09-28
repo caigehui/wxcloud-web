@@ -109,6 +109,7 @@ const WxTable = <RowData extends object>({
   dateFilter,
   dateRangeFilter,
   externalRef,
+  localization,
   ...restProps
 }: WxTableProps<RowData>) => {
   const styles = useStyles();
@@ -189,7 +190,7 @@ const WxTable = <RowData extends object>({
           setLoading,
         })}
         editable={mapEditable({ insertable, readonly, myData, columns })}
-        localization={defaultLocalization}
+        localization={Object.assign({}, defaultLocalization, localization)}
         // @ts-ignore
         icons={tableIcons}
         title={

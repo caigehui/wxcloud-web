@@ -31,7 +31,7 @@ function TopBar() {
   const classes = useStyles();
 
   return (
-    <AppBar className={classes.appBar}>
+    <AppBar className={classes.appBar} elevation={2}>
       <Toolbar disableGutters className={classes.toolbar}>
         {/* <Hidden lgUp>
           <IconButton className={classes.menuButton} color="inherit">

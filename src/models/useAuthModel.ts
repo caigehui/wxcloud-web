@@ -32,7 +32,8 @@ function useAuthModel() {
   }, []);
 
   const getPermission = useCallback(async (code, key) => {
-    return checkPermission(user.permissions, [code], key);
+    if (!user?.permissions) return false;
+    return checkPermission(user?.permissions, [code], key);
   }, []);
 
   useTimeout(async () => {

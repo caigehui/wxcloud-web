@@ -2,7 +2,7 @@ import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import { AddCircleOutlineOutlined, Edit } from '@material-ui/icons';
 import request from '@wxsoft/wxboot/helpers/request';
-import React, { useCallback, useState } from 'react';
+import React, { createRef, useCallback, useState } from 'react';
 import { useModel } from 'umi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import requestWxApi from '@/utils/requestWxApi';
@@ -10,20 +10,27 @@ import Create from './components/Create';
 
 export default ({ menu }: any) => {
   const { getPermission } = useModel('useAuthModel');
+  const tableRef = createRef<any>();
   const [current, setCurrent] = useState(null);
-  const [refreshCount, setRefreshCount] = useState(0);
+
+  const refresh = () => {
+    tableRef.current?.refresh();
+  };
 
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'register');
+  const pmUpdate = getPermission([REGULAR_PERMISSIONS.UPDATE[0]], 'register');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'register');
 
   const onWxApi = useCallback(
-    ({ page, pageSize }) => (token: string) =>
+    ({ page, pageSize, search }) => (token: string) =>
       request(
         {
           url: '/WxRegister/list',
           params: {
             page,
             pageSize,
+            conditions:
+              search && JSON.stringify([{ field: 'name', method: 'contains', value: search }]),
             includeKeys: 'createdBy.username',
           },
         },
@@ -44,10 +51,15 @@ export default ({ menu }: any) => {
       buttonDiabled={!pmCreate}
     >
       <WxTableWithApi
-        deps={[refreshCount]}
+        ref={tableRef}
+        title="注册列表"
+        localization={{ toolbar: { searchPlaceholder: '搜索名称' } }}
+        enableDateRangeFilter
+        dateRangeFilterLabel="创建日期"
         onWxApi={onWxApi}
         actions={[
           {
+            disabled: !pmUpdate,
             icon: () => <Edit color="primary" />,
             tooltip: '编辑',
             onClick: (event, rowData) => {
@@ -72,7 +84,7 @@ export default ({ menu }: any) => {
                   token,
                 ),
               );
-              setRefreshCount(refreshCount + 1);
+              refresh();
               return ret;
             },
           },
@@ -81,10 +93,6 @@ export default ({ menu }: any) => {
         columns={[
           { title: '单位代号', field: 'code' },
           { title: '单位名称', field: 'name' },
-          {
-            title: 'Secret',
-            field: 'secret',
-          },
           {
             title: '访问地址',
             field: 'url',
@@ -100,7 +108,7 @@ export default ({ menu }: any) => {
           },
         ]}
       />
-      <Create current={current} onClose={() => setCurrent(null)} />
+      <Create current={current} refresh={refresh} onClose={() => setCurrent(null)} />
     </WxPage>
   );
 };
