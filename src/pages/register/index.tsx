@@ -1,20 +1,51 @@
 import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
-import { AddCircleOutlineOutlined, Edit } from '@material-ui/icons';
+import { AddCircleOutlineOutlined, Edit, ExitToApp } from '@material-ui/icons';
 import request from '@wxsoft/wxboot/helpers/request';
 import React, { createRef, useCallback, useState } from 'react';
-import { useModel } from 'umi';
+import { useHistory, useModel } from 'umi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import requestWxApi from '@/utils/requestWxApi';
 import Create from './components/Create';
+import WxSnackBar from '@/components/WxSnackBar';
+import { useRequest } from 'ahooks';
+import { buildRequest } from './utils';
 
 export default ({ menu }: any) => {
   const { getPermission } = useModel('useAuthModel');
   const tableRef = createRef<any>();
   const [current, setCurrent] = useState(null);
+  //const [token, setToken] = useState(null);
+  const history = useHistory();
+
+  // 测试连通性
+  const { loading, run } = useRequest(
+    data =>
+      buildRequest(data, {
+        url: '/WxDevelop/about',
+      }),
+    {
+      loadingDelay: 500,
+      manual: true,
+      throwOnError: true,
+    },
+  );
 
   const refresh = () => {
     tableRef.current?.refresh();
+  };
+
+  const enter = async (e, rowData) => {
+    if (loading) return;
+    try {
+      WxSnackBar.loading('正在连接服务器');
+      await run(rowData);
+      WxSnackBar.stopLoading();
+      history.push('/register/general', rowData);
+    } catch (error) {
+      WxSnackBar.stopLoading();
+      WxSnackBar.error('无法访问该服务器');
+    }
   };
 
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'register');
@@ -22,15 +53,18 @@ export default ({ menu }: any) => {
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'register');
 
   const onWxApi = useCallback(
-    ({ page, pageSize, search }) => (token: string) =>
+    ({ page, pageSize, search, from, until }) => (token: string) =>
       request(
         {
           url: '/WxRegister/list',
           params: {
             page,
             pageSize,
-            conditions:
-              search && JSON.stringify([{ field: 'name', method: 'contains', value: search }]),
+            conditions: JSON.stringify([
+              search && ['name', 'contains', search],
+              from && ['createdAt', 'greaterThanOrEqualTo', from],
+              until && ['createdAt', 'lessThanOrEqualTo', until],
+            ]),
             includeKeys: 'createdBy.username',
           },
         },
@@ -57,6 +91,7 @@ export default ({ menu }: any) => {
         enableDateRangeFilter
         dateRangeFilterLabel="创建日期"
         onWxApi={onWxApi}
+        onRowClick={enter}
         actions={[
           {
             disabled: !pmUpdate,
@@ -65,6 +100,12 @@ export default ({ menu }: any) => {
             onClick: (event, rowData) => {
               setCurrent(rowData);
             },
+          },
+          {
+            disabled: !pmUpdate,
+            icon: () => <ExitToApp color="primary" />,
+            tooltip: '管理',
+            onClick: enter,
           },
         ]}
         deletable={rowData => ({

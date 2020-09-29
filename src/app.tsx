@@ -6,9 +6,10 @@ import { SnackbarProvider } from 'notistack';
 import { useModel } from 'umi';
 import { hideLoader } from './utils/globalLoader';
 import { waitFor, getServerUrl } from '@/utils';
-import { SnackbarUtilsConfigurator } from '@/components/WxSnackBar';
+import { SnackbarUtilsConfigurator, WxSnackBarProvider } from '@/components/WxSnackBar';
 import { createTheme } from '@/theme';
 import useGlobalStyles from '@/theme/global';
+import { CircularProgress } from '@material-ui/core';
 
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY);
 Parse.serverURL = getServerUrl();
@@ -28,10 +29,10 @@ const App = ({ children }: AppProps) => {
   return (
     <ThemeProvider theme={createTheme(theme)}>
       <GlobalStyles>
-        <SnackbarProvider>
+        <WxSnackBarProvider>
           <SnackbarUtilsConfigurator />
           {children}
-        </SnackbarProvider>
+        </WxSnackBarProvider>
       </GlobalStyles>
     </ThemeProvider>
   );

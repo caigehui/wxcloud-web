@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Box, MenuItem } from '@material-ui/core';
-import Api from '../../ApiDoc/components/Api';
+import Api from '../../../register/components/Api';
 import WxEmpty from '@/components/WxEmpty';
 function Test({ tab, current }: any) {
   const [item, setItem] = useState<any>(current.properties?.[0]);

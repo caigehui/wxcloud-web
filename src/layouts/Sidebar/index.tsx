@@ -1,4 +1,4 @@
-import { Box, Drawer, makeStyles, Typography } from '@material-ui/core';
+import { Box, Drawer, makeStyles, SvgIcon, Typography } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useModel } from 'umi';
 import { ReactComponent as Logo } from '@/assets/logo.svg';
@@ -35,17 +35,18 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
     width: '100%',
     borderRadius: theme.shape.borderRadius,
+    color: theme.palette.text.secondary,
     '&:hover': {
       background: theme.palette.action.hover,
     },
   },
   menuItemActived: {
     background: theme.palette.action.hover,
+    color: theme.palette.primary.main,
   },
   menuIcon: {
     width: 28,
     height: 28,
-    color: theme.palette.text.secondary,
     marginBottom: theme.spacing(1),
   },
 }));
@@ -72,8 +73,10 @@ export default () => {
             key={i.key}
             className={clsx(styles.menuItem, isActived && styles.menuItemActived)}
           >
-            <ElIcon className={styles.menuIcon} />
-            <Typography color="textSecondary" variant="body1">
+            <SvgIcon className={styles.menuIcon} color="inherit">
+              <ElIcon />
+            </SvgIcon>
+            <Typography color="inherit" variant="body1">
               {i.name}
             </Typography>
           </Box>

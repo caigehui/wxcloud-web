@@ -3,7 +3,6 @@ import { Typography, Box, Grid, Breadcrumbs, Button } from '@material-ui/core';
 import { useLocation } from 'react-router';
 import { getMenuItemNameByKey } from '@/utils';
 import NavigateNext from '@material-ui/icons/NavigateNext';
-import { Link } from 'umi';
 
 interface WxPageProps {
   menu: Array<any>;
@@ -48,7 +47,7 @@ function WxPage({
     );
   }, [renderRight, buttonTitle, onButtonClick]);
   return (
-    <Box display="flex" p={4} flexDirection="column" height="100%">
+    <Box display="flex" p={4} flexDirection="column" height="100%" overflow="auto">
       <Grid component={Box} container>
         <Grid item xs={12} md={10} lg={8}>
           <Breadcrumbs separator={<NavigateNext fontSize="small" />}>
@@ -78,7 +77,7 @@ function WxPage({
           </Grid>
         )}
       </Grid>
-      <Box flex={1} mt={3}>
+      <Box flex={1} mt={3} height="100%">
         {children}
       </Box>
     </Box>

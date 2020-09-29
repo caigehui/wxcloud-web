@@ -1,32 +1,38 @@
-import React, { useState } from 'react';
-import { WxLogApi } from '@wxapi/wxeap-admin';
-import { LevelPicker } from '../utils/devleop';
+import React, { useRef, useState } from 'react';
+import LevelPicker from './components/LevelPicker';
 import { TextField } from '@material-ui/core';
 import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
+import { buildRequest } from './utils';
+import { useLocation } from 'umi';
 
-function JobLog({ menu }: any) {
+function JobLogs({ menu }: any) {
+  const tableRef = useRef(null);
   const [level, setLevel] = useState('all');
   const [taskName, setTaskName] = useState('');
+  const location = useLocation();
 
-  const request = ({ page, pageSize, from, until }) =>
-    WxLogApi.getJobLogs({
-      page,
-      pageSize,
-      from,
-      until,
-      level,
-      taskName,
+  const request = ({ page, pageSize, from, until }) => () =>
+    buildRequest(location.state, {
+      url: '/WxLog/queryJobLogs',
+      params: {
+        page,
+        pageSize,
+        from,
+        until,
+        level,
+        taskName,
+      },
     });
 
   return (
     <WxPage menu={menu}>
       <WxTableWithApi
+        ref={tableRef}
         title="定时任务日志"
         enableDateRangeFilter
-        deps={[level, taskName]}
         onWxApi={request}
-        options={{ sorting: false }}
+        options={{ sorting: false, search: false }}
         additionalFilter={
           <>
             <LevelPicker value={level} onChange={setLevel} />
@@ -41,18 +47,18 @@ function JobLog({ menu }: any) {
           </>
         }
         columns={[
-          { title: '时间', field: 'timestamp', type: 'datetime' },
-          { title: '任务名', field: 'message.taskName', type: 'string' },
+          { title: '时间', field: 'timestamp.iso', type: 'datetime' },
+          { title: '任务名', field: 'taskName', type: 'string' },
           {
             title: '用时(ms)',
-            field: 'message.duration',
+            field: 'duration',
             type: 'string',
             cellStyle: { minWidth: 120 },
           },
           {
             title: '返回结果',
             type: 'string',
-            field: 'message.result',
+            field: 'result',
           },
         ]}
       />
@@ -60,4 +66,4 @@ function JobLog({ menu }: any) {
   );
 }
 
-export default JobLog;
+export default JobLogs;

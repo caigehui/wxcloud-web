@@ -6,10 +6,9 @@ import {
   DateRangePicker,
   DateRangeDelimiter,
 } from '@material-ui/pickers';
-import DayjsAdapter from '@material-ui/pickers/adapter/dayjs';
-import zhLocale from 'dayjs/locale/zh-cn';
+import zhLocale from 'date-fns/locale/zh-CN';
+import DateFnsAdapter from '@material-ui/pickers/adapter/date-fns';
 import dayjs from 'dayjs';
-import throttle from 'lodash/throttle';
 
 export interface TitleProps {
   title?: string;
@@ -27,33 +26,17 @@ export default function Title({
   const [date, setDate] = useState(new Date());
   const [dateRange, setDateRange] = useState([null, null]);
 
-  const onDateChange = useCallback(
-    throttle((date: any) => dateFilter?.onChange?.(date), 1000, {
-      leading: false,
-      trailing: true,
-    }),
-    [],
-  );
+  const onDateChange = (date: any) => dateFilter?.onChange?.(date);
 
-  const onDateRangeChange = useCallback(
-    throttle(
-      (date: any) =>
-        dateRangeFilter?.onChange?.([
-          dayjs(date[0]).isValid() ? date[0] : null,
-          dayjs(date[1]).isValid() ? date[1] : null,
-        ]),
-      1000,
-      {
-        leading: false,
-        trailing: true,
-      },
-    ),
-    [],
-  );
+  const onDateRangeChange = (date: any) =>
+    dateRangeFilter?.onChange?.([
+      dayjs(date[0]).isValid() ? date[0] : null,
+      dayjs(date[1]).isValid() ? date[1] : null,
+    ]);
 
   return (
     // @ts-ignore
-    <LocalizationProvider dateAdapter={DayjsAdapter} locale={zhLocale}>
+    <LocalizationProvider dateAdapter={DateFnsAdapter} locale={zhLocale}>
       <Box display="flex" alignItems="center" overflow="auto">
         <Box mr={2}>
           <Typography color="textPrimary" variant="h4">
@@ -121,7 +104,11 @@ export default function Title({
             />
           </Box>
         )}
-        {additionalFilter && <Box mr={2}>{additionalFilter}</Box>}
+        {additionalFilter && (
+          <Box mr={2} alignItems="center" display="flex">
+            {additionalFilter}
+          </Box>
+        )}
       </Box>
     </LocalizationProvider>
   );

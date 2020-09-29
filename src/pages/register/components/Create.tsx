@@ -11,8 +11,11 @@ import request from '@wxsoft/wxboot/helpers/request';
 interface FormData {
   code: string;
   name: string;
-  secret: string;
   url: string;
+  secret: string;
+  masterKey: string;
+  restApiKey: string;
+  javascriptKey: string;
 }
 
 export default ({ current, onClose, refresh }: any) => {
@@ -26,7 +29,10 @@ export default ({ current, onClose, refresh }: any) => {
   useEffect(() => {
     reset(
       Object.assign({}, current, {
-        secret: current?.secret || randomBytes(16).toString('hex'),
+        secret: current?.secret || randomBytes(12).toString('hex'),
+        masterKey: current?.masterKey || randomBytes(12).toString('hex'),
+        restApiKey: current?.restApiKey || randomBytes(12).toString('hex'),
+        javascriptKey: current?.javascriptKey || randomBytes(12).toString('hex'),
       }),
     );
   }, [current]);
@@ -132,21 +138,55 @@ export default ({ current, onClose, refresh }: any) => {
             variant="outlined"
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Controller
             disabled
             name="secret"
             margin="dense"
             as={TextField}
             control={control}
-            helperText={errors?.secret?.message || 'tip: 请使用该Secret部署wxeap-admin服务'}
-            error={!!errors.secret}
-            rules={{
-              required: { value: true, message: '请输入Secret' },
-            }}
+            fullWidth
+            required
+            label="Secret"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Controller
+            disabled
+            name="masterKey"
+            margin="dense"
+            as={TextField}
+            control={control}
             required
             fullWidth
-            label="Secret"
+            label="Master Key"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Controller
+            disabled
+            name="restApiKey"
+            margin="dense"
+            as={TextField}
+            control={control}
+            required
+            fullWidth
+            label="Rest Api Key"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Controller
+            disabled
+            name="javascriptKey"
+            margin="dense"
+            as={TextField}
+            control={control}
+            required
+            fullWidth
+            label="JavaScript Key"
             variant="outlined"
           />
         </Grid>

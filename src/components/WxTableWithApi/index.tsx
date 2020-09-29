@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import WxTable, { WxTableProps } from '../WxTable';
 import requestWxApi, { WxRequest } from '@/utils/requestWxApi';
+import { Box, Button } from '@material-ui/core';
+import { Search } from '@material-ui/icons';
 
 export interface WxTableWithApiProps {
   onWxApi: (filterOptions: FilterOptions) => WxRequest;
@@ -45,10 +47,6 @@ function WxTableWithApi(
   const [until, setUntil] = useState(null);
   const [date, setDate] = useState(null);
 
-  useEffect(() => {
-    tableRef.current?.refresh();
-  }, [from, until]);
-
   return (
     <WxTable
       externalRef={tableRef}
@@ -61,7 +59,7 @@ function WxTableWithApi(
         return {
           data: data.list,
           totalCount: data.total ?? Number.MAX_SAFE_INTEGER,
-          page: data.currentPage - 1,
+          page,
         };
       }}
       dateFilter={enableDateFilter ? { onChange: setDate, label: dateFilterLabel } : null}
@@ -76,7 +74,22 @@ function WxTableWithApi(
             }
           : null
       }
-      additionalFilter={additionalFilter}
+      additionalFilter={
+        <>
+          {additionalFilter}{' '}
+          <Box ml={2}>
+            <Button
+              onKeyPress={e => e.key === 'Enter' && tableRef?.current?.refresh()}
+              onClick={() => tableRef?.current?.refresh()}
+              variant="contained"
+              color="primary"
+              startIcon={<Search />}
+            >
+              查询
+            </Button>
+          </Box>
+        </>
+      }
     />
   );
 }

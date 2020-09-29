@@ -2,10 +2,20 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, SvgIcon } from '@material-ui/core';
+import {
+  AppBar,
+  Box,
+  Hidden,
+  IconButton,
+  Toolbar,
+  makeStyles,
+  SvgIcon,
+  Typography,
+} from '@material-ui/core';
 import { Menu as MenuIcon } from 'react-feather';
 import Account from './Account';
 import { SIDEBAR_WIDTH } from '../Sidebar';
+import { ReactComponent as Logo } from '@/assets/logo.svg';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -23,16 +33,18 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
   },
   logo: {
-    width: 256,
+    width: 18,
+    height: 18,
+    marginRight: theme.spacing(1),
   },
 }));
 
 function TopBar() {
-  const classes = useStyles();
+  const styles = useStyles();
 
   return (
-    <AppBar className={classes.appBar} elevation={2}>
-      <Toolbar disableGutters className={classes.toolbar}>
+    <AppBar className={styles.appBar} elevation={2}>
+      <Toolbar disableGutters className={styles.toolbar}>
         {/* <Hidden lgUp>
           <IconButton className={classes.menuButton} color="inherit">
             <SvgIcon fontSize="small">
@@ -45,7 +57,12 @@ function TopBar() {
           <RouterLink className={classes.logo} to="/"></RouterLink>
           
         </Hidden> */}
-        <Box flexGrow={1} flexShrink={1} alignSelf="flex-end"></Box>
+        <Box ml={3} flexGrow={1} flexShrink={1} display="flex" alignItems="center">
+          {/* <Logo className={styles.logo} />
+          <Typography color="textPrimary" variant="h4">
+            网欣云运维平台
+          </Typography> */}
+        </Box>
         <Box mx={2}>
           <Account />
         </Box>

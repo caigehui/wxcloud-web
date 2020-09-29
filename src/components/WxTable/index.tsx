@@ -78,6 +78,7 @@ export const defaultWxTableOptions: Options<any> = {
   grouping: false,
   filtering: false,
   pageSize: 10,
+  search: false,
   pageSizeOptions: [5, 10, 20, 30],
   thirdSortClick: false,
   showEmptyDataSourceMessage: false,
@@ -126,7 +127,9 @@ const WxTable = <RowData extends object>({
   const [loading, setLoading] = useState(false);
 
   // 如果data发生变化，重新赋值myData
-  useEffect(() => Array.isArray(data) && setMyData(data as Array<RowData>), [data]);
+  useEffect(() => {
+    Array.isArray(data) && setMyData(data as Array<RowData>);
+  }, [data]);
   // myData发生变化
   useEffect(() => {
     // 新增或者插入一条的情况

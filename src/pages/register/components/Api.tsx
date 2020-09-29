@@ -18,9 +18,9 @@ import {
   useTheme,
 } from '@material-ui/core';
 import ReactJson from 'react-json-view';
-import requestWxApi from '@/utils/requestWxApi';
 import { THEME } from '@/constants';
-import request from '@wxsoft/wxboot/helpers/request';
+import { useLocation } from 'umi';
+import { buildRequest } from '../utils';
 
 function getInitialEditSrc(parameters) {
   const src = {};
@@ -32,6 +32,7 @@ function getInitialEditSrc(parameters) {
 
 export default function Api({ item, root, controller }: any) {
   const theme = useTheme();
+  const location = useLocation();
   const [response, setResponse] = useState(null);
   const [useRaw, setUseRaw] = useState(false);
   const [raw, setRaw] = useState('');
@@ -41,25 +42,17 @@ export default function Api({ item, root, controller }: any) {
     setEditSrc(getInitialEditSrc(item.parameters));
   }, [item]);
 
-  const url = location.origin + '/' + root + '/wxapi/' + controller + '/' + item.name;
+  const url = location.state['url'] + '/' + root + '/wxapi/' + controller + '/' + item.name;
 
   const run = useCallback(async () => {
     try {
-      const ret = await requestWxApi(
-        (sessionToken?: string) =>
-          request(
-            {
-              baseURL: location.origin + '/' + root + '/wxapi',
-              url: '/' + controller + '/' + item.name,
-              method: item.type,
-              data: useRaw ? raw : editSrc,
-            },
-            sessionToken,
-          ),
-        true,
-      );
-      console.log(ret);
-      setResponse(ret);
+      const ret = await buildRequest(location.state, {
+        baseURL: '',
+        url,
+        method: item.type,
+        data: useRaw ? raw : editSrc,
+      });
+      setResponse(ret.data);
     } catch (error) {
       setResponse({ code: error.code, message: error.message });
     }
@@ -70,6 +63,7 @@ export default function Api({ item, root, controller }: any) {
         <Grid container item xs direction="column">
           <Box mt={2}>
             <Typography variant="h4" color="textPrimary">
+              {item.public && <Chip label="Public" color="secondary" />}{' '}
               <Chip label={item.type} color="primary" /> {url}
             </Typography>
             <Box mt={1}>
@@ -81,7 +75,7 @@ export default function Api({ item, root, controller }: any) {
         </Grid>
         <Grid item xs={12} sm={2}>
           <Box p={1} display="flex" justifyContent="flex-end">
-            <Button onClick={run} color="secondary" variant="contained">
+            <Button onClick={run} color="primary" variant="contained">
               Run
             </Button>
           </Box>

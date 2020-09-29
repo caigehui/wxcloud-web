@@ -1,15 +1,7 @@
 import React from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import {
-  Box,
-  makeStyles,
-  List,
-  ListItem,
-  ListSubheader,
-  Button,
-  Collapse,
-} from '@material-ui/core';
+import { Box, makeStyles, List, ListItem, Button, Collapse } from '@material-ui/core';
 import { Folder, Box as BoxIcon } from 'react-feather';
 import clsx from 'clsx';
 
@@ -18,7 +10,7 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
   },
   sidebar: {
-    width: 250,
+    width: 180,
     height: '100%',
   },
   item: {
@@ -65,12 +57,12 @@ const useStyles = makeStyles(theme => ({
     marginRight: 'auto',
   },
   active: {
-    color: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
     '& $title': {
       fontWeight: theme.typography.fontWeightMedium,
     },
     '& $icon': {
-      color: theme.palette.secondary.main,
+      color: theme.palette.primary.main,
     },
   },
 }));
@@ -128,14 +120,8 @@ function Content({ item, root, openKeys, current, setCurrent, toggleOpenKey, dep
 
 function Sidebar({ data, current, setCurrent, openKeys, toggleOpenKey }: any) {
   return (
-    <Box p={2} height="100%" overflow="auto">
-      <List
-        subheader={
-          <ListSubheader disableGutters disableSticky>
-            Api接口列表
-          </ListSubheader>
-        }
-      >
+    <Box p={1} height="100%" overflow="auto">
+      <List>
         {data?.map?.(item => (
           <Content
             depth={0}

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IRouteComponentProps, useModel, Redirect } from 'umi';
 import { makeStyles } from '@material-ui/core';
-import NavBar from './NavBar';
 import TopBar from './TopBar';
 import { Helmet } from 'react-helmet';
 import { getMenuItemNameByKey } from '@/utils';
 import last from 'lodash/last';
 import Sidebar, { SIDEBAR_WIDTH } from './Sidebar';
+import Register from './Register';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,7 +56,15 @@ export default function Layout({ children, location }: IRouteComponentProps) {
         <Sidebar />
         <div className={classes.wrapper}>
           <div className={classes.contentContainer}>
-            <div className={classes.content}>{React.cloneElement(children, { menu })}</div>
+            <div className={classes.content}>
+              {(() => {
+                if (location.pathname.startsWith('/register/')) {
+                  return <Register menu={menu}>{children}</Register>;
+                } else {
+                  return React.cloneElement(children, { menu });
+                }
+              })()}
+            </div>
           </div>
         </div>
       </div>
