@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Typography, Box, TextField } from '@material-ui/core';
 import {
   DatePicker,
@@ -37,12 +37,14 @@ export default function Title({
   return (
     // @ts-ignore
     <LocalizationProvider dateAdapter={DateFnsAdapter} locale={zhLocale}>
-      <Box display="flex" alignItems="center" overflow="auto">
-        <Box mr={2}>
-          <Typography color="textPrimary" variant="h4">
-            {title}
-          </Typography>
-        </Box>
+      <Box display="flex" alignItems="center" overflow="auto" flexWrap="wrap">
+        {title && (
+          <Box mr={2}>
+            <Typography color="textPrimary" variant="h4">
+              {title}
+            </Typography>
+          </Box>
+        )}
         {dateFilter && (
           <Box mr={2}>
             <DatePicker

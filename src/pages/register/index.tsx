@@ -1,8 +1,8 @@
 import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
-import { AddCircleOutlineOutlined, Edit, ExitToApp } from '@material-ui/icons';
+import { AddCircleOutlineOutlined, Edit, ExitToApp, Search } from '@material-ui/icons';
 import request from '@wxsoft/wxboot/helpers/request';
-import React, { createRef, useCallback, useState } from 'react';
+import React, { createRef, useState } from 'react';
 import { useHistory, useModel } from 'umi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import requestWxApi from '@/utils/requestWxApi';
@@ -10,11 +10,13 @@ import Create from './components/Create';
 import WxSnackBar from '@/components/WxSnackBar';
 import { useRequest } from 'ahooks';
 import { buildRequest } from './utils';
+import { Box, InputAdornment, TextField } from '@material-ui/core';
 
 export default ({ menu }: any) => {
   const { getPermission } = useModel('useAuthModel');
   const tableRef = createRef<any>();
   const [current, setCurrent] = useState(null);
+  const [nameSearch, setNameSearch] = useState('');
   //const [token, setToken] = useState(null);
   const history = useHistory();
 
@@ -52,26 +54,23 @@ export default ({ menu }: any) => {
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.UPDATE[0]], 'register');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'register');
 
-  const onWxApi = useCallback(
-    ({ page, pageSize, search, from, until }) => (token: string) =>
-      request(
-        {
-          url: '/WxRegister/list',
-          params: {
-            page,
-            pageSize,
-            conditions: JSON.stringify([
-              search && ['name', 'contains', search],
-              from && ['createdAt', 'greaterThanOrEqualTo', from],
-              until && ['createdAt', 'lessThanOrEqualTo', until],
-            ]),
-            includeKeys: 'createdBy.username',
-          },
+  const onWxApi = ({ page, pageSize, from, until }) => (token: string) =>
+    request(
+      {
+        url: '/WxRegister/list',
+        params: {
+          page,
+          pageSize,
+          conditions: JSON.stringify([
+            nameSearch && ['name', 'contains', nameSearch],
+            from && ['createdAt', 'greaterThanOrEqualTo', from],
+            until && ['createdAt', 'lessThanOrEqualTo', until],
+          ]),
+          includeKeys: 'createdBy.username,managedBy',
         },
-        token,
-      ),
-    [],
-  );
+      },
+      token,
+    );
 
   return (
     <WxPage
@@ -86,12 +85,31 @@ export default ({ menu }: any) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        title="注册列表"
         localization={{ toolbar: { searchPlaceholder: '搜索名称' } }}
         enableDateRangeFilter
-        dateRangeFilterLabel="创建日期"
+        dateRangeFilterLabel="创建日期:"
         onWxApi={onWxApi}
         onRowClick={enter}
+        additionalFilter={
+          <Box ml={1}>
+            <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              style={{ width: 220 }}
+              placeholder="搜索单位名称"
+              variant="outlined"
+              margin="dense"
+              label="单位名称"
+              value={nameSearch}
+              onChange={e => setNameSearch(e.target.value)}
+            />
+          </Box>
+        }
         actions={[
           {
             disabled: !pmUpdate,
@@ -137,6 +155,10 @@ export default ({ menu }: any) => {
           {
             title: '访问地址',
             field: 'url',
+          },
+          {
+            title: '管理人员',
+            render: data => data.managedBy?.map(i => i.nickname).join(','),
           },
           {
             title: '创建者',

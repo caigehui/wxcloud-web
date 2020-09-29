@@ -10,19 +10,19 @@ function JobLogs({ menu }: any) {
   const tableRef = useRef(null);
   const [level, setLevel] = useState('all');
   const [appName, setAppName] = useState('');
-  const [taskName, setTaskName] = useState('');
+  const [url, setUrl] = useState('');
   const location = useLocation();
 
   const request = ({ page, pageSize, from, until }) => () =>
     buildRequest(location.state, {
-      url: '/WxLog/queryJobLogs',
+      url: '/WxLog/queryApiLogs',
       params: {
         page,
         pageSize,
         from,
         until,
         level,
-        taskName,
+        url,
         appName,
       },
     });
@@ -38,12 +38,12 @@ function JobLogs({ menu }: any) {
           <>
             <LevelPicker value={level} onChange={setLevel} />
             <WxSearchField label="服务名" value={appName} onChange={setAppName} />
-            <WxSearchField label="任务名" value={taskName} onChange={setTaskName} />
+            <WxSearchField label="url" value={url} onChange={setUrl} />
           </>
         }
         columns={[
           { title: '服务名', field: 'appName', type: 'string' },
-          { title: '任务名', field: 'taskName', type: 'string' },
+          { title: 'Url', field: 'url', type: 'string' },
           { title: '日志等级', field: 'level', type: 'string' },
           {
             title: '用时(ms)',

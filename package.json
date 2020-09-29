@@ -21,6 +21,7 @@
     ]
   },
   "dependencies": {
+    "@types/crypto-js": "^3.1.47",
     "@types/validator": "^13.1.0",
     "@wxsoft/wxboot": "^1.0.106"
   },

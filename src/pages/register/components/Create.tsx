@@ -7,6 +7,7 @@ import { randomBytes } from 'crypto';
 import validator from 'validator';
 import requestWxApi from '@/utils/requestWxApi';
 import request from '@wxsoft/wxboot/helpers/request';
+import { useModel } from 'umi';
 
 interface FormData {
   code: string;
@@ -20,6 +21,7 @@ interface FormData {
 
 export default ({ current, onClose, refresh }: any) => {
   const theme = useTheme();
+  const { user } = useModel('useAuthModel');
   const isNew = current?.isNew;
 
   const { handleSubmit, errors, control, reset } = useForm<FormData>({
@@ -47,6 +49,8 @@ export default ({ current, onClose, refresh }: any) => {
             item: {
               ...current,
               ...data,
+              createdBy: { __type: 'Pointer', objectId: user.id, className: '_User' },
+              managedBy: [{ __type: 'Pointer', objectId: user.id, className: '_User' }],
               id: current?.objectId,
               className: 'WxRegister',
             },
