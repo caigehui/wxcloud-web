@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import WxTable, { WxTableProps } from '../WxTable';
 import requestWxApi, { WxRequest } from '@/utils/requestWxApi';
 import { Box, Button } from '@material-ui/core';

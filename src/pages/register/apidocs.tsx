@@ -21,7 +21,7 @@ import WxPage from '@/components/WxPage';
 
 function ApiDoc({ state, menu }) {
   const { data } = useRequest(() => buildRequest(state, { url: '/WxDevelop/getApiControllers' }), {
-    formatResult: res => res.data?.data,
+    formatResult: res => res.data,
     onSuccess: data => {
       const getFirstItem = (arr, openKeys) => {
         for (const item of arr) {

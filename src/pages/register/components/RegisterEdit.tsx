@@ -7,7 +7,6 @@ import { randomBytes } from 'crypto';
 import validator from 'validator';
 import requestWxApi from '@/utils/requestWxApi';
 import request from '@wxsoft/wxboot/helpers/request';
-import { useModel } from 'umi';
 
 interface FormData {
   code: string;
@@ -21,7 +20,6 @@ interface FormData {
 
 export default ({ current, onClose, refresh }: any) => {
   const theme = useTheme();
-  const { user } = useModel('useAuthModel');
   const isNew = current?.isNew;
 
   const { handleSubmit, errors, control, reset } = useForm<FormData>({
@@ -44,13 +42,11 @@ export default ({ current, onClose, refresh }: any) => {
       request(
         {
           method: 'POST',
-          url: current?.isNew ? '/WxRegister/create' : '/WxRegister/update',
+          url: '/WxRegister/save',
           data: {
             item: {
               ...current,
               ...data,
-              createdBy: { __type: 'Pointer', objectId: user.id, className: '_User' },
-              managedBy: [{ __type: 'Pointer', objectId: user.id, className: '_User' }],
               id: current?.objectId,
               className: 'WxRegister',
             },
@@ -132,7 +128,7 @@ export default ({ current, onClose, refresh }: any) => {
             rules={{
               required: { value: true, message: '请输入url' },
               validate: data => {
-                return validator.isURL(data, { require_tld: false });
+                return validator.isURL(data);
               },
             }}
             fullWidth
@@ -165,32 +161,6 @@ export default ({ current, onClose, refresh }: any) => {
             required
             fullWidth
             label="Master Key"
-            variant="outlined"
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Controller
-            disabled
-            name="restApiKey"
-            margin="dense"
-            as={TextField}
-            control={control}
-            required
-            fullWidth
-            label="Rest Api Key"
-            variant="outlined"
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Controller
-            disabled
-            name="javascriptKey"
-            margin="dense"
-            as={TextField}
-            control={control}
-            required
-            fullWidth
-            label="JavaScript Key"
             variant="outlined"
           />
         </Grid>

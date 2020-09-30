@@ -5,6 +5,7 @@ import { AddCircleOutlineOutlined, Edit } from '@material-ui/icons';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import React, { useRef, useState } from 'react';
 import { useLocation, useModel } from 'umi';
+import GatewayConfigEdit from './components/GatewayConfigEdit';
 import { buildRequest } from './utils';
 
 export default ({ menu }) => {
@@ -14,19 +15,13 @@ export default ({ menu }) => {
   const location = useLocation();
   const { getPermission } = useModel('useAuthModel');
 
-  const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'gateway');
-  const pmUpdate = getPermission([REGULAR_PERMISSIONS.UPDATE[0]], 'gateway');
-  const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'gateway');
+  const refresh = () => {
+    tableRef.current?.refresh();
+  };
 
-  const request = ({ page, pageSize }) => () =>
-    buildRequest(location.state, {
-      url: '/WxGateway/list',
-      params: {
-        page,
-        pageSize,
-        name,
-      },
-    });
+  const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'gateway-config');
+  const pmUpdate = getPermission([REGULAR_PERMISSIONS.UPDATE[0]], 'gateway-config');
+  const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'gateway-config');
 
   return (
     <WxPage
@@ -40,7 +35,17 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={request}
+        onWxApi={() => () =>
+          buildRequest(
+            location.state,
+            {
+              url: '/WxGateway/listConfig',
+              params: {
+                name,
+              },
+            },
+            true,
+          )}
         options={{ sorting: false, search: false }}
         additionalFilter={
           <>
@@ -53,49 +58,50 @@ export default ({ menu }) => {
           </>
         }
         actions={[
-          {
-            disabled: !pmUpdate,
-            icon: () => <Edit color="primary" />,
+          rowData => ({
+            disabled: !pmUpdate || rowData.name.startsWith('wxeap-admin'),
+            icon: () => (
+              <Edit
+                color={!pmUpdate || rowData.name.startsWith('wxeap-admin') ? 'disabled' : 'primary'}
+              />
+            ),
             tooltip: '编辑',
             onClick: (event, rowData) => {
               setCurrent(rowData);
             },
-          },
+          }),
         ]}
         columns={[
           { title: '微服务名', field: 'name', type: 'string' },
-          { title: '协议', field: 'protocol', type: 'string' },
           { title: 'host', field: 'host', type: 'string' },
+          { title: '匹配路径', render: data => data.route?.paths?.join(',') },
           { title: '附加路径', field: 'path', type: 'string' },
           { title: '端口号(Port)', field: 'port', type: 'numeric' },
           { title: '重试次数', field: 'retries', type: 'numeric' },
           { title: '连接超时时间(ms)', field: 'connect_timeout', type: 'numeric' },
-          { title: '读取超时时间(ms)', field: 'write_timeout', type: 'numeric' },
-          { title: '写入超时时间(ms)', field: 'read_timeout', type: 'numeric' },
+          { title: '读取超时时间(ms)', field: 'read_timeout', type: 'numeric' },
+          { title: '写入超时时间(ms)', field: 'write_timeout', type: 'numeric' },
         ]}
-        // deletable={rowData => ({
-        //   disabled: !pmDelete,
-        //   confirmOptions: {
-        //     title: `删除${rowData.name}`,
-        //     message: `确定要删除${rowData.name}吗？删除后不会停止该系统的所有服务`,
-        //     onConfirm: async () => {
-        //       const ret = await requestWxApi((token: string) =>
-        //         request(
-        //           {
-        //             url: '/WxRegister/delete',
-        //             data: {
-        //               id: rowData.id,
-        //             },
-        //           },
-        //           token,
-        //         ),
-        //       );
-        //       refresh();
-        //       return ret;
-        //     },
-        //   },
-        // })}
+        deletable={rowData => ({
+          disabled: !pmDelete || rowData.name.startsWith('wxeap-admin'),
+          confirmOptions: {
+            title: `删除${rowData.name}`,
+            message: `确定要删除${rowData.name}吗？`,
+            onConfirm: async () => {
+              await buildRequest(location.state, {
+                url: '/WxGateway/deleteConfig',
+                method: 'POST',
+                data: {
+                  id: rowData.id,
+                },
+              });
+              refresh();
+              return true;
+            },
+          },
+        })}
       />
+      <GatewayConfigEdit current={current} refresh={refresh} onClose={() => setCurrent(null)} />
     </WxPage>
   );
 };

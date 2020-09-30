@@ -21,11 +21,11 @@
     ]
   },
   "dependencies": {
-    "@types/crypto-js": "^3.1.47",
-    "@types/validator": "^13.1.0",
-    "@wxsoft/wxboot": "^1.0.106"
+    "@wxsoft/wxboot": "^1.0.123"
   },
   "devDependencies": {
+    "@types/crypto-js": "^3.1.47",
+    "@types/validator": "^13.1.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",

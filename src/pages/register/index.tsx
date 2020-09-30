@@ -6,7 +6,7 @@ import React, { createRef, useState } from 'react';
 import { useHistory, useModel } from 'umi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import requestWxApi from '@/utils/requestWxApi';
-import Create from './components/Create';
+import RegisterEdit from './components/RegisterEdit';
 import WxSnackBar from '@/components/WxSnackBar';
 import { useRequest } from 'ahooks';
 import { buildRequest } from './utils';
@@ -23,9 +23,13 @@ export default ({ menu }: any) => {
   // 测试连通性
   const { loading, run } = useRequest(
     data =>
-      buildRequest(data, {
-        url: '/WxDevelop/about',
-      }),
+      buildRequest(
+        data,
+        {
+          url: '/WxDevelop/about',
+        },
+        true,
+      ),
     {
       loadingDelay: 500,
       manual: true,
@@ -132,19 +136,20 @@ export default ({ menu }: any) => {
             title: `删除${rowData.name}`,
             message: `确定要删除${rowData.name}吗？删除后不会停止该系统的所有服务`,
             onConfirm: async () => {
-              const ret = await requestWxApi((token: string) =>
+              await requestWxApi((token: string) =>
                 request(
                   {
                     url: '/WxRegister/delete',
+                    method: 'POST',
                     data: {
-                      id: rowData.id,
+                      id: rowData.objectId,
                     },
                   },
                   token,
                 ),
               );
               refresh();
-              return ret;
+              return true;
             },
           },
         })}
@@ -171,7 +176,7 @@ export default ({ menu }: any) => {
           },
         ]}
       />
-      <Create current={current} refresh={refresh} onClose={() => setCurrent(null)} />
+      <RegisterEdit current={current} refresh={refresh} onClose={() => setCurrent(null)} />
     </WxPage>
   );
 };

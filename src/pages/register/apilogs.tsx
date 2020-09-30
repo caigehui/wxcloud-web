@@ -14,18 +14,22 @@ function JobLogs({ menu }: any) {
   const location = useLocation();
 
   const request = ({ page, pageSize, from, until }) => () =>
-    buildRequest(location.state, {
-      url: '/WxLog/queryApiLogs',
-      params: {
-        page,
-        pageSize,
-        from,
-        until,
-        level,
-        url,
-        appName,
+    buildRequest(
+      location.state,
+      {
+        url: '/WxLog/queryApiLogs',
+        params: {
+          page,
+          pageSize,
+          from,
+          until,
+          level,
+          url,
+          appName,
+        },
       },
-    });
+      true,
+    );
 
   return (
     <WxPage menu={menu}>
@@ -54,8 +58,10 @@ function JobLogs({ menu }: any) {
           { title: '时间', field: 'timestamp.iso', type: 'datetime' },
           {
             title: '返回结果',
-            type: 'string',
-            field: 'result',
+            render: data =>
+              JSON.stringify(
+                typeof data.response === 'object' && data.response ? data.response : {},
+              ),
           },
         ]}
       />

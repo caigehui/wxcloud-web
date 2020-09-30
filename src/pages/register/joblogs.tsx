@@ -14,18 +14,22 @@ function JobLogs({ menu }: any) {
   const location = useLocation();
 
   const request = ({ page, pageSize, from, until }) => () =>
-    buildRequest(location.state, {
-      url: '/WxLog/queryJobLogs',
-      params: {
-        page,
-        pageSize,
-        from,
-        until,
-        level,
-        taskName,
-        appName,
+    buildRequest(
+      location.state,
+      {
+        url: '/WxLog/queryJobLogs',
+        params: {
+          page,
+          pageSize,
+          from,
+          until,
+          level,
+          taskName,
+          appName,
+        },
       },
-    });
+      true,
+    );
 
   return (
     <WxPage menu={menu}>
