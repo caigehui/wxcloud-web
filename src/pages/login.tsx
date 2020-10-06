@@ -127,7 +127,7 @@ export default function SignInSide() {
                 <FormControlLabel
                   inputRef={register}
                   name="rememberMe"
-                  control={<Checkbox />}
+                  control={<Checkbox color="primary" />}
                   label="记住我"
                 />
 
@@ -142,9 +142,7 @@ export default function SignInSide() {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link variant="body2">
-                      忘记密码？
-                    </Link>
+                    <Link variant="body2">忘记密码？</Link>
                   </Grid>
                 </Grid>
               </form>

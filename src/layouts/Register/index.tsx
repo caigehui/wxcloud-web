@@ -53,7 +53,7 @@ export default ({ children, menu }) => {
   const pathname = last(history.location.pathname.split('/'));
   const state: any = history.location.state;
 
-  const activePathname = registerMenu.find(i => i.key === pathname)?.key;
+  const activePathname = registerMenu?.find(i => i.key === pathname)?.key;
   if (!activePathname) return <Redirect to="/register" />;
 
   return (

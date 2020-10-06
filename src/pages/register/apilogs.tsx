@@ -57,6 +57,12 @@ function JobLogs({ menu }: any) {
           },
           { title: '时间', field: 'timestamp.iso', type: 'datetime' },
           {
+            title: '请求参数',
+            cellStyle: { maxWidth: 300, overflow: 'auto' },
+            render: data =>
+              JSON.stringify(typeof data.request === 'object' && data.request ? data.request : {}),
+          },
+          {
             title: '返回结果',
             render: data =>
               JSON.stringify(

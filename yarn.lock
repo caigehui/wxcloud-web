@@ -2233,6 +2233,13 @@
   resolved "https://registry.npmjs.org/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
+"@types/echarts@^4.6.6":
+  version "4.6.6"
+  resolved "https://registry.yarnpkg.com/@types/echarts/-/echarts-4.6.6.tgz#d3166302725da1cc98fba8966b8b04a358d981cf"
+  integrity sha512-5sduQxNGHur+rjnBBNwETXKvFQAG3lZBNfmJ0e9bCH/n5K3NWwu8QHhAV8J9gPpwvxMIbEc+bDjwzax4VmjC0w==
+  dependencies:
+    "@types/zrender" "*"
+
 "@types/ejs@3.0.4":
   version "3.0.4"
   resolved "https://registry.npmjs.org/@types/ejs/-/ejs-3.0.4.tgz#8851fcdedb96e410fbb24f83b8be6763ef9afa77"
@@ -2820,6 +2827,11 @@
   integrity sha512-sw6JBfeZeE7ep9Pmhcysxo4lgaMLlHuQ8ie0srx5VOEnN4RNJgLryCuvxCUotw6Jmd50zBwCJHs3iwjLyIJgbQ==
   dependencies:
     "@types/yargs-parser" "*"
+
+"@types/zrender@*":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/zrender/-/zrender-4.0.0.tgz#a6806f12ec4eccaaebd9b0d816f049aca6188fbd"
+  integrity sha512-s89GOIeKFiod2KSqHkfd2rzx+T2DVu7ihZCBEBnhFrzvQPUmzvDSBot9Fi1DfMQm9Odg+rTqoMGC38RvrwJK2w==
 
 "@typescript-eslint/eslint-plugin@^3.7.0":
   version "3.10.1"
@@ -6369,6 +6381,13 @@ ecdsa-sig-formatter@1.0.11:
   integrity sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==
   dependencies:
     safe-buffer "^5.0.1"
+
+echarts@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.npm.taobao.org/echarts/download/echarts-4.9.0.tgz?cache=0&sync_timestamp=1598585875261&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fecharts%2Fdownload%2Fecharts-4.9.0.tgz#a9b9baa03f03a2a731e6340c55befb57a9e1347d"
+  integrity sha1-qbm6oD8Doqcx5jQMVb77V6nhNH0=
+  dependencies:
+    zrender "4.3.2"
 
 editorconfig@^0.15.3:
   version "0.15.3"
@@ -15928,3 +15947,8 @@ zlib@1.0.5:
   version "1.0.5"
   resolved "https://registry.npmjs.org/zlib/-/zlib-1.0.5.tgz#6e7c972fc371c645a6afb03ab14769def114fcc0"
   integrity sha1-bnyXL8NxxkWmr7A6sUdp3vEU/MA=
+
+zrender@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.npm.taobao.org/zrender/download/zrender-4.3.2.tgz?cache=0&sync_timestamp=1597683473479&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fzrender%2Fdownload%2Fzrender-4.3.2.tgz#ec7432f9415c82c73584b6b7b8c47e1b016209c6"
+  integrity sha1-7HQy+UFcgsc1hLa3uMR+GwFiCcY=

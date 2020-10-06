@@ -34,6 +34,7 @@ interface FormData {
   ipWhiteList: string;
   ipBlackList: string;
   requestTemination: boolean;
+  allowedPayloadSize: number;
 }
 
 export default ({ current, onClose, refresh }: any) => {
@@ -60,6 +61,8 @@ export default ({ current, onClose, refresh }: any) => {
         botDetection: !!current?.plugins?.find(i => i.name === 'bot-detection')?.enabled || true,
         requestTemination:
           !!current?.plugins?.find(i => i.name === 'request-termination')?.enabled || false,
+        allowedPayloadSize: `${current?.plugins?.find(i => i.name === 'request-size-limiting')
+          ?.config.allowed_payload_size || 24}`,
         ipWhiteList: current?.plugins
           ?.find(i => i.name === 'ip-restriction')
           ?.config.allow.join(','),
@@ -85,6 +88,9 @@ export default ({ current, onClose, refresh }: any) => {
           corsPluginId: current?.plugins?.find(i => i.name === 'cors')?.id,
           requestTeminationPluginId: current?.plugins?.find(i => i.name === 'request-termination')
             ?.id,
+          requestSizeLimitingPluginId: current?.plugins?.find(
+            i => i.name === 'request-size-limiting',
+          )?.id,
         },
       },
     });
@@ -338,6 +344,18 @@ export default ({ current, onClose, refresh }: any) => {
             control={control}
             fullWidth
             label="ip黑名单"
+            variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Controller
+            name="allowedPayloadSize"
+            margin="dense"
+            type="number"
+            as={TextField}
+            control={control}
+            fullWidth
+            label="限制请求大小(mb)"
             variant="outlined"
           />
         </Grid>
