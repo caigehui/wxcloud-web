@@ -64,6 +64,7 @@ function JobLogs({ menu }: any) {
           },
           {
             title: '返回结果',
+            cellStyle: { maxWidth: 300, overflow: 'auto' },
             render: data =>
               JSON.stringify(
                 typeof data.response === 'object' && data.response ? data.response : {},

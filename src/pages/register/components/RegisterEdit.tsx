@@ -55,7 +55,6 @@ export default ({ current, onClose, refresh }: any) => {
         token,
       ),
     );
-    console.log(111);
     refresh();
     onClose();
   });

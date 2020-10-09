@@ -58,7 +58,7 @@ export default ({ children, menu }) => {
 
   return (
     <Box display="flex" height="100%">
-      <Box component={props => <Paper {...props} elevation={0} />} height="100%" p={1} width={180}>
+      <Box component={props => <Paper {...props} elevation={0} />} height="100%" p={1} minWidth={180}>
         <List
           subheader={
             <ListSubheader disableGutters disableSticky>
