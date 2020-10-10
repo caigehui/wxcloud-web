@@ -3,8 +3,9 @@ import WxPage from '@/components/WxPage';
 import { Box, Grid, MenuItem, Paper, TextField, Typography, useTheme } from '@material-ui/core';
 import { useLocation } from 'umi';
 import WxChart from '@/components/WxChart';
-import { useMount, useRequest } from 'ahooks';
-import { buildRequest, getContainerOptions, getGaugeOption } from './utils';
+import { useRequest } from 'ahooks';
+import { buildRequest, getGaugeOption } from './utils';
+import DockerAnalysis from './components/DockerAnalysis';
 
 const getGatewayStatus = (title: string, value: number) => {
   return (
@@ -49,30 +50,6 @@ export default ({ menu }) => {
     },
   );
 
-  const { data: containers, run } = useRequest(
-    (p?: string) =>
-      buildRequest(
-        location.state,
-        {
-          url: '/WxSystem/containers',
-          params: {
-            level: p || period,
-          },
-        },
-        false,
-        true,
-      ),
-    {
-      manual: true,
-      formatResult: data => data.data,
-      pollingInterval: 10000,
-    },
-  );
-
-  useMount(() => {
-    run();
-  });
-
   return (
     <WxPage
       menu={menu}
@@ -84,7 +61,6 @@ export default ({ menu }) => {
           value={period}
           onChange={e => {
             setPeriod(e.target.value);
-            run(e.target.value);
           }}
           variant="outlined"
           margin="dense"
@@ -96,7 +72,7 @@ export default ({ menu }) => {
         </TextField>
       }
     >
-      <Grid container spacing={2} style={{ marginBottom: theme.spacing(2) }}>
+      <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
         <Grid item md={12} lg={6} style={{ overflow: 'hidden' }} component={Box} height={300}>
           <Paper style={{ height: '100%', width: '100%' }}>
             <Box p={1}>
@@ -151,68 +127,8 @@ export default ({ menu }) => {
             )}
           />
         </Grid>
-        <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>
-          <WxChart
-            title="Docker CPU使用"
-            option={getContainerOptions(containers, 'cpu', value => value.toFixed(2), '%')}
-          />
-        </Grid>
-        <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>
-          <WxChart
-            title="Docker 内存使用"
-            option={getContainerOptions(
-              containers,
-              'memory',
-              value => (value / (1024 * 1024)).toFixed(2),
-              'MB',
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>
-          <WxChart
-            title="Docker 接收数据量"
-            option={getContainerOptions(
-              containers,
-              'netIO.rx',
-              value => (value / (1024 * 1024)).toFixed(2),
-              'MB',
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>
-          <WxChart
-            title="Docker 发送数据量"
-            option={getContainerOptions(
-              containers,
-              'netIO.tx',
-              value => (value / (1024 * 1024)).toFixed(2),
-              'MB',
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>
-          <WxChart
-            title="Docker 存储写入量"
-            option={getContainerOptions(
-              containers,
-              'blockIO.w',
-              value => (value / (1024 * 1024)).toFixed(2),
-              'MB',
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>
-          <WxChart
-            title="Docker 存储读取量"
-            option={getContainerOptions(
-              containers,
-              'blockIO.r',
-              value => (value / (1024 * 1024)).toFixed(2),
-              'MB',
-            )}
-          />
-        </Grid>
       </Grid>
+      <DockerAnalysis period={period} />
     </WxPage>
   );
 };
