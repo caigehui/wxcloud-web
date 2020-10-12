@@ -2687,6 +2687,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/socket.io-client@^1.4.34":
+  version "1.4.34"
+  resolved "https://registry.npmjs.org/@types/socket.io-client/-/socket.io-client-1.4.34.tgz#8ca5f5732a9ad92b79aba71083cda5e5821e3ed9"
+  integrity sha512-Lzia5OTQFJZJ5R4HsEEldywiiqT9+W2rDbyHJiiTGqOcju89sCsQ8aUXDljY6Ls33wKZZGC0bfMhr/VpOyjtXg==
+
 "@types/sockjs-client@1.1.1":
   version "1.1.1"
   resolved "https://registry.npmjs.org/@types/sockjs-client/-/sockjs-client-1.1.1.tgz#1ef133b5a79d51447a93ce16164706c0164b5548"
@@ -15859,6 +15864,16 @@ xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
+
+xterm-addon-fit@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/xterm-addon-fit/-/xterm-addon-fit-0.4.0.tgz#06e0c5d0a6aaacfb009ef565efa1c81e93d90193"
+  integrity sha512-p4BESuV/g2L6pZzFHpeNLLnep9mp/DkF3qrPglMiucSFtD8iJxtMufEoEJbN8LZwB4i+8PFpFvVuFrGOSpW05w==
+
+xterm@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.npmjs.org/xterm/-/xterm-4.9.0.tgz#7a4c097a433d565339b5533b468bbc60c6c87969"
+  integrity sha512-wGfqufmioctKr8VkbRuZbVDfjlXWGZZ1PWHy1yqqpGT3Nm6yaJx8lxDbSEBANtgaiVPTcKSp97sxOy5IlpqYfw==
 
 y18n@^4.0.0:
   version "4.0.0"

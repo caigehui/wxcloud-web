@@ -1,6 +1,7 @@
 import WxPage from '@/components/WxPage';
 import WxSearchField from '@/components/WxSearchField';
 import WxTableWithApi from '@/components/WxTableWithApi';
+import { Update } from '@material-ui/icons';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
@@ -8,8 +9,6 @@ import { ArrowDownCircle } from 'react-feather';
 import { useLocation, useModel } from 'umi';
 import LocalImageEdit from './components/LocalImageEdit';
 import { buildRequest } from './utils';
-
-const readonlyServices = ['konga', 'kong', 'mqtt', 'mongodb', 'postgres'];
 
 export default ({ menu }) => {
   const tableRef = useRef(null);
@@ -49,6 +48,16 @@ export default ({ menu }) => {
             true,
           )}
         options={{ sorting: false, search: false }}
+        actions={[
+          {
+            disabled: !PaymentRequestUpdateEvent,
+            icon: () => <Update color={!pmUpdate ? 'disabled' : 'primary'} />,
+            tooltip: '更新',
+            onClick: async (event, rowData) => {
+              setCurrent(rowData);
+            },
+          },
+        ]}
         additionalFilter={
           <>
             <WxSearchField
@@ -60,7 +69,7 @@ export default ({ menu }) => {
           </>
         }
         columns={[
-          { title: '镜像Tag', render: rowData => rowData.RepoTags[0] },
+          { title: '镜像Tag', render: rowData => rowData.RepoTags.join(', ') },
           { title: '大小', render: rowData => (rowData.Size / (1024 * 1024)).toFixed(0) + 'MB' },
           {
             title: '创建时间',
@@ -70,13 +79,13 @@ export default ({ menu }) => {
           },
         ]}
         deletable={rowData => ({
-          disabled: !pmDelete || readonlyServices.some(i => i === rowData.Name),
+          disabled: !pmDelete,
           confirmOptions: {
-            title: `删除${rowData.Name}`,
-            message: `确定要删除${rowData.Name}吗？`,
+            title: `删除${rowData.RepoTags[0]}`,
+            message: `确定要删除${rowData.RepoTags[0]}吗？`,
             onConfirm: async () => {
               await buildRequest(location.state, {
-                url: '/WxMicro/delete',
+                url: '/WxImage/delete',
                 method: 'POST',
                 data: {
                   id: rowData.Id,

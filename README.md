@@ -20,3 +20,13 @@ BSD授权许可证没有实现"通透性"自由，也就是其不保证软件源
 
 * Prettier - 格式化排版
 * ESlint - eslint提示
+
+## TroubleShooting
+
+* Q: 无法push到harbor仓库
+
+    A: 由反向代理引起的问题，只需要在registry的配置(config.yml)中加上
+    ```
+    http:
+      relativeurls: true
+    ```

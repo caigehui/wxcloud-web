@@ -3,12 +3,20 @@ import WxSearchField from '@/components/WxSearchField';
 import WxSnackBar from '@/components/WxSnackBar';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import { Chip } from '@material-ui/core';
-import { AddCircleOutlineOutlined, PlayArrow, Replay, Stop } from '@material-ui/icons';
+import {
+  AddCircleOutlineOutlined,
+  Description,
+  PlayArrow,
+  Replay,
+  Stop,
+  Update,
+} from '@material-ui/icons';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import { useLocation, useModel } from 'umi';
+import ContainerLog from './components/ContainerLog';
 import MicroEdit from './components/MicroEdit';
 import { buildRequest } from './utils';
 
@@ -18,6 +26,7 @@ export default ({ menu }) => {
   const tableRef = useRef(null);
   const [name, setName] = useState('');
   const [current, setCurrent] = useState(null);
+  const [containerLog, setContainerLog] = useState(null);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const { getPermission } = useModel('useAuthModel');
@@ -27,12 +36,17 @@ export default ({ menu }) => {
     { formatResult: data => data.data, initialData: [] },
   );
 
+  const { data: localImages } = useRequest(
+    () => buildRequest(location.state, { url: '/WxImage/list' }),
+    { formatResult: data => data.data?.list?.map(i => i.RepoTags[0]) || [], initialData: [] },
+  );
   const refresh = () => {
     tableRef.current?.refresh();
   };
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'microservices');
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'microservices');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'microservices');
+  const pmLog = getPermission([11], 'microservices');
 
   return (
     <WxPage
@@ -73,6 +87,10 @@ export default ({ menu }) => {
           { title: '镜像名', render: rowData => rowData.Image },
           { title: 'ID', field: 'Id', render: rowData => rowData.Id.substr(0, 12) },
           {
+            title: '网络',
+            render: rowData => Object.keys(rowData.NetworkSettings.Networks).join(', '),
+          },
+          {
             title: '端口号',
             render: rowData =>
               rowData.Ports.filter(i => i.PublicPort)
@@ -96,6 +114,30 @@ export default ({ menu }) => {
           },
         ]}
         actions={[
+          () => ({
+            disabled: !pmLog,
+            icon: () => <Description color={!pmLog ? 'disabled' : 'primary'} />,
+            tooltip: '查看日志',
+            onClick: async (event, rowData) => {
+              setContainerLog(rowData);
+            },
+          }),
+          rowData => ({
+            disabled: !pmUpdate || readonlyServices.some(i => i === rowData.Name),
+            icon: () => (
+              <Update
+                color={
+                  !pmUpdate || readonlyServices.some(i => i === rowData.Name)
+                    ? 'disabled'
+                    : 'primary'
+                }
+              />
+            ),
+            tooltip: '更新',
+            onClick: async (event, rowData) => {
+              setCurrent(rowData);
+            },
+          }),
           rowData => ({
             disabled: !pmUpdate || readonlyServices.some(i => i === rowData.Name),
             icon: () => (
@@ -187,7 +229,9 @@ export default ({ menu }) => {
         refresh={refresh}
         onClose={() => setCurrent(null)}
         networkOptions={networkOptions}
+        localImages={localImages}
       />
+      <ContainerLog containerLog={containerLog} onClose={() => setContainerLog(null)} />
     </WxPage>
   );
 };

@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import * as Icon from 'react-feather';
 import last from 'lodash/last';
 import { Redirect, useHistory } from 'umi';
+import { SocketIOProvider } from 'use-socketio';
 
 const useStyles = makeStyles(theme => ({
   menuItem: {
@@ -57,50 +58,57 @@ export default ({ children, menu }) => {
   if (!activePathname) return <Redirect to="/register" />;
 
   return (
-    <Box display="flex" height="100%">
-      <Box component={props => <Paper {...props} elevation={0} />} height="100%" p={1} minWidth={180}>
-        <List
-          subheader={
-            <ListSubheader disableGutters disableSticky>
-              {state?.name}
-            </ListSubheader>
-          }
+    <SocketIOProvider url={state['url']} opts={{ path: '/wxeap-admin-socket' }}>
+      <Box display="flex" height="100%">
+        <Box
+          component={props => <Paper {...props} elevation={0} />}
+          height="100%"
+          p={1}
+          minWidth={180}
         >
-          {registerMenu?.map(item => {
-            const ElIcon = Icon[item.icon];
-            const isActive = activePathname === item.key;
-            return (
-              <ListItem key={item.name} disableGutters className={styles.listItem}>
-                <Box
-                  onClick={() => {
-                    if (item.key === 'database') {
-                      window.open(state['url'] + '/wxeap-admin/dashboard/');
-                    } else {
-                      history.push('/register/' + item.key, history.location.state);
-                    }
-                  }}
-                  className={clsx(styles.menuItem, isActive && styles.menuItemActived)}
-                >
-                  <SvgIcon className={styles.menuIcon} color="inherit">
-                    <ElIcon />
-                  </SvgIcon>
-                  <Typography style={{ flex: 1 }} color="inherit" variant="body2">
-                    {item.name}
-                  </Typography>
-                  {item.key === 'database' && (
-                    <SvgIcon color="inherit" className={styles.external}>
-                      <Icon.ExternalLink />
+          <List
+            subheader={
+              <ListSubheader disableGutters disableSticky>
+                {state?.name}
+              </ListSubheader>
+            }
+          >
+            {registerMenu?.map(item => {
+              const ElIcon = Icon[item.icon];
+              const isActive = activePathname === item.key;
+              return (
+                <ListItem key={item.name} disableGutters className={styles.listItem}>
+                  <Box
+                    onClick={() => {
+                      if (item.key === 'database') {
+                        window.open(state['url'] + '/wxeap-admin/dashboard/');
+                      } else {
+                        history.push('/register/' + item.key, history.location.state);
+                      }
+                    }}
+                    className={clsx(styles.menuItem, isActive && styles.menuItemActived)}
+                  >
+                    <SvgIcon className={styles.menuIcon} color="inherit">
+                      <ElIcon />
                     </SvgIcon>
-                  )}
-                </Box>
-              </ListItem>
-            );
-          })}
-        </List>
+                    <Typography style={{ flex: 1 }} color="inherit" variant="body2">
+                      {item.name}
+                    </Typography>
+                    {item.key === 'database' && (
+                      <SvgIcon color="inherit" className={styles.external}>
+                        <Icon.ExternalLink />
+                      </SvgIcon>
+                    )}
+                  </Box>
+                </ListItem>
+              );
+            })}
+          </List>
+        </Box>
+        <Box flex={1} height="100%">
+          {React.cloneElement(children, { menu, state: history.location.state })}
+        </Box>
       </Box>
-      <Box flex={1} height="100%">
-        {React.cloneElement(children, { menu, state: history.location.state })}
-      </Box>
-    </Box>
+    </SocketIOProvider>
   );
 };

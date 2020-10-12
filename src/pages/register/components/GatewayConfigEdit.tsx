@@ -56,11 +56,10 @@ export default ({ current, onClose, refresh }: any) => {
         connect_timeout: current?.connect_timeout || 30000,
         read_timeout: current?.read_timeout || 30000,
         write_timeout: current?.write_timeout || 30000,
-        keyAuth: !!current?.plugins?.find(i => i.name === 'key-auth')?.enabled || true,
-        cors: !!current?.plugins?.find(i => i.name === 'cors')?.enabled || true,
-        botDetection: !!current?.plugins?.find(i => i.name === 'bot-detection')?.enabled || true,
-        requestTemination:
-          !!current?.plugins?.find(i => i.name === 'request-termination')?.enabled || false,
+        keyAuth: !!current?.plugins?.find(i => i.name === 'key-auth')?.enabled,
+        cors: !!current?.plugins?.find(i => i.name === 'cors')?.enabled,
+        botDetection: !!current?.plugins?.find(i => i.name === 'bot-detection')?.enabled,
+        requestTemination: !!current?.plugins?.find(i => i.name === 'request-termination')?.enabled,
         allowedPayloadSize: `${current?.plugins?.find(i => i.name === 'request-size-limiting')
           ?.config.allowed_payload_size || 24}`,
         ipWhiteList: current?.plugins

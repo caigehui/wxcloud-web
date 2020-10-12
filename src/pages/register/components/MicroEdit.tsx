@@ -2,7 +2,7 @@ import WxDialog from '@/components/WxDialog';
 import { Box, Button, Grid, MenuItem, TextField, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Edit } from '@material-ui/icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { buildRequest } from '../utils';
 import { useLocation } from 'umi';
@@ -13,51 +13,89 @@ interface FormData {
   ports: string[];
   network: string;
   restart: string;
-  cmd: string[];
+  env: string[];
   binds: string[];
 }
 
-export default ({ current, onClose, refresh, networkOptions }: any) => {
+export default ({ current, onClose, refresh, networkOptions, localImages }: any) => {
   const theme = useTheme();
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
-  const { handleSubmit, errors, control } = useForm<FormData>({
+  const { handleSubmit, errors, reset, control } = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
+      name: '',
+      image: '',
+      ports: [],
+      network: '',
       restart: 'default',
+      env: [],
+      binds: [],
     },
   });
 
   const submit = handleSubmit(async data => {
+    setLoading(true);
     await buildRequest(location.state, {
       method: 'POST',
       url: '/WxMicro/create',
       data: {
+        id: current?.Id,
         ...data,
         restart: data.restart === 'default' ? '' : data.restart,
       },
     });
+    setLoading(false);
     refresh();
     onClose();
   });
 
-  console.log(errors?.ports);
+  useEffect(() => {
+    if (current && !current.isNew) {
+      const getDetail = async () => {
+        setLoading(true);
+        const { data } = await buildRequest(location.state, {
+          url: '/WxMicro/inspect',
+          params: {
+            id: current?.Id,
+          },
+        });
+        reset({
+          name: data.Name.replace('/', ''),
+          image: data.Config.Image,
+          ports: current.Ports.filter(i => i.PublicPort).map(
+            i => i.PrivatePort + ':' + i.PublicPort,
+          ),
+          network: Object.keys(current.NetworkSettings.Networks)?.[0],
+          env: data.Config.Env,
+          binds: data.Mounts?.map(i => `${i.Source}:${i.Destination}`),
+          restart: data.HostConfig.RestartPolicy.Name,
+        });
+        setLoading(false);
+      };
+
+      getDetail();
+    } else {
+      reset();
+    }
+  }, [current]);
 
   return (
     <WxDialog
       width="sm"
       open={!!current}
-      onClose={onClose}
+      onClose={() => !loading && onClose()}
       titleIcon={<Edit />}
-      title={`新增容器`}
+      title={current?.isNew ? '创建容器' : '更新容器'}
       actions={
         <>
           <Box color={theme.palette.text.hint}>
-            <Button onClick={onClose} color="inherit">
+            <Button disabled={loading} onClick={onClose} color="inherit">
               取消
             </Button>
           </Box>
-          <Button onClick={submit} color="primary">
+          <Button disabled={loading} onClick={submit} color="primary">
             确定
           </Button>
         </>
@@ -83,19 +121,33 @@ export default ({ current, onClose, refresh, networkOptions }: any) => {
         </Grid>
         <Grid item xs={12}>
           <Controller
-            name="image"
-            as={TextField}
-            margin="dense"
             control={control}
-            helperText={errors?.image?.message}
-            error={!!errors.image}
+            name="image"
             rules={{
-              required: { value: true, message: '请输入镜像名' },
+              required: { value: true, message: '请输入镜像Tag' },
             }}
-            fullWidth
-            required
-            label="镜像名"
-            variant="outlined"
+            render={({ onChange, value }) => {
+              return (
+                <Autocomplete
+                  options={localImages}
+                  value={value}
+                  onChange={(e, newValue) => {
+                    onChange(newValue);
+                  }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      required
+                      helperText={errors?.image?.message}
+                      error={!!errors.image}
+                      variant="outlined"
+                      margin="dense"
+                      label="镜像Tag"
+                    />
+                  )}
+                />
+              );
+            }}
           />
         </Grid>
         <Grid item xs={12}>
@@ -170,7 +222,7 @@ export default ({ current, onClose, refresh, networkOptions }: any) => {
         <Grid item xs={12}>
           <Controller
             control={control}
-            name="cmd"
+            name="env"
             render={({ onChange, value }) => {
               return (
                 <Autocomplete
@@ -188,8 +240,8 @@ export default ({ current, onClose, refresh, networkOptions }: any) => {
                       {...params}
                       variant="outlined"
                       margin="dense"
-                      label="Cmd"
-                      helperText="eg: /bin/bash，按Enter加入选择"
+                      label="Env"
+                      helperText="eg: USER_NAME=admin，按Enter加入选择"
                     />
                   )}
                 />
