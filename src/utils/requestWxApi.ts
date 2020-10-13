@@ -25,7 +25,7 @@ async function requestWxApi(wxRequest: WxRequest, whole?: boolean) {
       if (ret.code === 1001) {
         history.push('/logout');
       }
-      return ret;
+      throw ret;
     }
   } catch (error) {
     console.log(error);

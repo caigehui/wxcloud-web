@@ -5,7 +5,7 @@ import { getMenuItemNameByKey } from '@/utils';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 
 interface WxPageProps {
-  menu: Array<any>;
+  menu?: Array<any>;
   children?: React.ReactNode;
   title?: string;
   buttonTitle?: string;
@@ -52,16 +52,20 @@ function WxPage({
         <Grid item xs={12} md={10} lg={8}>
           <Breadcrumbs separator={<NavigateNext fontSize="small" />}>
             <Typography color="inherit">总览</Typography>
-            {paths.map((key, index) => {
-              return (
-                <Typography
-                  key={index}
-                  color={index === paths.length - 1 ? 'textPrimary' : 'inherit'}
-                >
-                  {getMenuItemNameByKey(key, menu)}
-                </Typography>
-              );
-            })}
+            {menu ? (
+              paths.map((key, index) => {
+                return (
+                  <Typography
+                    key={index}
+                    color={index === paths.length - 1 ? 'textPrimary' : 'inherit'}
+                  >
+                    {getMenuItemNameByKey(key, menu)}
+                  </Typography>
+                );
+              })
+            ) : (
+              <Typography color="inherit">{title}</Typography>
+            )}
           </Breadcrumbs>
           <Box mt={1}>
             <Typography variant="h3" color="textPrimary">

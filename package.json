@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@types/echarts": "^4.6.6",
-    "@wxsoft/wxboot": "^1.0.123"
+    "@wxsoft/wxboot": "^1.0.129"
   },
   "devDependencies": {
     "@material-ui/core": "^4.11.0",

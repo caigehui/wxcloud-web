@@ -57,7 +57,7 @@ export default ({ menu }) => {
       buildRequest(
         location.state,
         {
-          url: '/WxSystem/dockerInfo',
+          url: '/WxSystem/dockerInfo?',
         },
         false,
         true,
@@ -156,29 +156,29 @@ export default ({ menu }) => {
                 Docker 基本信息
               </Typography>
               <Grid container alignItems="center">
-                {getStatusLabel('总容器', dockerInfo.containers)}
-                {getStatusLabel('运行中容器', dockerInfo.containerRunning)}
-                {getStatusLabel('镜像', dockerInfo.images)}
-                {getStatusLabel('CPU核心', dockerInfo.ncpu)}
+                {getStatusLabel('总容器', dockerInfo?.containers)}
+                {getStatusLabel('运行中容器', dockerInfo?.containerRunning)}
+                {getStatusLabel('镜像', dockerInfo?.images)}
+                {getStatusLabel('CPU核心', dockerInfo?.ncpu)}
                 {getStatusLabel(
                   '内存容量',
                   // @ts-ignore
-                  (dockerInfo.memTotal / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+                  (dockerInfo?.memTotal / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
                 )}
                 {getStatusLabel(
                   '镜像占用',
                   // @ts-ignore
-                  (dockerInfo.imagesSize / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+                  (dockerInfo?.imagesSize / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
                 )}
                 {getStatusLabel(
                   '容器占用',
                   // @ts-ignore
-                  (dockerInfo.containersSize / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+                  (dockerInfo?.containersSize / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
                 )}
                 {getStatusLabel(
                   'volumes占用',
                   // @ts-ignore
-                  (dockerInfo.volumesSize / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+                  (dockerInfo?.volumesSize / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
                 )}
               </Grid>
             </Box>

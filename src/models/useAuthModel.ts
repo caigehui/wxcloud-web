@@ -51,7 +51,9 @@ function useAuthModel() {
     const sessionToken = await requestWxApi(() =>
       request({ data, method: 'POST', url: '/WxUser/signIn' }),
     );
-    localStorage.setItem(WX_SESSION_TOKEN_KEY, sessionToken);
+    if (typeof sessionToken === 'string') {
+      localStorage.setItem(WX_SESSION_TOKEN_KEY, sessionToken);
+    }
     await getCurrentUser();
     await getMenu();
 
@@ -75,6 +77,7 @@ function useAuthModel() {
 
   return {
     user,
+    getCurrentUser,
     menu,
     logIn,
     logOut,

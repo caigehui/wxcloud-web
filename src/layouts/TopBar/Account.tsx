@@ -8,8 +8,9 @@ import {
   MenuItem,
   Typography,
   makeStyles,
+  useTheme,
 } from '@material-ui/core';
-import { useModel } from 'umi';
+import { useHistory, useModel } from 'umi';
 import { THEME } from '@/constants';
 
 const useStyles = makeStyles(theme => ({
@@ -27,8 +28,10 @@ function Account() {
   const classes = useStyles();
   const ref = useRef(null);
   const [isOpen, setOpen] = useState(false);
+  const history = useHistory();
   const { user, logOut } = useModel('useAuthModel');
   const { theme, setTheme } = useModel('useSettingModel');
+  const currentTheme = useTheme();
   const handleOpen = () => {
     setOpen(true);
   };
@@ -46,7 +49,15 @@ function Account() {
         onClick={handleOpen}
         {...({ ref } as any)}
       >
-        <Avatar alt="User" className={classes.avatar} src="" />
+        <Avatar
+          style={{
+            backgroundColor: currentTheme.palette.background['dark'],
+            padding: 4,
+          }}
+          className={classes.avatar}
+          src={user.avatar.url}
+        />
+
         <Hidden smDown>
           <Typography variant="h6" color="textPrimary">
             {user?.nickname}
@@ -72,6 +83,14 @@ function Account() {
           }}
         >
           切换主题
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            history.push('/profile');
+            handleClose();
+          }}
+        >
+          个人设置
         </MenuItem>
         <MenuItem onClick={logOut}>退出登录</MenuItem>
       </Menu>
