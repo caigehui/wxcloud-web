@@ -55,7 +55,7 @@ export default ({ children, menu }) => {
   const state: any = history.location.state;
 
   const activePathname = registerMenu?.find(i => i.key === pathname)?.key;
-  if (!activePathname) return <Redirect to="/register" />;
+  if (!activePathname || !state?.['url']) return <Redirect to="/register" />;
 
   return (
     <SocketIOProvider url={state['url']} opts={{ path: '/wxeap-admin-socket' }}>

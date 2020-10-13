@@ -49,7 +49,7 @@ export default ({ current, onClose, refresh }: any) => {
       url: '/WxImage/create',
       data: data,
     });
-    socket.send('pullImage');
+    socket.send({ type: 'pullImage' });
     consoleRef?.current?.write('start pulling image...');
   });
 
@@ -57,7 +57,7 @@ export default ({ current, onClose, refresh }: any) => {
     if (current && !current.isNew) {
       reset({
         repoTag: current.RepoTags[0],
-        from: current.RepoTags[0].indexOf('/') > 0 ? '网欣云' : 'Docker Hub',
+        from: current.RepoTags[0].indexOf('mirrors.wxsoft.cn') > -1 ? '网欣云' : 'Docker Hub',
       });
       setTimeout(() => {
         submit();

@@ -1,9 +1,10 @@
-import React, { createRef, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { Paper } from '@material-ui/core';
 import { Terminal } from 'xterm';
 import { useMount } from 'ahooks';
 import { FitAddon } from 'xterm-addon-fit';
 import 'xterm/css/xterm.css';
+import isEqual from 'lodash/isEqual';
 
 export interface WxConsoleProps {
   editable?: boolean;
@@ -30,18 +31,22 @@ function WxConsole({ editable, initMessage }: WxConsoleProps, external) {
     setFitAddon(fitAddon);
     setTerm(term);
     fitAddon.fit();
-    initMessage && term.writeln(initMessage);
   });
 
+  useEffect(() => {
+    term?.clear();
+    initMessage && term?.writeln(initMessage);
+  }, [initMessage]);
+
   return (
-    <Paper style={{ height: '100%', width: '100%' }}>
+    <Paper style={{ height: '100%', width: '100%', backgroundColor: 'black', padding: 16 }}>
       <div style={{ height: '100%', width: '100%' }} ref={ref} />
     </Paper>
   );
 }
 
 function arePropsEqual(prevProps: WxConsoleProps, nextProps: WxConsoleProps) {
-  return true;
+  return isEqual(prevProps, nextProps);
 }
 
 export default React.memo(React.forwardRef(WxConsole), arePropsEqual);

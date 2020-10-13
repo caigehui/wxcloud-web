@@ -46,7 +46,6 @@ export default ({ menu }) => {
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'microservices');
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'microservices');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'microservices');
-  const pmLog = getPermission([11], 'microservices');
 
   return (
     <WxPage
@@ -76,14 +75,14 @@ export default ({ menu }) => {
           <>
             <WxSearchField
               style={{ marginLeft: 0 }}
-              label="微服务名"
+              label="容器名"
               value={name}
               onChange={setName}
             />
           </>
         }
         columns={[
-          { title: '微服务名', render: rowData => rowData.Name },
+          { title: '容器名', render: rowData => rowData.Name },
           { title: '镜像名', render: rowData => rowData.Image },
           { title: 'ID', field: 'Id', render: rowData => rowData.Id.substr(0, 12) },
           {
@@ -115,8 +114,7 @@ export default ({ menu }) => {
         ]}
         actions={[
           () => ({
-            disabled: !pmLog,
-            icon: () => <Description color={!pmLog ? 'disabled' : 'primary'} />,
+            icon: () => <Description color="primary" />,
             tooltip: '查看日志',
             onClick: async (event, rowData) => {
               setContainerLog(rowData);

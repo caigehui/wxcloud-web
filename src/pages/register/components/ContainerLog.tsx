@@ -1,56 +1,36 @@
 import WxDialog from '@/components/WxDialog';
-import { Box, Button, Grid, MenuItem, TextField, useTheme } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { buildRequest } from '../utils';
-import { useLocation } from 'umi';
+import React, { useEffect, useRef } from 'react';
 import { useSocket } from 'use-socketio';
 import WxConsole from '@/components/WxConsole';
 import dayjs from 'dayjs';
 
 export default ({ containerLog, onClose }: any) => {
-  const theme = useTheme();
-  const location = useLocation();
-  const [pulling, setPulling] = useState(false);
   const consoleRef = useRef<any>();
 
   const { socket } = useSocket('message', data => {
-    // if (data.status === 'failed') {
-    //   setPulling(false);
-    //   consoleRef?.current?.write(JSON.stringify(data.error));
-    // } else {
-    //   consoleRef?.current?.write(
-    //     data.status + (data.id ? `(${data.id}): ` : '') + (data.progress || ''),
-    //   );
-    // }
-    // if (data.status === 'finished') {
-    //   setTimeout(() => {
-    //     onClose();
-    //     setPulling(false);
-    //   }, 1000);
-    // }
+    if (data.type === 'err') {
+      consoleRef?.current?.write(JSON.stringify(data.error));
+    } else {
+      const content = data.payload;
+      const timestamp = content.substring(0, content.indexOf(' '));
+      consoleRef?.current?.writeln(
+        (dayjs(timestamp).isValid() ? dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss') : '') +
+          ' ' +
+          content.substring(content.indexOf(' ')),
+      );
+    }
   });
 
+  const close = () => {
+    onClose();
+    socket.send({ type: 'stopReadLogs' });
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await buildRequest(location.state, {
-        url: '/WxMicro/containerLog',
-        params: { id: containerLog.Id },
-      });
-      for (const line of data.split('\n')) {
-        const content = line.substr(line.indexOf('20'));
-        const timestamp = content.substring(0, content.indexOf(' '));
-        consoleRef?.current?.writeln(
-          dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss') +
-            ' ' +
-            content.substring(content.indexOf(' ')),
-        );
-        consoleRef?.current?.writeln('');
-      }
-    };
     if (containerLog) {
-      fetchData();
+      socket.send({ type: 'readLogs', payload: containerLog.Id });
     } else {
       consoleRef?.current?.clear();
     }
@@ -60,12 +40,12 @@ export default ({ containerLog, onClose }: any) => {
     <WxDialog
       width="md"
       open={!!containerLog}
-      onClose={() => !pulling && onClose()}
+      onClose={close}
       titleIcon={<Edit />}
       title={containerLog?.Name + '镜像日志'}
       actions={
         <>
-          <Button disabled={pulling} onClick={onClose} color="primary">
+          <Button onClick={close} color="primary">
             确定
           </Button>
         </>
