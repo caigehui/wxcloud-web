@@ -8,9 +8,10 @@ import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import requestWxApi from '@/utils/requestWxApi';
 import { Box, InputAdornment, TextField } from '@material-ui/core';
 import UserEdit from './components/UserEdit';
+import { useRequest } from 'ahooks';
 
 export default ({ menu }: any) => {
-  const { getPermission } = useModel('useAuthModel');
+  const { getPermission, user } = useModel('useAuthModel');
   const tableRef = createRef<any>();
   const [current, setCurrent] = useState(null);
   const [nameSearch, setNameSearch] = useState('');
@@ -37,6 +38,19 @@ export default ({ menu }: any) => {
       },
       token,
     );
+
+  const { data: permissions } = useRequest(
+    () =>
+      requestWxApi(token =>
+        request(
+          {
+            url: '/WxPermission/list',
+          },
+          token,
+        ),
+      ),
+    { initialData: {} },
+  );
 
   return (
     <WxPage
@@ -105,7 +119,8 @@ export default ({ menu }: any) => {
           },
         ]}
         deletable={rowData => ({
-          disabled: !pmDelete || rowData.username === 'sy',
+          disabled:
+            !pmDelete || rowData.username === 'admin' || rowData.username === user['username'],
           confirmOptions: {
             title: `删除${rowData.nickname}`,
             message: `确定要删除${rowData.nickname}吗？`,
@@ -146,7 +161,13 @@ export default ({ menu }: any) => {
           },
         ]}
       />
-      <UserEdit current={current} refresh={refresh} onClose={() => setCurrent(null)} />
+      <UserEdit
+        menu={menu}
+        permissions={permissions}
+        current={current}
+        refresh={refresh}
+        onClose={() => setCurrent(null)}
+      />
     </WxPage>
   );
 };

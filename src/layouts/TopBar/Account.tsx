@@ -47,20 +47,20 @@ function Account() {
         alignItems="center"
         component={ButtonBase}
         onClick={handleOpen}
+        mr={2}
         {...({ ref } as any)}
       >
         <Avatar
           style={{
-            backgroundColor: currentTheme.palette.background['dark'],
-            padding: 4,
+            padding: 2,
           }}
           className={classes.avatar}
-          src={user.avatar.url}
+          src={user?.['avatar']?.url}
         />
 
         <Hidden smDown>
-          <Typography variant="h6" color="textPrimary">
-            {user?.nickname}
+          <Typography variant="body1" color="textPrimary">
+            {user?.['nickname']}
           </Typography>
         </Hidden>
       </Box>
