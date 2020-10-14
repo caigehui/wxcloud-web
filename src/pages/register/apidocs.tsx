@@ -18,6 +18,8 @@ import Sidebar from './components/Sidebar';
 import Api from './components/Api';
 import { buildRequest } from './utils';
 import WxPage from '@/components/WxPage';
+import { useModel } from 'umi';
+import useAuth from '@/hooks/useAuth';
 
 function ApiDoc({ state, menu }) {
   const { data } = useRequest(() => buildRequest(state, { url: '/WxDevelop/getApiControllers' }), {
@@ -51,6 +53,9 @@ function ApiDoc({ state, menu }) {
       setOpenKeys([...openKeys, name]);
     }
   };
+
+  const { getPermission } = useModel('useAuthModel');
+  useAuth(getPermission([1], 'apidocs'));
 
   return (
     <WxPage menu={menu}>

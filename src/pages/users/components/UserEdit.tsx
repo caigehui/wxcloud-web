@@ -15,6 +15,7 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
+import validator from 'validator';
 import { Delete, Edit } from '@material-ui/icons';
 import request from '@wxsoft/wxboot/helpers/request';
 import { useRequest } from 'ahooks';
@@ -50,6 +51,7 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
             method: 'POST',
             data: {
               user: Object.assign({ className: '_User' }, data, {
+                id: current.objectId,
                 permissions: perm,
                 password: 'Wx123456',
               }),
@@ -70,7 +72,7 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
   useEffect(() => {
     reset({
       username: current?.username || '',
-      email: current?.email || '',
+      email: current?.email || null,
       nickname: current?.nickname || '',
       phoneNumber: current?.phoneNumber || '',
     });
@@ -166,10 +168,8 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
             error={!!errors.email}
             rules={{
               required: { value: false, message: '请输入邮箱' },
-              pattern: {
-                value: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
-                message: '请输入正确的邮箱',
-              },
+              validate: data =>
+                validator.isEmail(data || '') || !data ? true : '请输入正确的邮箱',
             }}
             fullWidth
             label="邮箱地址"
@@ -189,7 +189,7 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
                 <Delete />
               </IconButton>
             </Tooltip>
-            <Tooltip title={`一直拥有所有权限`}>
+            <Tooltip title="一直拥有所有权限">
               <FormControlLabel
                 control={
                   <Checkbox

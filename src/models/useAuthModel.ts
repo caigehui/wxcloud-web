@@ -2,11 +2,11 @@ import { useState, useCallback } from 'react';
 import { history } from 'umi';
 import { useLocalStorageState, useTimeout } from 'ahooks';
 import requestWxApi from '@/utils/requestWxApi';
-import isEqual from 'lodash/isEqual';
 import WxUser from '@wxsoft/wxboot/entities/WxUser';
 import request from '@wxsoft/wxboot/helpers/request';
 import { WX_USER_KEY, WX_MENU_KEY, WX_SESSION_TOKEN_KEY } from '@/constants';
 import checkPermission from '@wxsoft/wxboot/helpers/checkPermission';
+import wxConfirm from '@/components/WxConfirm';
 
 function useAuthModel() {
   const [userJSON, setUserJSON] = useLocalStorageState(WX_USER_KEY, null);
@@ -26,14 +26,28 @@ function useAuthModel() {
     const data = await requestWxApi((sessionToken?: string) =>
       request({ method: 'GET', url: '/WxCommon/getMenu' }, sessionToken),
     );
-    if (!isEqual(menu, data)) {
-      setMenu(data);
-    }
+    setMenu(data);
   }, []);
 
-  const getPermission = useCallback(async (code, key) => {
-    if (!user?.permissions) return false;
-    return checkPermission(user?.permissions, [code], key);
+  const getPermission = useCallback((code, key) => {
+    if (!user?.['permissions']) return false;
+    return checkPermission(user?.['permissions'], [code], key);
+  }, []);
+
+  const browser = useCallback(async (browserId: string, trust: boolean) => {
+    await requestWxApi((sessionToken?: string) =>
+      request(
+        {
+          method: 'POST',
+          url: '/WxUser/browser',
+          data: {
+            browserId,
+            trust,
+          },
+        },
+        sessionToken,
+      ),
+    );
   }, []);
 
   useTimeout(async () => {
@@ -45,20 +59,39 @@ function useAuthModel() {
         logOut();
       }
     }
-  }, 1);
+  }, 100);
 
   const logIn = useCallback(async data => {
-    const sessionToken = await requestWxApi(() =>
+    const { token, safe } = await requestWxApi(() =>
       request({ data, method: 'POST', url: '/WxUser/signIn' }),
     );
-    if (typeof sessionToken === 'string') {
-      localStorage.setItem(WX_SESSION_TOKEN_KEY, sessionToken);
+    if (typeof token === 'string') {
+      localStorage.setItem(WX_SESSION_TOKEN_KEY, token);
     }
+
     await getCurrentUser();
     await getMenu();
 
-    // 回到returnUrl或者/
-    history.replace(history.location.query.returnUrl || '/');
+    if (!safe) {
+      wxConfirm({
+        title: '安全检测',
+        message: '检测到您在新的浏览器登录系统，是否信任该浏览器？',
+        onConfirm: async () => {
+          await browser(data.browserId, true);
+          history.replace(history.location.query.returnUrl || '/');
+          return true;
+        },
+        onCancel: async () => {
+          await browser(data.browserId, false);
+          history.replace(history.location.query.returnUrl || '/');
+        },
+        confirmText: '信任',
+        cancelText: '不信任',
+      });
+    } else {
+      // 回到returnUrl或者/
+      history.replace(history.location.query.returnUrl || '/');
+    }
   }, []);
 
   const logOut = useCallback(async () => {

@@ -3,8 +3,9 @@ import LevelPicker from './components/LevelPicker';
 import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import { buildRequest } from './utils';
-import { useLocation } from 'umi';
+import { useLocation, useModel } from 'umi';
 import WxSearchField from '@/components/WxSearchField';
+import useAuth from '@/hooks/useAuth';
 
 function JobLogs({ menu }: any) {
   const tableRef = useRef(null);
@@ -12,6 +13,9 @@ function JobLogs({ menu }: any) {
   const [appName, setAppName] = useState('');
   const [url, setUrl] = useState('');
   const location = useLocation();
+
+  const { getPermission } = useModel('useAuthModel');
+  useAuth(getPermission([1], 'apilogs'));
 
   const request = ({ page, pageSize, from, until }) => () =>
     buildRequest(

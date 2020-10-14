@@ -8,7 +8,6 @@ import {
   MenuItem,
   Typography,
   makeStyles,
-  useTheme,
 } from '@material-ui/core';
 import { useHistory, useModel } from 'umi';
 import { THEME } from '@/constants';
@@ -31,7 +30,7 @@ function Account() {
   const history = useHistory();
   const { user, logOut } = useModel('useAuthModel');
   const { theme, setTheme } = useModel('useSettingModel');
-  const currentTheme = useTheme();
+  
   const handleOpen = () => {
     setOpen(true);
   };

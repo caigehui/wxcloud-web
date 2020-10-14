@@ -19,6 +19,7 @@ export interface IWxDialogProps {
   titleIcon?: React.ReactNode;
   children?: React.ReactNode;
   actions?: React.ReactNode;
+  disableBackdropClick?: boolean;
   width?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   onExited?: any;
 }
@@ -48,6 +49,7 @@ function WxDialog({
   actions,
   width = 'sm',
   onExited,
+  disableBackdropClick,
 }: IWxDialogProps) {
   const styles = useStyles();
   const theme = useTheme();
@@ -61,6 +63,7 @@ function WxDialog({
       open={open}
       onClose={onClose}
       onExited={onExited}
+      disableBackdropClick={disableBackdropClick}
     >
       <DialogTitle disableTypography>
         <Box display="flex">

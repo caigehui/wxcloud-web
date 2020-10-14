@@ -10,6 +10,9 @@ export interface WxConfirmOptions {
   message: React.ReactNode;
   onConfirm: () => Promise<boolean> | void;
   onCancel?: () => void;
+  confirmText?: string;
+  cancelText?: string;
+  disableBackdropClick?: boolean;
 }
 
 /**
@@ -60,6 +63,7 @@ function WxConfirm({ onClose, options }: IWxConfirmProps) {
       <WxDialog
         title={options.title}
         open={open}
+        disableBackdropClick={options.disableBackdropClick}
         onClose={() => !loading && setOpen(false)}
         onExited={onClose}
         actions={
@@ -73,12 +77,16 @@ function WxConfirm({ onClose, options }: IWxConfirmProps) {
                 }}
                 color="inherit"
               >
-                取消
+                {options.cancelText || '取消'}
               </Button>
             </Box>
             <Box color={myTheme.palette.primary.main}>
               <Button onClick={onConfirm} disabled={loading} color="inherit">
-                {loading ? <CircularProgress color="primary" size={18} /> : '确定'}
+                {loading ? (
+                  <CircularProgress color="primary" size={18} />
+                ) : (
+                  options.confirmText || '确定'
+                )}
               </Button>
             </Box>
           </React.Fragment>

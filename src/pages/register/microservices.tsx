@@ -2,6 +2,7 @@ import WxPage from '@/components/WxPage';
 import WxSearchField from '@/components/WxSearchField';
 import WxSnackBar from '@/components/WxSnackBar';
 import WxTableWithApi from '@/components/WxTableWithApi';
+import useAuth from '@/hooks/useAuth';
 import { Chip } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
@@ -46,7 +47,8 @@ export default ({ menu }) => {
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'microservices');
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'microservices');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'microservices');
-
+  useAuth(getPermission([1], 'microservices'));
+  
   return (
     <WxPage
       menu={menu}

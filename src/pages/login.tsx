@@ -2,8 +2,6 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
@@ -12,17 +10,20 @@ import Alert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
-import { useRequest } from 'ahooks';
+import { useLocalStorageState, useRequest } from 'ahooks';
 import WxLoading from '@/components/WxLoading';
 import { useModel } from 'umi';
 import { ReactComponent as Logo } from '@/assets/logo.svg';
+import { Helmet } from 'react-helmet';
+import { Tab, Tabs, Tooltip } from '@material-ui/core';
+import { getReCaptchaToken } from '@/utils';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://www.cnwxsoft.com/">
-        wxeap
+        wxcloud
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -33,7 +34,6 @@ function Copyright() {
 type FormData = {
   username: string;
   password: string;
-  rememberMe: boolean;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     backgroundPosition: 'center',
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    margin: theme.spacing(4, 4),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -71,19 +71,32 @@ const useStyles = makeStyles(theme => ({
 export default function SignInSide() {
   const classes = useStyles();
   const { logIn } = useModel('useAuthModel');
+  const {
+    initialState: { fingerprint },
+  } = useModel('@@initialState');
 
-  const { handleSubmit, control, register } = useForm<FormData>({
+  const [loginType, setLoginType] = useLocalStorageState('loginType', 'password');
+
+  const { handleSubmit, control } = useForm<FormData>({
     defaultValues: {
       username: '',
       password: '',
-      rememberMe: false,
     },
     mode: 'onChange',
   });
 
   const { loading, error, run } = useRequest(logIn, { manual: true });
+
+  const submit = handleSubmit(async data => {
+    const reCaptchaToken = await getReCaptchaToken();
+    run({ ...data, reCaptchaToken, browserId: fingerprint });
+  });
+
   return (
     <Grid container component="main" className={classes.root}>
+      <Helmet>
+        <title>用户登录 - 网欣云</title>
+      </Helmet>
       <CssBaseline />
       <Grid item xs sm lg={9} className={classes.image} />
       <Grid container item xs={12} sm={5} lg={3} component={Paper} elevation={6}>
@@ -96,7 +109,18 @@ export default function SignInSide() {
               <Typography color="inherit" variant="h3">
                 网欣云登录
               </Typography>
-              <form className={classes.form} onSubmit={handleSubmit(run)}>
+              <form className={classes.form} onSubmit={submit}>
+                <Box my={2}>
+                  <Tabs
+                    value={loginType}
+                    indicatorColor="primary"
+                    onChange={(e, value) => setLoginType(value)}
+                    centered
+                  >
+                    <Tab style={{ minWidth: 120 }} label="账号密码" value="password" />
+                    <Tab style={{ minWidth: 120 }} label="短信验证码" value="sms" />
+                  </Tabs>
+                </Box>
                 {!!error && <Alert severity="error">{error?.message}</Alert>}
                 <Controller
                   as={TextField}
@@ -109,6 +133,7 @@ export default function SignInSide() {
                   fullWidth
                   id="email"
                   label="用户名或者手机号码"
+                  autoComplete="username"
                 />
                 <Controller
                   as={TextField}
@@ -124,13 +149,6 @@ export default function SignInSide() {
                   id="password"
                   autoComplete="current-password"
                 />
-                <FormControlLabel
-                  inputRef={register}
-                  name="rememberMe"
-                  control={<Checkbox color="primary" />}
-                  label="记住我"
-                />
-
                 <Button
                   type="submit"
                   fullWidth
@@ -142,7 +160,11 @@ export default function SignInSide() {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link variant="body2">忘记密码？</Link>
+                    <Tooltip title="使用手机号验证码登录">
+                      <Link variant="body2" href="javascript:;" onClick={() => setLoginType('sms')}>
+                        忘记密码？
+                      </Link>
+                    </Tooltip>
                   </Grid>
                 </Grid>
               </form>

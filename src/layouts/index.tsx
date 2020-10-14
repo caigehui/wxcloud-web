@@ -49,7 +49,7 @@ export default function Layout({ children, location }: IRouteComponentProps) {
       <div className={classes.root}>
         <Helmet>
           <title>
-            {getMenuItemNameByKey(last(location.pathname.split('/')), menu) || ''} - WxEAP
+            {getMenuItemNameByKey(last(location.pathname.split('/')), menu) || ''} - 网欣云
           </title>
         </Helmet>
         <TopBar />

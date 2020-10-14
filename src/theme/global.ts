@@ -5,6 +5,7 @@ const LIGHT_BAR_COLOR = '#91d5ff';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
+    '.grecaptcha-badge': { visibility: 'hidden' },
     '#nprogress': {
       pointerEvents: 'none',
       '& .bar': {

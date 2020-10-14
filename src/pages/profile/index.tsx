@@ -50,8 +50,8 @@ export default () => {
     reset({
       // @ts-ignore
       email: user.email || '',
-      nickname: user.nickname,
-      phoneNumber: user.phoneNumber,
+      nickname: user['nickname'],
+      phoneNumber: user['phoneNumber'],
     });
   }, [user]);
 
@@ -61,7 +61,7 @@ export default () => {
         {
           url: '/WxUser/changeInfo',
           method: 'POST',
-          data: data,
+          data: { ...data, email: data.email || null },
         },
         token,
       ),
@@ -94,7 +94,7 @@ export default () => {
   return (
     <WxPage title="个人设置">
       <Helmet>
-        <title>个人设置 - WxEAP</title>
+        <title>个人设置 - 网欣云</title>
       </Helmet>
       <Grid container spacing={2}>
         <Grid item xs={6}>
@@ -189,7 +189,7 @@ export default () => {
                   backgroundColor: theme.palette.background['dark'],
                   padding: theme.spacing(1),
                 }}
-                src={user.avatar.url}
+                src={user?.['avatar']?.url}
               />
               <input
                 ref={uploadRef}

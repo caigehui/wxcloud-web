@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import WxPage from '@/components/WxPage';
 import { Box, Grid, MenuItem, Paper, TextField, Typography, useTheme } from '@material-ui/core';
-import { useLocation } from 'umi';
+import { useLocation, useModel } from 'umi';
 import WxChart from '@/components/WxChart';
 import { useRequest } from 'ahooks';
 import { buildRequest, getGaugeOption } from './utils';
 import DockerAnalysis from './components/DockerAnalysis';
+import useAuth from '@/hooks/useAuth';
 
 const getStatusLabel = (title: string, value: number, xs?: any) => {
   return (
@@ -35,6 +36,8 @@ export default ({ menu }) => {
   const location = useLocation();
   const theme = useTheme();
   const [period, setPeriod] = useState('20m');
+  const { getPermission } = useModel('useAuthModel');
+  useAuth(getPermission([1], 'general'));
 
   const { data } = useRequest(
     () =>

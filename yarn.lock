@@ -1355,6 +1355,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fingerprintjs/fingerprintjs@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.npmjs.org/@fingerprintjs/fingerprintjs/-/fingerprintjs-2.1.4.tgz#1b495acd8732ed48bf62d4c5d9aff4761b6f7863"
+  integrity sha512-EeNKCnWK6kUmmfl4jhcXkNuhVuyWZnsTUaOALsN/INamS5dMSnBxCZ5DRYd+Px88OmKLrMCKP517rvtfJ24pCw==
+
 "@graphql-tools/delegate@6.0.12":
   version "6.0.12"
   resolved "https://registry.npmjs.org/@graphql-tools/delegate/-/delegate-6.0.12.tgz#2c1bcce12d907ec3c001ddc1b4a10ca1764057ab"

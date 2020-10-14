@@ -2,14 +2,12 @@
 import * as React from 'react';
 import Parse from '@wxsoft/parse';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { SnackbarProvider } from 'notistack';
 import { useModel } from 'umi';
 import { hideLoader } from './utils/globalLoader';
-import { waitFor, getServerUrl } from '@/utils';
+import { waitFor, getServerUrl, getFingerprint, addReCaptcha } from '@/utils';
 import { SnackbarUtilsConfigurator, WxSnackBarProvider } from '@/components/WxSnackBar';
 import { createTheme } from '@/theme';
 import useGlobalStyles from '@/theme/global';
-import { CircularProgress } from '@material-ui/core';
 
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY);
 Parse.serverURL = getServerUrl();
@@ -19,9 +17,12 @@ type AppProps = {
 };
 
 export async function getInitialState() {
+  // Add reCaptcha js
+  await addReCaptcha();
   await waitFor(1000);
+  const fingerprint = await getFingerprint();
   hideLoader();
-  return {};
+  return { fingerprint };
 }
 
 const App = ({ children }: AppProps) => {

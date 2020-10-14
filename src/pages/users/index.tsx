@@ -9,6 +9,7 @@ import requestWxApi from '@/utils/requestWxApi';
 import { Box, InputAdornment, TextField } from '@material-ui/core';
 import UserEdit from './components/UserEdit';
 import { useRequest } from 'ahooks';
+import useAuth from '@/hooks/useAuth';
 
 export default ({ menu }: any) => {
   const { getPermission, user } = useModel('useAuthModel');
@@ -24,6 +25,8 @@ export default ({ menu }: any) => {
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'users');
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.UPDATE[0]], 'users');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'users');
+
+  useAuth(getPermission([REGULAR_PERMISSIONS.READ[0]], 'users'));
 
   const onWxApi = ({ page, pageSize }) => (token: string) =>
     request(
@@ -109,14 +112,23 @@ export default ({ menu }: any) => {
           </>
         }
         actions={[
-          {
-            disabled: !pmUpdate,
-            icon: () => <Edit color="primary" />,
+          rowData => ({
+            disabled:
+              !pmUpdate || rowData.username === user['username'] || rowData.username === 'admin',
+            icon: () => (
+              <Edit
+                color={
+                  !pmUpdate || rowData.username === user['username'] || rowData.username === 'admin'
+                    ? 'disabled'
+                    : 'primary'
+                }
+              />
+            ),
             tooltip: '编辑',
             onClick: (event, rowData) => {
               setCurrent(rowData);
             },
-          },
+          }),
         ]}
         deletable={rowData => ({
           disabled:

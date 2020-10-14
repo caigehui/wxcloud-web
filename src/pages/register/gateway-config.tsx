@@ -1,6 +1,7 @@
 import WxPage from '@/components/WxPage';
 import WxSearchField from '@/components/WxSearchField';
 import WxTableWithApi from '@/components/WxTableWithApi';
+import useAuth from '@/hooks/useAuth';
 import { AddCircleOutlineOutlined, Edit } from '@material-ui/icons';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
 import React, { useRef, useState } from 'react';
@@ -22,6 +23,7 @@ export default ({ menu }) => {
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'gateway-config');
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.UPDATE[0]], 'gateway-config');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'gateway-config');
+  useAuth(getPermission([1], 'gateway-config'));
 
   return (
     <WxPage

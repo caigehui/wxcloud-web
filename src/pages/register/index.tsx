@@ -11,6 +11,7 @@ import WxSnackBar from '@/components/WxSnackBar';
 import { useRequest } from 'ahooks';
 import { buildRequest } from './utils';
 import { Box, InputAdornment, TextField } from '@material-ui/core';
+import useAuth from '@/hooks/useAuth';
 
 export default ({ menu }: any) => {
   const { getPermission } = useModel('useAuthModel');
@@ -57,6 +58,8 @@ export default ({ menu }: any) => {
   const pmCreate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'register');
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.UPDATE[0]], 'register');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'register');
+
+  useAuth(getPermission([REGULAR_PERMISSIONS.READ[0]], 'register'));
 
   const onWxApi = ({ page, pageSize, from, until }) => (token: string) =>
     request(

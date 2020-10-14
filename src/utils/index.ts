@@ -1,4 +1,5 @@
 import { THEME } from '@/constants';
+import Fingerprint2 from '@fingerprintjs/fingerprintjs';
 
 export function getServerUrl() {
   return `${location.origin}/${process.env.APP_NAME}`;
@@ -90,3 +91,43 @@ export function getSystemTheme() {
   }
   return defaultTheme;
 }
+
+export const getFingerprint = () => {
+  return new Promise(resolve => {
+    const get = () => {
+      Fingerprint2.get((components: Array<any>) => {
+        // 参数
+        const values = components.map(component => {
+          return component.value;
+        });
+        // 指纹
+        const murmur = Fingerprint2.x64hash128(values.join(''), 31);
+        resolve(murmur);
+      });
+    };
+    if (window['requestIdleCallback']) {
+      window['requestIdleCallback'](get);
+    } else {
+      get();
+    }
+  });
+};
+
+export const addReCaptcha = () => {
+  return new Promise(resolve => {
+    const script = document.createElement('script');
+    script.src = 'https://www.recaptcha.net/recaptcha/api.js?render=' + process.env.RECAPTCHAT_KEY;
+    document.body.appendChild(script);
+    script.addEventListener('load', () => {
+      resolve();
+    });
+  });
+};
+
+export const getReCaptchaToken = () => {
+  return new Promise(resolve => {
+    window['grecaptcha'].ready(() => {
+      window['grecaptcha']?.execute(process.env.RECAPTCHAT_KEY, { action: 'submit' }).then(resolve);
+    });
+  });
+};
