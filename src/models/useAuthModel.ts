@@ -69,7 +69,7 @@ function useAuthModel() {
   }, 100);
 
   const logIn = useCallback(async data => {
-    const { token, safe } = await requestWxApi(() =>
+    const { token, first } = await requestWxApi(() =>
       request({
         data: {
           ...data,
@@ -86,10 +86,10 @@ function useAuthModel() {
     await getCurrentUser();
     await getMenu();
 
-    if (!safe) {
+    if (first) {
       wxConfirm({
         title: '安全检测',
-        message: '检测到您在新的浏览器登录系统，是否信任该浏览器？',
+        message: '检测到您在新的浏览器登录系统，是否信任该浏览器？稍后可以在个人设置中更改信任。',
         onConfirm: async () => {
           await browser(data.browserId, true);
           history.replace(history.location.query.returnUrl || '/');

@@ -28,9 +28,14 @@ async function requestWxApi(wxRequest: WxRequest, whole?: boolean) {
       throw ret;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error.response);
     nprogress.done();
-    throw error;
+    if (error.response?.data?.code === 209) {
+      WxSnackBar.error('身份已过期，请重新登录');
+      history.push('/logout');
+    } else {
+      throw error;
+    }
   }
 }
 

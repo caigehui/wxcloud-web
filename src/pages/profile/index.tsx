@@ -18,6 +18,7 @@ import Parse from 'parse';
 import request, { serverURL } from '@wxsoft/wxboot/helpers/request';
 import requestWxApi from '@/utils/requestWxApi';
 import { Controller, useForm } from 'react-hook-form';
+import BrowserSafe from './components/BrowserSafe';
 
 Parse.initialize(process.env.APP_ID);
 Parse.serverURL = serverURL;
@@ -207,6 +208,7 @@ export default () => {
               </label>
             </Box>
           </Paper>
+          <BrowserSafe />
         </Grid>
       </Grid>
     </WxPage>
