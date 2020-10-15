@@ -27,6 +27,7 @@ interface FormData {
   email: string;
   nickname: string;
   phoneNumber: string;
+  sendSms: boolean;
 }
 
 export default ({ current, onClose, refresh, permissions, menu }: any) => {
@@ -39,6 +40,7 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
       email: '',
       nickname: '',
       phoneNumber: '',
+      sendSms: false,
     },
   });
 
@@ -50,11 +52,16 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
             url: current?.isNew ? '/WxUser/create' : '/WxUser/update',
             method: 'POST',
             data: {
-              user: Object.assign({ className: '_User' }, data, {
+              user: {
+                className: '_User',
+                username: data.username,
+                email: data.email,
+                nickname: data.nickname,
+                phoneNumber: data.phoneNumber,
                 id: current.objectId,
                 permissions: perm,
-                password: 'Wx123456',
-              }),
+              },
+              sendSms: !!data.sendSms,
             },
           },
           token,
@@ -113,8 +120,8 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
             rules={{
               required: { value: true, message: '请输入账号' },
               pattern: {
-                value: /^[a-zA-Z0-9_\.]{4,15}$/,
-                message: '账号只允许字母、数字、"_"和"."，长度4-15',
+                value: /^[a-zA-Z0-9_]{4,15}$/,
+                message: '账号只允许字母、数字和"_"，长度4-15',
               },
             }}
             fullWidth
@@ -285,7 +292,26 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
             <Divider />
           </Box>
           <DialogContentText>
-            提示：新增后会给该新用户发送一个含有账号和随机生成的密码的手机短信
+            <Controller
+              control={control}
+              name="sendSms"
+              render={({ onChange, value }) => {
+                return (
+                  <Tooltip title="新增后会给该新用户发送一个含有账号和随机生成的密码的手机短信">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={value}
+                          onChange={e => onChange(e.target.checked)}
+                          color="primary"
+                        />
+                      }
+                      label="是否发送短信"
+                    />
+                  </Tooltip>
+                );
+              }}
+            />
           </DialogContentText>
         </>
       )}

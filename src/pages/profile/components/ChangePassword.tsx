@@ -14,6 +14,8 @@ import request from '@wxsoft/wxboot/helpers/request';
 import { useRequest } from 'ahooks';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { AES } from 'crypto-js';
+import { history } from 'umi';
 
 interface FormData {
   oldPassword: string;
@@ -35,8 +37,8 @@ export default () => {
             url: '/WxUser/changePassword',
             method: 'POST',
             data: {
-              oldPassword: data.oldPassword,
-              newPassword: data.newPassword,
+              oldPassword: AES.encrypt(data.oldPassword, process.env.RECAPTCHAT_KEY).toString(),
+              newPassword: AES.encrypt(data.newPassword, process.env.RECAPTCHAT_KEY).toString(),
             },
           },
           token,
@@ -58,7 +60,8 @@ export default () => {
     try {
       await run(data);
       reset();
-      WxSnackBar.success('更换密码成功！');
+      WxSnackBar.success('更换密码成功，请重新登录！');
+      history.push('/logout');
     } catch (error) {
       setError('oldPassword', error);
     }

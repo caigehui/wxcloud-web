@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { DialogContentText, Button, ThemeProvider, Box, CircularProgress } from '@material-ui/core';
 import WxDialog from '../WxDialog';
 import { createTheme } from '@/theme';
-import { THEME, THEME_KEY } from '@/constants';
+import { THEME_KEY } from '@/constants';
+import { getDefaultTheme } from '@/utils';
 
 export interface WxConfirmOptions {
   title?: string;
@@ -43,7 +44,7 @@ export interface IWxConfirmProps {
 }
 
 function WxConfirm({ onClose, options }: IWxConfirmProps) {
-  const theme = localStorage.getItem(THEME_KEY)?.replace(/"/g, '') || THEME.LIGHT;
+  const theme = localStorage.getItem(THEME_KEY)?.replace(/"/g, '') || getDefaultTheme();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(true);
   const myTheme = createTheme(theme);

@@ -1,5 +1,6 @@
 import { THEME } from '@/constants';
 import Fingerprint2 from '@fingerprintjs/fingerprintjs';
+import axios from 'axios';
 
 export function getServerUrl() {
   return `${location.origin}/${process.env.APP_NAME}`;
@@ -125,9 +126,17 @@ export const addReCaptcha = () => {
 };
 
 export const getReCaptchaToken = () => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     window['grecaptcha'].ready(() => {
-      window['grecaptcha']?.execute(process.env.RECAPTCHAT_KEY, { action: 'submit' }).then(resolve);
+      window['grecaptcha']
+        ?.execute(process.env.RECAPTCHAT_KEY, { action: 'submit' })
+        .then(resolve)
+        .catch(reject);
     });
   });
+};
+
+export const getIP = async () => {
+  const { data } = await axios({ url: 'https://www.cloudflare.com/cdn-cgi/trace' });
+  console.log(data.split('\n'));
 };

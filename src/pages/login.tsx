@@ -15,7 +15,7 @@ import WxLoading from '@/components/WxLoading';
 import { useModel } from 'umi';
 import { ReactComponent as Logo } from '@/assets/logo.svg';
 import { Helmet } from 'react-helmet';
-import { Tab, Tabs, Tooltip } from '@material-ui/core';
+import { Hidden, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { getReCaptchaToken } from '@/utils';
 
 function Copyright() {
@@ -88,8 +88,13 @@ export default function SignInSide() {
   const { loading, error, run } = useRequest(logIn, { manual: true });
 
   const submit = handleSubmit(async data => {
-    const reCaptchaToken = await getReCaptchaToken();
-    run({ ...data, reCaptchaToken, browserId: fingerprint });
+    try {
+      const reCaptchaToken = await getReCaptchaToken();
+      run({ ...data, reCaptchaToken, browserId: fingerprint });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   });
 
   return (
@@ -103,9 +108,16 @@ export default function SignInSide() {
         <Grid item direction="column" container>
           <Grid item xs>
             <div className={classes.paper}>
-              <Box mb={1}>
-                <Logo width={100} height={100} />
-              </Box>
+              <Hidden mdUp>
+                <Box mb={1}>
+                  <Logo width={64} height={64} />
+                </Box>
+              </Hidden>
+              <Hidden mdDown>
+                <Box mb={1}>
+                  <Logo width={100} height={100} />
+                </Box>
+              </Hidden>
               <Typography color="inherit" variant="h3">
                 网欣云登录
               </Typography>
@@ -160,8 +172,8 @@ export default function SignInSide() {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Tooltip title="使用手机号验证码登录">
-                      <Link variant="body2" href="javascript:;" onClick={() => setLoginType('sms')}>
+                    <Tooltip title="忘记密码或首次登录请使用手机号验证码登录">
+                      <Link variant="body2" href="#" onClick={() => setLoginType('sms')}>
                         忘记密码？
                       </Link>
                     </Tooltip>

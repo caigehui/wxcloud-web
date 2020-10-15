@@ -3,7 +3,7 @@ import WxSearchField from '@/components/WxSearchField';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import useAuth from '@/hooks/useAuth';
 import { Update } from '@material-ui/icons';
-import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
+import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import { ArrowDownCircle } from 'react-feather';

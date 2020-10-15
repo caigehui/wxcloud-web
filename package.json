@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@types/echarts": "^4.6.6",
-    "@wxsoft/wxboot": "^1.0.132"
+    "@wxsoft/wxboot": "^1.0.140"
   },
   "devDependencies": {
     "@fingerprintjs/fingerprintjs": "^2.1.4",
@@ -67,6 +67,7 @@
     "react-sortable-hoc": "^1.11.0",
     "umi": "^3.2.20",
     "use-socketio": "^2.0.3",
+    "vconsole": "^3.3.4",
     "xterm": "^4.9.0",
     "xterm-addon-fit": "^0.4.0",
     "yorkie": "^2.0.0"

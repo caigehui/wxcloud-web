@@ -7,6 +7,7 @@ import request from '@wxsoft/wxboot/helpers/request';
 import { WX_USER_KEY, WX_MENU_KEY, WX_SESSION_TOKEN_KEY } from '@/constants';
 import checkPermission from '@wxsoft/wxboot/helpers/checkPermission';
 import wxConfirm from '@/components/WxConfirm';
+import { AES } from 'crypto-js';
 
 function useAuthModel() {
   const [userJSON, setUserJSON] = useLocalStorageState(WX_USER_KEY, null);
@@ -29,11 +30,17 @@ function useAuthModel() {
     setMenu(data);
   }, []);
 
-  const getPermission = useCallback((code, key) => {
-    if (!user?.['permissions']) return false;
-    return checkPermission(user?.['permissions'], [code], key);
-  }, []);
+  const getPermission = useCallback(
+    (code, key) => {
+      if (!user?.['permissions']) return false;
+      return checkPermission(user?.['permissions'], [code], key);
+    },
+    [user],
+  );
 
+  /**
+   * 信任浏览器
+   */
   const browser = useCallback(async (browserId: string, trust: boolean) => {
     await requestWxApi((sessionToken?: string) =>
       request(
@@ -63,7 +70,14 @@ function useAuthModel() {
 
   const logIn = useCallback(async data => {
     const { token, safe } = await requestWxApi(() =>
-      request({ data, method: 'POST', url: '/WxUser/signIn' }),
+      request({
+        data: {
+          ...data,
+          password: AES.encrypt(data.password, process.env.RECAPTCHAT_KEY).toString(),
+        },
+        method: 'POST',
+        url: '/WxUser/signIn',
+      }),
     );
     if (typeof token === 'string') {
       localStorage.setItem(WX_SESSION_TOKEN_KEY, token);

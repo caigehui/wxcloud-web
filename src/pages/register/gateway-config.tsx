@@ -3,7 +3,7 @@ import WxSearchField from '@/components/WxSearchField';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import useAuth from '@/hooks/useAuth';
 import { AddCircleOutlineOutlined, Edit } from '@material-ui/icons';
-import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
+import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
 import React, { useRef, useState } from 'react';
 import { useLocation, useModel } from 'umi';
 import GatewayConfigEdit from './components/GatewayConfigEdit';

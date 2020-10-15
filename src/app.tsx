@@ -17,7 +17,6 @@ type AppProps = {
 };
 
 export async function getInitialState() {
-  // Add reCaptcha js
   await addReCaptcha();
   await waitFor(1000);
   const fingerprint = await getFingerprint();

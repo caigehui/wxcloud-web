@@ -12,7 +12,7 @@ import {
   Stop,
   Update,
 } from '@material-ui/icons';
-import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
+import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
 import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';

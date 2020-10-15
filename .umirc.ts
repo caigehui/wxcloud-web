@@ -17,6 +17,7 @@ const prod = process.env.NODE_ENV === 'production';
 const Config = (extraOptions?: Object) =>
   Object.assign(
     {
+      publicPath: '/public/',
       nodeModulesTransform: {
         type: 'none',
       },
@@ -25,6 +26,12 @@ const Config = (extraOptions?: Object) =>
       },
       define: {
         ...definitions,
+      },
+      proxy: {
+        '/wxapi': {
+          target: definitions['process.env.PROXY_TARGET'],
+          changeOrigin: true,
+        },
       },
       chainWebpack(memo) {
         // 设置 alias

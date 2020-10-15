@@ -4,7 +4,7 @@ import { AddCircleOutlineOutlined, Edit, ExitToApp, Search } from '@material-ui/
 import request from '@wxsoft/wxboot/helpers/request';
 import React, { createRef, useState } from 'react';
 import { useHistory, useModel } from 'umi';
-import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
+import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
 import requestWxApi from '@/utils/requestWxApi';
 import RegisterEdit from './components/RegisterEdit';
 import WxSnackBar from '@/components/WxSnackBar';

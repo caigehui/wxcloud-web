@@ -61,7 +61,7 @@ export default () => {
         {
           url: '/WxUser/changeInfo',
           method: 'POST',
-          data: { ...data, email: data.email || null },
+          data: { ...data, email: data.email },
         },
         token,
       ),
@@ -71,6 +71,7 @@ export default () => {
 
   const changeAvatar = async () => {
     const file = uploadRef.current.files?.[0];
+    if (!file) return;
     const name = file?.name;
     const avatar = new Parse.File(name, file);
     const savedFile = await avatar.save();

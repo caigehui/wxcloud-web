@@ -4,7 +4,7 @@ import { AddCircleOutlineOutlined, Edit, Search } from '@material-ui/icons';
 import request from '@wxsoft/wxboot/helpers/request';
 import React, { createRef, useState } from 'react';
 import { useModel } from 'umi';
-import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants/permissions';
+import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
 import requestWxApi from '@/utils/requestWxApi';
 import { Box, InputAdornment, TextField } from '@material-ui/core';
 import UserEdit from './components/UserEdit';
@@ -175,7 +175,7 @@ export default ({ menu }: any) => {
       />
       <UserEdit
         menu={menu}
-        permissions={permissions}
+        permissions={permissions || {}}
         current={current}
         refresh={refresh}
         onClose={() => setCurrent(null)}
