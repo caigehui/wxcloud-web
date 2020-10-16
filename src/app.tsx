@@ -8,6 +8,7 @@ import { waitFor, getServerUrl, getFingerprint, addReCaptcha } from '@/utils';
 import { SnackbarUtilsConfigurator, WxSnackBarProvider } from '@/components/WxSnackBar';
 import { createTheme } from '@/theme';
 import useGlobalStyles from '@/theme/global';
+import getClientConfig from './utils/getClientConfig';
 
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY);
 Parse.serverURL = getServerUrl();
@@ -17,7 +18,8 @@ type AppProps = {
 };
 
 export async function getInitialState() {
-  await addReCaptcha();
+  const data = await getClientConfig();
+  await addReCaptcha(!!data?.enableReCaptcha);
   await waitFor(1000);
   const fingerprint = await getFingerprint();
   hideLoader();

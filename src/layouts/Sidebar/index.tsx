@@ -3,6 +3,7 @@ import React from 'react';
 import { useHistory, useModel } from 'umi';
 import { ReactComponent as Logo } from '@/assets/logo.svg';
 import * as Icon from 'react-feather';
+import { Link } from 'umi';
 import clsx from 'clsx';
 
 export const SIDEBAR_WIDTH = 90;
@@ -63,7 +64,9 @@ export default () => {
 
   return (
     <Drawer variant="permanent" classes={{ paper: styles.desktopDrawer }}>
-      <Logo className={styles.logo} />
+      <Link to="/dashboard">
+        <Logo className={styles.logo} />
+      </Link>
       {menu?.map((i: any) => {
         const ElIcon = Icon[i.icon];
         const isActived = firstRoute === i.key;

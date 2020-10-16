@@ -8,6 +8,7 @@ import { WX_USER_KEY, WX_MENU_KEY, WX_SESSION_TOKEN_KEY } from '@/constants';
 import checkPermission from '@wxsoft/wxboot/helpers/checkPermission';
 import wxConfirm from '@/components/WxConfirm';
 import { AES } from 'crypto-js';
+import { getReCaptchaToken } from '@/utils';
 
 function useAuthModel() {
   const [userJSON, setUserJSON] = useLocalStorageState(WX_USER_KEY, null);
@@ -68,15 +69,30 @@ function useAuthModel() {
     }
   }, 100);
 
-  const logIn = useCallback(async data => {
+  const sendSmsCode = useCallback(async data => {
+    const reCaptchaToken = await getReCaptchaToken();
+    return requestWxApi(() =>
+      request({
+        method: 'POST',
+        url: '/WxUser/sendSmsCode',
+        data: { ...data, reCaptchaToken },
+      }),
+    );
+  }, []);
+
+  const logIn = useCallback(async (data, sms?: boolean) => {
+    const reCaptchaToken = await getReCaptchaToken();
     const { token, first } = await requestWxApi(() =>
       request({
         data: {
           ...data,
-          password: AES.encrypt(data.password, process.env.RECAPTCHAT_KEY).toString(),
+          reCaptchaToken,
+          password: data.password
+            ? AES.encrypt(data.password, process.env.RECAPTCHAT_KEY).toString()
+            : undefined,
         },
         method: 'POST',
-        url: '/WxUser/signIn',
+        url: sms ? '/WxUser/signInWithSms' : '/WxUser/signIn',
       }),
     );
     if (typeof token === 'string') {
@@ -129,6 +145,7 @@ function useAuthModel() {
     logIn,
     logOut,
     getPermission,
+    sendSmsCode,
   };
 }
 export default useAuthModel;

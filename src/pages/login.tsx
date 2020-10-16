@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -10,13 +10,13 @@ import Alert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
-import { useLocalStorageState, useRequest } from 'ahooks';
+import { useInterval, useLocalStorageState, useRequest } from 'ahooks';
 import WxLoading from '@/components/WxLoading';
 import { useModel } from 'umi';
 import { ReactComponent as Logo } from '@/assets/logo.svg';
 import { Helmet } from 'react-helmet';
 import { Hidden, Tab, Tabs, Tooltip } from '@material-ui/core';
-import { getReCaptchaToken } from '@/utils';
+import WxSnackBar from '@/components/WxSnackBar';
 
 function Copyright() {
   return (
@@ -34,6 +34,8 @@ function Copyright() {
 type FormData = {
   username: string;
   password: string;
+  phoneNumber: string;
+  code: string;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -68,16 +70,37 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const useManualInterval = (
+  fn: any,
+  interval: number | null | undefined,
+  options?: { immediate?: boolean },
+): [boolean, Dispatch<SetStateAction<boolean>>] => {
+  const [enable, setEnable] = useState<boolean>(false);
+  useInterval(fn, enable ? interval : null, options);
+  return [enable, setEnable];
+};
+
 export default function SignInSide() {
   const classes = useStyles();
-  const { logIn } = useModel('useAuthModel');
+  const { logIn, sendSmsCode } = useModel('useAuthModel');
+  const [count, setCount] = useState(30);
+  const [timer, setTimer] = useManualInterval(
+    () => {
+      setCount(count - 1);
+      if (count === 1) {
+        setTimer(!timer);
+      }
+    },
+    1000,
+    { immediate: false },
+  );
   const {
     initialState: { fingerprint },
   } = useModel('@@initialState');
 
   const [loginType, setLoginType] = useLocalStorageState('loginType', 'password');
 
-  const { handleSubmit, control } = useForm<FormData>({
+  const { handleSubmit, control, getValues } = useForm<FormData>({
     defaultValues: {
       username: '',
       password: '',
@@ -85,17 +108,31 @@ export default function SignInSide() {
     mode: 'onChange',
   });
 
-  const { loading, error, run } = useRequest(logIn, { manual: true });
+  const { loading, error, run } = useRequest(
+    (func: Function, ...args) => {
+      return func(...args);
+    },
+    { manual: true },
+  );
 
-  const submit = handleSubmit(async data => {
-    try {
-      const reCaptchaToken = await getReCaptchaToken();
-      run({ ...data, reCaptchaToken, browserId: fingerprint });
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  const submit = handleSubmit(data => {
+    run(logIn, { ...data, browserId: fingerprint }, loginType === 'sms');
   });
+
+  const sendCode = async () => {
+    const ret = await run(sendSmsCode, { phoneNumber: getValues()['phoneNumber'] });
+    if (ret !== 30) {
+      WxSnackBar.warning(`已经发送过短信，请于${ret}秒后重新发送。`);
+    }
+    setCount(ret);
+    setTimer(true);
+  };
+
+  // 登录按钮是否可以点击
+  const submitEnabled =
+    !loading &&
+    ((getValues()['username'] && getValues()['password']) ||
+      (/^1[3456789]\d{9}$/.test(getValues()['phoneNumber']) && getValues()['code']?.length === 6));
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -134,39 +171,102 @@ export default function SignInSide() {
                   </Tabs>
                 </Box>
                 {!!error && <Alert severity="error">{error?.message}</Alert>}
-                <Controller
-                  as={TextField}
-                  control={control}
-                  defaultValue=""
-                  name="username"
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="用户名或者手机号码"
-                  autoComplete="username"
-                />
-                <Controller
-                  as={TextField}
-                  control={control}
-                  defaultValue=""
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="密码"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                />
+                {loginType === 'password' ? (
+                  <>
+                    <Controller
+                      as={TextField}
+                      control={control}
+                      defaultValue=""
+                      name="username"
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="用户名或者手机号码"
+                      autoComplete="username"
+                      rules={{
+                        required: { value: true, message: '请输入用户名或者手机号码' },
+                      }}
+                    />
+                    <Controller
+                      as={TextField}
+                      control={control}
+                      defaultValue=""
+                      variant="outlined"
+                      margin="normal"
+                      rules={{
+                        required: { value: true, message: '请输入密码' },
+                      }}
+                      required
+                      fullWidth
+                      name="password"
+                      label="密码"
+                      type="password"
+                      id="password"
+                      autoComplete="current-password"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Controller
+                      as={TextField}
+                      control={control}
+                      defaultValue=""
+                      name="phoneNumber"
+                      variant="outlined"
+                      margin="normal"
+                      rules={{
+                        required: { value: true, message: '请输入手机号码' },
+                        pattern: { value: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码' },
+                      }}
+                      inputProps={{ maxLength: 11 }}
+                      required
+                      fullWidth
+                      label="手机号码"
+                      autoComplete="tel"
+                    />
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item xs>
+                        <Controller
+                          as={TextField}
+                          control={control}
+                          defaultValue=""
+                          name="code"
+                          variant="outlined"
+                          margin="normal"
+                          rules={{
+                            required: { value: true, message: '请输入验证码' },
+                            maxLength: { value: 6, message: '请输入六位验证码' },
+                            minLength: { value: 6, message: '请输入六位验证码' },
+                          }}
+                          required
+                          fullWidth
+                          label="验证码"
+                          autoComplete="off"
+                        />
+                      </Grid>
+                      <Grid item style={{ marginTop: 4 }}>
+                        <Button
+                          disabled={!/^1[3456789]\d{9}$/.test(getValues()['phoneNumber']) || timer}
+                          color="primary"
+                          variant="contained"
+                          size="large"
+                          onClick={sendCode}
+                        >
+                          {timer ? `重新发送(${count})` : '发送验证码'}
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </>
+                )}
+
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
                   color="primary"
                   className={classes.submit}
+                  disabled={!submitEnabled}
                 >
                   登录
                 </Button>
