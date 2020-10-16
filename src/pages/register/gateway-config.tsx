@@ -61,12 +61,8 @@ export default ({ menu }) => {
         }
         actions={[
           rowData => ({
-            disabled: !pmUpdate || rowData.name.startsWith('wxeap-admin'),
-            icon: () => (
-              <Edit
-                color={!pmUpdate || rowData.name.startsWith('wxeap-admin') ? 'disabled' : 'primary'}
-              />
-            ),
+            disabled: !pmUpdate,
+            icon: () => <Edit color={!pmUpdate ? 'disabled' : 'primary'} />,
             tooltip: '编辑',
             onClick: (event, rowData) => {
               setCurrent(rowData);

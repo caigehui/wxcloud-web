@@ -14,7 +14,7 @@ import React, { createRef, useEffect } from 'react';
 import ChangePassword from './components/ChangePassword';
 import { Helmet } from 'react-helmet';
 import { useModel } from 'umi';
-import Parse from 'parse';
+import Parse from '@wxsoft/parse';
 import request, { serverURL } from '@wxsoft/wxboot/helpers/request';
 import requestWxApi from '@/utils/requestWxApi';
 import { Controller, useForm } from 'react-hook-form';

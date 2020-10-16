@@ -95,7 +95,7 @@ export default function SignInSide() {
     { immediate: false },
   );
   const {
-    initialState: { fingerprint },
+    initialState,
   } = useModel('@@initialState');
 
   const [loginType, setLoginType] = useLocalStorageState('loginType', 'password');
@@ -116,7 +116,7 @@ export default function SignInSide() {
   );
 
   const submit = handleSubmit(data => {
-    run(logIn, { ...data, browserId: fingerprint }, loginType === 'sms');
+    run(logIn, { ...data, browserId: initialState?.fingerprint }, loginType === 'sms');
   });
 
   const sendCode = async () => {

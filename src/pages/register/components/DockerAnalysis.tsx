@@ -37,7 +37,7 @@ function DockerAnalysis({ period }: any) {
       <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>
         <WxChart
           title="Docker CPU使用"
-          option={getContainerOptions(containers, 'cpu', value => value.toFixed(2), '%')}
+          option={getContainerOptions(containers, 'cpu', value => value?.toFixed(2), '%')}
         />
       </Grid>
       <Grid item xs={12} style={{ overflow: 'hidden' }} component={Box} height={400}>

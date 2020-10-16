@@ -6,9 +6,7 @@ import React from 'react';
 import { useModel } from 'umi';
 
 export default () => {
-  const {
-    initialState: { fingerprint },
-  } = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
 
   const { data: isSafe, refresh } = useRequest(() =>
     requestWxApi((token: string) =>
@@ -16,7 +14,7 @@ export default () => {
         {
           url: '/WxUser/browserSafe',
           params: {
-            browserId: fingerprint,
+            browserId: initialState?.fingerprint,
           },
         },
         token,
@@ -32,7 +30,7 @@ export default () => {
             url: '/WxUser/setBrowserSafe',
             method: 'POST',
             data: {
-              browserId: fingerprint,
+              browserId: initialState?.fingerprint,
               safe: checked,
             },
           },
