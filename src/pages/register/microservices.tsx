@@ -21,7 +21,7 @@ import ContainerLog from './components/ContainerLog';
 import MicroEdit from './components/MicroEdit';
 import { buildRequest } from './utils';
 
-const readonlyServices = ['konga', 'kong', 'mqtt', 'mongodb', 'postgres'];
+const readonlyServices = ['konga', 'kong', 'mqtt', 'mongodb', 'postgres', 'wxeap-admin'];
 
 export default ({ menu }) => {
   const tableRef = useRef(null);
@@ -95,7 +95,7 @@ export default ({ menu }) => {
             title: '端口号',
             render: rowData =>
               rowData.Ports.filter(i => i.PublicPort)
-                .map(i => i.PrivatePort + ':' + i.PublicPort + '/' + i.Type)
+                .map(i => i.PublicPort + ':' + i.PrivatePort + '/' + i.Type)
                 .join(', '),
           },
           {

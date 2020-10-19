@@ -49,7 +49,7 @@ export default ({ current, onClose, refresh }: any) => {
   useEffect(() => {
     reset(
       Object.assign({}, current, {
-        host: current?.host || DOCKER_HOST,
+        host: current?.host || '',
         path: current?.path || '/',
         routePath: current?.route?.paths?.[0],
         retries: current?.retries || 5,

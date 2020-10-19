@@ -84,7 +84,7 @@ export default ({ menu }: any) => {
     defaultValues: {
       enableSms: true,
       smsExpiredTime: 10,
-      enableReCaptcha: true,
+      enableReCaptcha: false,
       enableBrowserSms: true,
       whiteBrowserSessionExpiredTime: 7,
       blackBrowserSessionExpiredTime: 1,
@@ -142,6 +142,7 @@ export default ({ menu }: any) => {
           control={control}
           name="enableReCaptcha"
           title="是否启用reCAPTCHA"
+          disabled
           subtitle={
             <>
               使用

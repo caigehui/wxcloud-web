@@ -11,5 +11,3 @@ export const SECONDARY_COLOR = '#9254de';
 export const WX_USER_KEY = 'wx_user';
 export const WX_MENU_KEY = 'wx_menu';
 export const WX_SESSION_TOKEN_KEY = 'wx_session_token';
-
-export const BASE_URL = 'http://host.docker.internal:1335/wxapi';

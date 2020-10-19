@@ -1,5 +1,5 @@
 import WxDialog from '@/components/WxDialog';
-import { Box, Button, DialogContentText, Grid, TextField, useTheme } from '@material-ui/core';
+import { Box, Button, Chip, DialogContentText, Grid, TextField, useTheme } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,6 +7,8 @@ import { randomBytes } from 'crypto';
 import validator from 'validator';
 import requestWxApi from '@/utils/requestWxApi';
 import request from '@wxsoft/wxboot/helpers/request';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { useModel } from 'umi';
 
 interface FormData {
   code: string;
@@ -16,15 +18,24 @@ interface FormData {
   masterKey: string;
   restApiKey: string;
   javascriptKey: string;
+  managedBy: Object[];
 }
 
-export default ({ current, onClose, refresh }: any) => {
+export default ({ current, onClose, refresh, usernames }: any) => {
   const theme = useTheme();
   const isNew = current?.isNew;
+  const { user } = useModel('useAuthModel');
 
   const { handleSubmit, errors, control, reset } = useForm<FormData>({
     mode: 'onChange',
   });
+
+  const defaultManagedBy = {
+    nickname: user['nickname'],
+    objectId: user.id,
+    __type: 'Pointer',
+    className: '_User',
+  };
 
   useEffect(() => {
     reset(
@@ -33,6 +44,7 @@ export default ({ current, onClose, refresh }: any) => {
         masterKey: current?.masterKey || randomBytes(12).toString('hex'),
         restApiKey: current?.restApiKey || randomBytes(12).toString('hex'),
         javascriptKey: current?.javascriptKey || randomBytes(12).toString('hex'),
+        managedBy: current?.managedBy || [defaultManagedBy],
       }),
     );
   }, [current]);
@@ -139,7 +151,6 @@ export default ({ current, onClose, refresh }: any) => {
         </Grid>
         <Grid item xs={6}>
           <Controller
-            disabled
             name="secret"
             margin="dense"
             as={TextField}
@@ -152,7 +163,6 @@ export default ({ current, onClose, refresh }: any) => {
         </Grid>
         <Grid item xs={6}>
           <Controller
-            disabled
             name="masterKey"
             margin="dense"
             as={TextField}
@@ -161,6 +171,44 @@ export default ({ current, onClose, refresh }: any) => {
             fullWidth
             label="Master Key"
             variant="outlined"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            control={control}
+            name="managedBy"
+            rules={{
+              required: { value: true, message: '请输入端口映射' },
+            }}
+            render={({ onChange, value }) => {
+              console.log(value);
+              return (
+                <Autocomplete
+                  multiple
+                  options={usernames}
+                  value={value}
+                  getOptionLabel={option => option.nickname}
+                  onChange={(e, newValue) => {
+                    onChange([defaultManagedBy, ...newValue.filter(i => i.objectId !== user.id)]);
+                  }}
+                  renderTags={(tagValue, getTagProps) =>
+                    tagValue.map((option, index) => (
+                      <Chip
+                        key={index}
+                        label={option.nickname}
+                        color="primary"
+                        {...getTagProps({ index })}
+                        disabled={option.objectId === user.id}
+                      />
+                    ))
+                  }
+                  filterSelectedOptions
+                  renderInput={params => (
+                    <TextField {...params} variant="outlined" margin="dense" label="管理人员" />
+                  )}
+                />
+              );
+            }}
           />
         </Grid>
       </Grid>

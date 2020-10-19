@@ -18,7 +18,6 @@ export default ({ menu }: any) => {
   const tableRef = createRef<any>();
   const [current, setCurrent] = useState(null);
   const [nameSearch, setNameSearch] = useState('');
-  //const [token, setToken] = useState(null);
   const history = useHistory();
 
   // 测试连通性
@@ -36,6 +35,17 @@ export default ({ menu }: any) => {
       manual: true,
       throwOnError: true,
     },
+  );
+
+  const { data: usernames } = useRequest(() =>
+    requestWxApi((token: string) =>
+      request(
+        {
+          url: '/WxRegister/getUserNames',
+        },
+        token,
+      ),
+    ),
   );
 
   const refresh = () => {
@@ -73,7 +83,7 @@ export default ({ menu }: any) => {
             from && ['createdAt', 'greaterThanOrEqualTo', from],
             until && ['createdAt', 'lessThanOrEqualTo', until],
           ]),
-          includeKeys: 'createdBy.username,managedBy',
+          includeKeys: 'createdBy,managedBy',
         },
       },
       token,
@@ -170,7 +180,7 @@ export default ({ menu }: any) => {
           },
           {
             title: '创建者',
-            field: 'createdBy.username',
+            field: 'createdBy.nickname',
           },
           {
             title: '创建时间',
@@ -179,7 +189,12 @@ export default ({ menu }: any) => {
           },
         ]}
       />
-      <RegisterEdit current={current} refresh={refresh} onClose={() => setCurrent(null)} />
+      <RegisterEdit
+        current={current}
+        usernames={usernames || []}
+        refresh={refresh}
+        onClose={() => setCurrent(null)}
+      />
     </WxPage>
   );
 };
