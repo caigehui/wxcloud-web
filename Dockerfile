@@ -1,9 +1,15 @@
-# FROM node:alpine as dist
-# LABEL stage=dist
-# WORKDIR /app
-# COPY . /
-# RUN yarn --registry=https://registry.npm.taobao.org
-# RUN yarn build
+FROM node:alpine as dist
+LABEL stage=dist
+WORKDIR /app
+COPY src ./src
+COPY package.json ./
+COPY tsconfig.json ./
+COPY .env ./
+COPY .env.production ./
+COPY .umirc.ts ./
+COPY public ./public
+RUN yarn --registry=https://registry.npm.taobao.org
+RUN yarn build
 
 FROM node:alpine as builder
 LABEL stage=builder
@@ -15,7 +21,7 @@ RUN yarn --production --registry=https://registry.npm.taobao.org
 FROM keymetrics/pm2:12-alpine
 LABEL maintainer="1136687@qq.com"
 WORKDIR /app
-COPY dist ./dist
+COPY --from=dist /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY package.json ./
 COPY tsconfig.json ./

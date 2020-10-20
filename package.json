@@ -41,6 +41,7 @@
     "@wxsoft/parse": "2.15.3",
     "@wxsoft/parse-dashboard": "^2.1.0",
     "@wxsoft/parse-server": "4.3.7",
+    "react-helmet": "^6.1.0",
     "ahooks": "^2.6.0",
     "axios": "^0.20.0",
     "compression-webpack-plugin": "^6.0.0",

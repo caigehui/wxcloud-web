@@ -24,6 +24,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 interface FormData {
   username: string;
+  password: string;
   email: string;
   nickname: string;
   phoneNumber: string;
@@ -33,16 +34,18 @@ interface FormData {
 export default ({ current, onClose, refresh, permissions, menu }: any) => {
   const theme = useTheme();
   const [perm, setPerm] = useState({});
-  const { handleSubmit, errors, reset, control } = useForm<FormData>({
+  const { handleSubmit, watch, errors, reset, control } = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
       username: '',
       email: '',
       nickname: '',
       phoneNumber: '',
-      sendSms: false,
+      sendSms: true,
     },
   });
+
+  const sendSms = watch('sendSms');
 
   const { run, loading } = useRequest(
     data =>
@@ -53,6 +56,7 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
             method: 'POST',
             data: {
               user: {
+                ...current,
                 className: '_User',
                 username: data.username,
                 email: data.email,
@@ -82,6 +86,7 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
       email: current?.email || null,
       nickname: current?.nickname || '',
       phoneNumber: current?.phoneNumber || '',
+      sendSms: true,
     });
     setPerm(current?.permissions || {});
   }, [current]);
@@ -173,8 +178,9 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
             control={control}
             helperText={errors?.email?.message}
             error={!!errors.email}
+            required
             rules={{
-              required: { value: false, message: '请输入邮箱' },
+              required: { value: true, message: '请输入邮箱' },
               validate: data =>
                 validator.isEmail(data || '') || !data ? true : '请输入正确的邮箱',
             }}
@@ -184,12 +190,68 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
           />
         </Grid>
       </Grid>
+      {current?.isNew && (
+        <>
+          <Box my={2}>
+            <Divider />
+          </Box>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography color="textSecondary" variant="body1">
+              初始密码
+            </Typography>
+            <Controller
+              control={control}
+              name="sendSms"
+              render={({ onChange, value }) => {
+                return (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={value}
+                        onChange={e => onChange(e.target.checked)}
+                        color="primary"
+                      />
+                    }
+                    label="使用随机密码并发送手机短信"
+                  />
+                );
+              }}
+            />
+          </Box>
+          <Grid container spacing={2}>
+            <Grid item>
+              {!sendSms && (
+                <Controller
+                  name="password"
+                  margin="dense"
+                  as={TextField}
+                  control={control}
+                  helperText={errors?.password?.message}
+                  error={!!errors.password}
+                  rules={{
+                    required: { value: true, message: '请输入密码' },
+                    pattern: {
+                      value: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
+                      message: '密码强度不够',
+                    },
+                  }}
+                  fullWidth
+                  required
+                  label="密码"
+                  variant="outlined"
+                />
+              )}
+            </Grid>
+          </Grid>
+        </>
+      )}
+
       <Box my={2}>
         <Divider />
       </Box>
       <DialogContentText>
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          权限
+          用户权限
           <Box ml={3}>
             <Tooltip title="清除所有权限">
               <IconButton onClick={() => setPerm({})}>
@@ -286,35 +348,6 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
           </Box>
         );
       })}
-      {current?.isNew && (
-        <>
-          <Box my={2}>
-            <Divider />
-          </Box>
-          <DialogContentText>
-            <Controller
-              control={control}
-              name="sendSms"
-              render={({ onChange, value }) => {
-                return (
-                  <Tooltip title="新增后会给该新用户发送一个含有账号和随机生成的密码的手机短信">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={value}
-                          onChange={e => onChange(e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="是否发送短信"
-                    />
-                  </Tooltip>
-                );
-              }}
-            />
-          </DialogContentText>
-        </>
-      )}
     </WxDialog>
   );
 };

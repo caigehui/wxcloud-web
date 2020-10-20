@@ -108,7 +108,7 @@ export default ({ current, onClose, refresh, networkOptions, localImages }: any)
             as={TextField}
             margin="dense"
             control={control}
-            helperText={errors?.name?.message}
+            helperText={errors?.name?.message || '备注：Docker会对容器名进行DNS解析，所以容器名也是该容器的Host，如无特殊需要，请与镜像名保持一致'}
             error={!!errors.name}
             rules={{
               required: { value: true, message: '请输入容器名' },

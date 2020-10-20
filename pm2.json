@@ -3,7 +3,7 @@
     {
       "name": "wxeap",
       "script": "node_modules/@wxsoft/wxboot/bin/wxboot.js",
-      "instances": 2,
+      "instances": 1,
       "exec_mode": "cluster",
       "args": "web",
       "env": {

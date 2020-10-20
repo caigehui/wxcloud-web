@@ -142,11 +142,11 @@ export default ({ menu }) => {
             option={getGaugeOption(
               theme,
               '内存使用',
-              `${(data?.memory?.used / (1024 * 1024 * 1024)).toFixed(1)}/${(
+              `${(data?.memory?.active / (1024 * 1024 * 1024)).toFixed(1)}/${(
                 data?.memory?.total /
                 (1024 * 1024 * 1024)
               ).toFixed(1)}GB`,
-              ((data?.memory?.used * 100) / data?.memory?.total).toFixed(2),
+              ((data?.memory?.active * 100) / data?.memory?.total).toFixed(2),
             )}
           />
         </Grid>

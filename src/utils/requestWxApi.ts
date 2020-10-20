@@ -21,7 +21,10 @@ async function requestWxApi(wxRequest: WxRequest, whole?: boolean) {
     if (ret.code === 0) {
       return whole ? ret : ret.data;
     } else {
-      WxSnackBar.error(ret.message);
+      ret.message &&
+        WxSnackBar.error(
+          typeof ret.message === 'object' ? JSON.stringify(ret.message) : ret.message,
+        );
       if (ret.code === 1001) {
         history.push('/logout');
       }

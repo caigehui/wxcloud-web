@@ -58,7 +58,10 @@ export default ({ children, menu }) => {
   if (!activePathname || !state?.['url']) return <Redirect to="/register" />;
 
   return (
-    <SocketIOProvider url={state['url']} opts={{ path: '/wxeap-admin-socket' }}>
+    <SocketIOProvider
+      url={state['url']}
+      opts={{ path: '/wxeap-admin-socket', transports: ['websocket'] }}
+    >
       <Box display="flex" height="100%">
         <Box
           component={props => <Paper {...props} elevation={0} />}
