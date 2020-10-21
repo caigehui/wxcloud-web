@@ -77,7 +77,7 @@ function WxTableWithApi(
       additionalFilter={
         <>
           {additionalFilter}{' '}
-          <Box ml={2}>
+          <Box ml={additionalFilter?2:0}>
             <Button
               onKeyPress={e => e.key === 'Enter' && tableRef?.current?.refresh()}
               onClick={() => tableRef?.current?.refresh()}

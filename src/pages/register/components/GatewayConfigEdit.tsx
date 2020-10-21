@@ -14,7 +14,6 @@ import {
 import { Edit } from '@material-ui/icons';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { DOCKER_HOST } from '@wxsoft/wxboot/constants/index';
 import { buildRequest } from '../utils';
 import { useLocation } from 'umi';
 

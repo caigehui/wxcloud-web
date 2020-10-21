@@ -38,7 +38,8 @@ export default ({ menu }) => {
   );
 
   const { data: localImages } = useRequest(
-    () => buildRequest(location.state, { url: '/WxImage/list' }),
+    () =>
+      buildRequest(location.state, { url: '/WxImage/list', params: { page: 1, pageSize: 999 } }),
     { formatResult: data => data.data?.list?.map(i => i.RepoTags[0]) || [], initialData: [] },
   );
   const refresh = () => {
@@ -48,7 +49,7 @@ export default ({ menu }) => {
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'microservices');
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'microservices');
   useAuth(getPermission([1], 'microservices'));
-  
+
   return (
     <WxPage
       menu={menu}
@@ -61,14 +62,12 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={() => () =>
+        onWxApi={({ page, pageSize }) => () =>
           buildRequest(
             location.state,
             {
               url: '/WxMicro/list',
-              params: {
-                name,
-              },
+              params: { page, pageSize, name },
             },
             true,
           )}

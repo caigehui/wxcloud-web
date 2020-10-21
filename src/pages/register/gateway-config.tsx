@@ -37,12 +37,14 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={() => () =>
+        onWxApi={({ page, pageSize }) => () =>
           buildRequest(
             location.state,
             {
               url: '/WxGateway/listConfig',
               params: {
+                page,
+                pageSize,
                 name,
               },
             },
@@ -60,14 +62,14 @@ export default ({ menu }) => {
           </>
         }
         actions={[
-          rowData => ({
+          {
             disabled: !pmUpdate,
             icon: () => <Edit color={!pmUpdate ? 'disabled' : 'primary'} />,
             tooltip: '编辑',
             onClick: (event, rowData) => {
               setCurrent(rowData);
             },
-          }),
+          },
         ]}
         columns={[
           { title: '容器名', field: 'name', type: 'string' },

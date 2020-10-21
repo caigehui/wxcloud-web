@@ -26,6 +26,8 @@ export default ({ menu }: any) => {
       buildRequest(
         data,
         {
+          timeout: 2000,
+          timeoutErrorMessage: '连接超时',
           url: '/WxDevelop/about',
         },
         true,
@@ -92,7 +94,7 @@ export default ({ menu }: any) => {
   return (
     <WxPage
       menu={menu}
-      title="服务注册"
+      title="服务器注册"
       buttonIcon={<AddCircleOutlineOutlined />}
       onButtonClick={() => {
         setCurrent({ isNew: true });
@@ -118,10 +120,10 @@ export default ({ menu }: any) => {
                 ),
               }}
               style={{ width: 220 }}
-              placeholder="搜索单位名称"
+              placeholder="搜索服务器名称"
               variant="outlined"
               margin="dense"
-              label="单位名称"
+              label="服务器名称"
               value={nameSearch}
               onChange={e => setNameSearch(e.target.value)}
             />
@@ -168,8 +170,8 @@ export default ({ menu }: any) => {
         })}
         options={{ sorting: false }}
         columns={[
-          { title: '单位代号', field: 'code' },
-          { title: '单位名称', field: 'name' },
+          { title: '服务器代号', field: 'code' },
+          { title: '服务器名称', field: 'name' },
           {
             title: '访问地址',
             field: 'url',

@@ -142,7 +142,6 @@ export default ({ menu }: any) => {
           control={control}
           name="enableReCaptcha"
           title="是否启用reCAPTCHA"
-          disabled
           subtitle={
             <>
               使用

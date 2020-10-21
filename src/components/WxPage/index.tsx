@@ -1,8 +1,10 @@
 import React, { useMemo, MouseEvent } from 'react';
-import { Typography, Box, Grid, Breadcrumbs, Button } from '@material-ui/core';
+import { Typography, Box, Grid, Breadcrumbs, Button, IconButton } from '@material-ui/core';
 import { useLocation } from 'react-router';
 import { getMenuItemNameByKey } from '@/utils';
 import NavigateNext from '@material-ui/icons/NavigateNext';
+import { ArrowBack } from '@material-ui/icons';
+import { history } from 'umi';
 
 interface WxPageProps {
   menu?: Array<any>;
@@ -13,6 +15,7 @@ interface WxPageProps {
   onButtonClick?: (event: MouseEvent) => void;
   buttonDiabled?: boolean;
   renderRight?: React.ReactNode;
+  showBackIcon?: boolean;
 }
 
 function WxPage({
@@ -24,6 +27,7 @@ function WxPage({
   menu,
   onButtonClick,
   buttonDiabled,
+  showBackIcon,
 }: WxPageProps) {
   const location = useLocation();
   const paths = useMemo(() => {
@@ -54,12 +58,13 @@ function WxPage({
             <Typography color="inherit">总览</Typography>
             {menu ? (
               paths.map((key, index) => {
+                const menuItemName = getMenuItemNameByKey(key, menu);
                 return (
                   <Typography
                     key={index}
                     color={index === paths.length - 1 ? 'textPrimary' : 'inherit'}
                   >
-                    {getMenuItemNameByKey(key, menu)}
+                    {index === paths.length - 1 ? title || menuItemName : menuItemName}
                   </Typography>
                 );
               })
@@ -68,8 +73,15 @@ function WxPage({
             )}
           </Breadcrumbs>
           <Box mt={1}>
-            <Typography variant="h3" color="textPrimary">
-              {title || getMenuItemNameByKey(paths[paths.length - 1], menu)}
+            <Typography variant="h2" color="textPrimary">
+              <Box display="flex" alignItems="center">
+                {showBackIcon && (
+                  <IconButton color="inherit" onClick={history.goBack} size="small" style={{ marginRight: 16 }}>
+                    <ArrowBack />
+                  </IconButton>
+                )}
+                {title || getMenuItemNameByKey(paths[paths.length - 1], menu)}
+              </Box>
             </Typography>
           </Box>
         </Grid>

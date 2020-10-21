@@ -39,18 +39,20 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={() => () =>
+        onWxApi={({ page, pageSize }) => () =>
           buildRequest(
             location.state,
             {
               url: '/WxImage/list',
               params: {
+                page,
+                pageSize,
                 name,
               },
             },
             true,
           )}
-        options={{ sorting: false, search: false }}
+        options={{ sorting: false }}
         actions={[
           {
             disabled: !PaymentRequestUpdateEvent,

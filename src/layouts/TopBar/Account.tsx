@@ -8,9 +8,12 @@ import {
   MenuItem,
   Typography,
   makeStyles,
+  IconButton,
+  useTheme,
 } from '@material-ui/core';
 import { useHistory, useModel } from 'umi';
 import { THEME } from '@/constants';
+import { Brightness4, Brightness7, HelpOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   avatar: {
@@ -29,8 +32,9 @@ function Account() {
   const [isOpen, setOpen] = useState(false);
   const history = useHistory();
   const { user, logOut } = useModel('useAuthModel');
-  const { theme, setTheme } = useModel('useSettingModel');
-  
+  const theme = useTheme();
+  const { setTheme } = useModel('useSettingModel');
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -40,7 +44,22 @@ function Account() {
   };
 
   return (
-    <>
+    <Box display="flex" alignItems="center">
+      <Box color={theme.palette.text.primary}>
+        <IconButton color="inherit">
+          <HelpOutlined />
+        </IconButton>
+      </Box>
+      <Box mr={1} color={theme.palette.text.primary}>
+        <IconButton
+          onClick={() => {
+            setTheme(theme['name'] === THEME.LIGHT ? THEME.ONE_DARK : THEME.LIGHT);
+          }}
+          color="inherit"
+        >
+          {theme['name'] === THEME.LIGHT ? <Brightness4 /> : <Brightness7 />}
+        </IconButton>
+      </Box>
       <Box
         display="flex"
         alignItems="center"
@@ -77,14 +96,6 @@ function Account() {
       >
         <MenuItem
           onClick={() => {
-            setTheme(theme === THEME.LIGHT ? THEME.ONE_DARK : THEME.LIGHT);
-            handleClose();
-          }}
-        >
-          切换主题
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
             history.push('/profile');
             handleClose();
           }}
@@ -93,7 +104,7 @@ function Account() {
         </MenuItem>
         <MenuItem onClick={logOut}>退出登录</MenuItem>
       </Menu>
-    </>
+    </Box>
   );
 }
 

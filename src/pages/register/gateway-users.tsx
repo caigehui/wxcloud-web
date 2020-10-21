@@ -36,14 +36,12 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={() => () =>
+        onWxApi={({ page, pageSize }) => () =>
           buildRequest(
             location.state,
             {
               url: '/WxGateway/listUser',
-              params: {
-                name,
-              },
+              params: { page, pageSize, name },
             },
             true,
           )}
