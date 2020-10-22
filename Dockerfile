@@ -19,7 +19,8 @@ COPY .npmrc ./
 RUN yarn --production --registry=https://registry.npm.taobao.org
 
 FROM keymetrics/pm2:12-alpine
-LABEL maintainer="1136687@qq.com"
+LABEL maintainer="coffeecool<1136687@qq.com>"
+LABEL wxsoft="wxboot-web"
 WORKDIR /app
 COPY --from=dist /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules

@@ -61,7 +61,7 @@ export default ({ menu, location }) => {
         })}
         columns={[
           { title: '版本特征码', render: data => data.digest.substring(0, 15) },
-          { title: 'Tags', render: data => data.tags.map(i => i.name).join(', ') },
+          { title: 'Tags', render: data => data.tags?.map(i => i.name).join(', ') },
           {
             title: '大小',
             render: data => `${(data.size / (1024 * 1024)).toFixed(2)}MB`,

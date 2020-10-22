@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "wxeap",
+      "name": "wxsoft",
       "script": "node_modules/@wxsoft/wxboot/bin/wxboot.js",
       "instances": 1,
       "exec_mode": "cluster",

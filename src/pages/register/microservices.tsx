@@ -19,6 +19,7 @@ import React, { useRef, useState } from 'react';
 import { useLocation, useModel } from 'umi';
 import ContainerLog from './components/ContainerLog';
 import MicroEdit from './components/MicroEdit';
+import TuneInstance from './components/TuneInstance';
 import { buildRequest } from './utils';
 
 const readonlyServices = ['konga', 'kong', 'mqtt', 'mongodb', 'postgres', 'wxeap-admin'];
@@ -42,6 +43,11 @@ export default ({ menu }) => {
       buildRequest(location.state, { url: '/WxImage/list', params: { page: 1, pageSize: 999 } }),
     { formatResult: data => data.data?.list?.map(i => i.RepoTags[0]) || [], initialData: [] },
   );
+  const { data: cpu } = useRequest(
+    () => buildRequest(location.state, { url: '/WxSystem/queryCpu' }),
+    { formatResult: data => data.data, initialData: {} },
+  );
+  console.log(cpu);
   const refresh = () => {
     tableRef.current?.refresh();
   };
@@ -87,6 +93,10 @@ export default ({ menu }) => {
           { title: '镜像名', render: rowData => rowData.Image },
           { title: 'ID', field: 'Id', render: rowData => rowData.Id.substr(0, 12) },
           {
+            title: 'PM2实例数',
+            render: rowData => <TuneInstance rowData={rowData} state={location.state} cpu={cpu} />,
+          },
+          {
             title: '网络',
             render: rowData => Object.keys(rowData.NetworkSettings.Networks).join(', '),
           },
@@ -94,7 +104,7 @@ export default ({ menu }) => {
             title: '端口号',
             render: rowData =>
               rowData.Ports.filter(i => i.PublicPort)
-                .map(i => i.PublicPort + ':' + i.PrivatePort + '/' + i.Type)
+                .map(i => i.PrivatePort + ':' + i.PublicPort + '/' + i.Type)
                 .join(', '),
           },
           {

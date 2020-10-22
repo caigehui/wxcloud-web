@@ -1,10 +1,6 @@
 import { THEME } from '@/constants';
 import Fingerprint2 from '@fingerprintjs/fingerprintjs';
 
-export function getServerUrl() {
-  return `${location.origin}/${process.env.APP_NAME}`;
-}
-
 /**
  * 将search字符串解析成对象
  * @param {string} str

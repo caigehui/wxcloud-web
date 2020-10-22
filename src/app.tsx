@@ -1,17 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from 'react';
-import Parse from '@wxsoft/parse';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { useModel } from 'umi';
 import { hideLoader } from './utils/globalLoader';
-import { waitFor, getServerUrl, getFingerprint, addReCaptcha } from '@/utils';
+import { waitFor, getFingerprint, addReCaptcha } from '@/utils';
 import { SnackbarUtilsConfigurator, WxSnackBarProvider } from '@/components/WxSnackBar';
 import { createTheme } from '@/theme';
 import useGlobalStyles from '@/theme/global';
 import getClientConfig from './utils/getClientConfig';
-
-Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY);
-Parse.serverURL = getServerUrl();
 
 type AppProps = {
   children: React.ReactNode;
