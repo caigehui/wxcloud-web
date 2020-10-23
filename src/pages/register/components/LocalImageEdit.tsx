@@ -19,7 +19,8 @@ export default ({ current, onClose, refresh }: any) => {
   const [pulling, setPulling] = useState(false);
   const consoleRef = useRef<any>();
 
-  const { socket } = useSocket('message', data => {
+  const { socket } = useSocket('pullImage', data => {
+    console.log(data);
     if (data.status === 'failed') {
       setPulling(false);
       consoleRef?.current?.writeln(JSON.stringify(data.error));
@@ -28,7 +29,6 @@ export default ({ current, onClose, refresh }: any) => {
         data.status + (data.id ? `(${data.id}): ` : '') + (data.progress || ''),
       );
     }
-
     if (data.status === 'finished') {
       setTimeout(() => {
         onClose();
@@ -44,20 +44,27 @@ export default ({ current, onClose, refresh }: any) => {
 
   const submit = handleSubmit(async data => {
     setPulling(true);
-    await buildRequest(location.state, {
+    const { data: key } = await buildRequest(location.state, {
       method: 'POST',
       url: '/WxImage/create',
       data: data,
     });
-    socket.send({ type: 'pullImage' });
-    consoleRef?.current?.write('start pulling image...');
+    socket.emit('pullImage', key);
+    consoleRef?.current?.writeln('start pulling image...');
   });
+
+  const close = () => {
+    onClose();
+    socket.emit('finishPullImage');
+  };
 
   useEffect(() => {
     if (current && !current.isNew) {
       reset({
         repoTag: current.RepoTags[0],
-        from: current.RepoTags[0].indexOf('mirrors.wxsoft.cn') > -1 ? '网欣云' : 'Docker Hub',
+        from: current.RepoTags.some(i => i.indexOf('mirrors.wxsoft.cn') > -1)
+          ? '网欣云'
+          : 'Docker Hub',
       });
       setTimeout(() => {
         submit();
@@ -73,7 +80,7 @@ export default ({ current, onClose, refresh }: any) => {
     <WxDialog
       width="sm"
       open={!!current}
-      onClose={() => !pulling && onClose()}
+      onClose={() => !pulling && close()}
       titleIcon={<Edit />}
       title={`拉取镜像`}
       actions={

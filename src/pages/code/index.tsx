@@ -3,7 +3,13 @@ import WxSearchField from '@/components/WxSearchField';
 import WxSnackBar from '@/components/WxSnackBar';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import { GITLAB_URL } from '@/constants';
-import { Avatar, Box, IconButton, Typography, useTheme } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   AssistantPhotoSharp,
@@ -14,19 +20,20 @@ import {
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
 import request from '@wxsoft/wxboot/helpers/request';
 import React, { createRef, useState } from 'react';
-import { useModel, history } from 'umi';
+import { useModel } from 'umi';
 import ProjectEdit from './components/ProjectEdit';
 
 export default ({ menu }) => {
   const { user, getPermission } = useModel('useAuthModel');
   const [current, setCurrent] = useState(null);
+
   const [name, setName] = useState('');
   const tableRef = createRef<any>();
   const theme = useTheme();
   const refresh = () => {
     tableRef.current?.refresh();
   };
-  const pmGitlab = getPermission([REGULAR_PERMISSIONS.CREATE[11]], 'code');
+  const pmGitlab = getPermission([REGULAR_PERMISSIONS.CREATE[12]], 'code');
 
   const onWxApi = ({ page, pageSize }) => (token: string) =>
     request(
@@ -42,7 +49,7 @@ export default ({ menu }) => {
     );
 
   const enter = (e, rowData) => {
-    history.push('/code/' + rowData.name);
+    window.open('/code/' + rowData.name);
   };
 
   return (
@@ -69,6 +76,7 @@ export default ({ menu }) => {
               value={name}
               onChange={setName}
             />
+            
           </>
         }
         actions={[

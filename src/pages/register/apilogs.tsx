@@ -6,6 +6,7 @@ import { buildRequest } from './utils';
 import { useLocation, useModel } from 'umi';
 import WxSearchField from '@/components/WxSearchField';
 import useAuth from '@/hooks/useAuth';
+import { Chip, useTheme } from '@material-ui/core';
 
 function JobLogs({ menu }: any) {
   const tableRef = useRef(null);
@@ -13,6 +14,7 @@ function JobLogs({ menu }: any) {
   const [appName, setAppName] = useState('');
   const [url, setUrl] = useState('');
   const location = useLocation();
+  const theme = useTheme();
 
   const { getPermission } = useModel('useAuthModel');
   useAuth(getPermission([1], 'apilogs'));
@@ -52,7 +54,28 @@ function JobLogs({ menu }: any) {
         columns={[
           { title: '服务名', field: 'appName', type: 'string' },
           { title: 'Url', field: 'url', type: 'string' },
-          { title: '日志等级', field: 'level', type: 'string' },
+          {
+            title: '日志等级',
+            field: 'level',
+            render: data => (
+              <Chip
+                label={data.level}
+                style={{
+                  background:
+                    data.level === 'error'
+                      ? theme.palette.error.main
+                      : data.level === 'warn'
+                      ? theme.palette.warning.main
+                      : theme.palette.primary.main,
+                }}
+              />
+            ),
+          },
+          { title: '用户ID', field: 'userId' },
+          {
+            title: '用户名',
+            render: data => (data.username ? data.username + `(${data.nickname})` : ''),
+          },
           {
             title: '用时(ms)',
             field: 'duration',
