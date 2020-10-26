@@ -72,7 +72,7 @@ export default () => {
       <Paper style={{ marginTop: theme.spacing(2) }}>
         <Box p={2}>
           <Typography color="textPrimary" variant="body1">
-            修改密码
+            修改密码 (Gitlab和Harbor的密码请自行修改)
           </Typography>
         </Box>
         <Divider />

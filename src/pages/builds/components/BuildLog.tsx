@@ -4,45 +4,43 @@ import { Edit } from '@material-ui/icons';
 import React, { useEffect, useRef } from 'react';
 import { useSocket } from 'use-socketio';
 import WxConsole from '@/components/WxConsole';
-import dayjs from 'dayjs';
 
-export default ({ containerLog, onClose }: any) => {
+export default ({ buildLog, onClose }: any) => {
   const consoleRef = useRef<any>();
 
   const { socket } = useSocket('message', data => {
-    if (data.type === 'err') {
+    if (data.type === 'failed') {
       consoleRef?.current?.writeln(JSON.stringify(data.error));
+    } else if (data.type === 'init') {
+      for (const msg of data.payload) {
+        msg && consoleRef?.current?.writeln(msg.trim());
+      }
     } else {
-      const content = data.payload;
-      const timestamp = content.substring(0, content.indexOf(' '));
-      consoleRef?.current?.writeln(
-        (dayjs(timestamp).isValid() ? dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss') : '') +
-          ' ' +
-          content.substring(content.indexOf(' ')),
-      );
+      const content = data.payload?.trim();
+      content && consoleRef?.current?.writeln(content);
     }
   });
 
   const close = () => {
     onClose();
-    socket.send({ type: 'stopReadLogs' });
+    socket.emit('stopReadBuildLogs');
   };
 
   useEffect(() => {
-    if (containerLog) {
-      socket.send({ type: 'readLogs', payload: containerLog.Id });
+    if (buildLog) {
+      socket.emit('readBuildLogs', buildLog.objectId);
     } else {
       consoleRef?.current?.clear();
     }
-  }, [containerLog]);
+  }, [buildLog]);
 
   return (
     <WxDialog
       width="md"
-      open={!!containerLog}
+      open={!!buildLog}
       onClose={close}
       titleIcon={<Edit />}
-      title={containerLog?.Name + '镜像日志'}
+      title={`构建日志`}
       actions={
         <>
           <Button onClick={close} color="primary">

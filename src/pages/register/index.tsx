@@ -10,7 +10,7 @@ import RegisterEdit from './components/RegisterEdit';
 import WxSnackBar from '@/components/WxSnackBar';
 import { useRequest } from 'ahooks';
 import { buildRequest } from './utils';
-import { Box, InputAdornment, TextField } from '@material-ui/core';
+import { Box, InputAdornment, Link, TextField } from '@material-ui/core';
 import useAuth from '@/hooks/useAuth';
 
 export default ({ menu }: any) => {
@@ -174,7 +174,11 @@ export default ({ menu }: any) => {
           { title: '服务器名称', field: 'name' },
           {
             title: '访问地址',
-            field: 'url',
+            render: data => (
+              <Link href={data.url} target="_blank" onClick={e => e.stopPropagation()}>
+                {data.url}
+              </Link>
+            ),
           },
           {
             title: '管理人员',

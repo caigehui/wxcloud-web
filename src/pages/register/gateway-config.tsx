@@ -55,7 +55,7 @@ export default ({ menu }) => {
           <>
             <WxSearchField
               style={{ marginLeft: 0 }}
-              label="容器名"
+              label="配置名"
               value={name}
               onChange={setName}
             />
@@ -72,7 +72,7 @@ export default ({ menu }) => {
           },
         ]}
         columns={[
-          { title: '容器名', field: 'name', type: 'string' },
+          { title: '配置名', field: 'name', type: 'string' },
           { title: 'host', field: 'host', type: 'string' },
           { title: '匹配路径', render: data => data.route?.paths?.join(',') },
           { title: '附加路径', field: 'path', type: 'string' },

@@ -44,7 +44,7 @@ export default ({ menu, location }) => {
               await requestWxApi((token: string) =>
                 request(
                   {
-                    url: '/WxImages/deleteRepo',
+                    url: '/WxImages/deleteArtifact',
                     method: 'POST',
                     data: {
                       name,

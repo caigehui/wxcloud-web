@@ -1,5 +1,14 @@
 import WxDialog from '@/components/WxDialog';
-import { Box, Button, Grid, TextField, Typography, useTheme } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  TextField,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -11,6 +20,7 @@ import WxSnackBar from '@/components/WxSnackBar';
 interface FormData {
   name: string;
   description: string;
+  enableCI: string;
 }
 
 export default ({ current, onClose, refresh }: any) => {
@@ -35,14 +45,14 @@ export default ({ current, onClose, refresh }: any) => {
   };
 
   const submit = handleSubmit(async data => {
-    const formData = new FormData();
-    formData.set('name', data.name);
-    formData.set('description', data.description);
-    avatar && formData.set('avatar', avatar);
-    formData.set('namespace_id', GITLAB_NAMESPACE_ID);
-    formData.set('visibility', 'private');
     try {
-      await axios({
+      const formData = new FormData();
+      formData.set('name', data.name);
+      formData.set('description', data.description);
+      avatar && formData.set('avatar', avatar);
+      formData.set('namespace_id', GITLAB_NAMESPACE_ID);
+      formData.set('visibility', 'private');
+      const { data: project } = await axios({
         url: GITLAB_URL + (isNew ? '/api/v4/projects' : `/api/v4/projects/${current.id}`),
         headers: {
           'content-type': 'multipart/form-data',
@@ -51,6 +61,22 @@ export default ({ current, onClose, refresh }: any) => {
         method: isNew ? 'POST' : 'PUT',
         data: formData,
       });
+
+      if (data.enableCI) {
+        await axios({
+          headers: {
+            'PRIVATE-TOKEN': user['gitlabToken'],
+          },
+          method: 'POST',
+          baseURL: GITLAB_URL,
+          url: `/api/v4/projects/${project.id}/hooks/`,
+          data: {
+            url: 'http://192.168.0.245/wxapi/WxBuilds/hooks?apikey=' + process.env.API_KEY,
+            push_events: true,
+            tag_push_events: true,
+          },
+        });
+      }
       refresh();
       onClose();
     } catch (error) {
@@ -114,6 +140,28 @@ export default ({ current, onClose, refresh }: any) => {
             rows={3}
           />
         </Grid>
+        {current?.isNew && (
+          <Grid item xs={12}>
+            <Controller
+              control={control}
+              name="enableCI"
+              render={({ onChange, value }) => {
+                return (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={value}
+                        onChange={e => onChange(e.target.checked)}
+                        color="primary"
+                      />
+                    }
+                    label="自动发起构建"
+                  />
+                );
+              }}
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Box display="flex" alignItems="center">
             <input

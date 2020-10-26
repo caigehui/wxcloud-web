@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@types/echarts": "^4.6.6",
-    "@wxsoft/wxboot": "^1.0.154"
+    "@wxsoft/wxboot": "^1.0.165"
   },
   "devDependencies": {
     "@fingerprintjs/fingerprintjs": "^2.1.4",

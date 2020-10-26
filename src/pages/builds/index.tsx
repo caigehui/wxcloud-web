@@ -8,7 +8,9 @@ import React, { createRef, useState } from 'react';
 import { useModel } from 'umi';
 import { colors } from '@material-ui/core';
 import WxSearchField from '@/components/WxSearchField';
-import { Replay } from '@material-ui/icons';
+import { Description, Replay } from '@material-ui/icons';
+import { SocketIOProvider, useSocket } from 'use-socketio';
+import BuildLog from './components/BuildLog';
 
 enum BUILD_STATUS {
   WAITING = 1,
@@ -17,10 +19,11 @@ enum BUILD_STATUS {
   FAILED = 4,
 }
 
-export default ({ menu }) => {
+const Builds = ({ menu }) => {
   const { getPermission } = useModel('useAuthModel');
   const [nameSearch, setNameSearch] = useState('');
   const [status, setStatus] = useState('all');
+  const [buildLog, setBuildLog] = useState(null);
   const pmDelete = getPermission([REGULAR_PERMISSIONS.DELETE[0]], 'builds');
   const pmUpdate = getPermission([REGULAR_PERMISSIONS.CREATE[0]], 'builds');
   const theme = useTheme();
@@ -28,6 +31,10 @@ export default ({ menu }) => {
   const refresh = () => {
     tableRef.current?.refresh();
   };
+
+  useSocket('buildChanges', () => {
+    refresh();
+  });
 
   const onWxApi = ({ page, pageSize }) => (token: string) =>
     request(
@@ -121,6 +128,13 @@ export default ({ menu }) => {
               refresh();
             },
           },
+          {
+            icon: () => <Description color="primary" />,
+            tooltip: '查看日志',
+            onClick: async (event, rowData) => {
+              setBuildLog(rowData);
+            },
+          },
         ]}
         columns={[
           { title: '项目', field: 'project' },
@@ -177,6 +191,18 @@ export default ({ menu }) => {
           },
         ]}
       />
+      <BuildLog onClose={() => setBuildLog(null)} buildLog={buildLog} />
     </WxPage>
+  );
+};
+
+export default props => {
+  return (
+    <SocketIOProvider
+      url={new URL(process.env.PROXY_TARGET).host}
+      opts={{ path: '/wxcloud-socket', transports: ['websocket'] }}
+    >
+      <Builds {...props} />
+    </SocketIOProvider>
   );
 };

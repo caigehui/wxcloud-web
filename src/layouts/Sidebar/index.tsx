@@ -64,7 +64,7 @@ export default () => {
 
   return (
     <Drawer variant="permanent" classes={{ paper: styles.desktopDrawer }}>
-      <Link to="/dashboard">
+      <Link to="/">
         <Logo className={styles.logo} />
       </Link>
       {menu?.map((i: any) => {

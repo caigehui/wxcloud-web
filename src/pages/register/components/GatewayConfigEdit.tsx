@@ -127,11 +127,11 @@ export default ({ current, onClose, refresh }: any) => {
             helperText={errors?.name?.message}
             error={!!errors.name}
             rules={{
-              required: { value: true, message: '请输入容器名' },
+              required: { value: true, message: '请输入配置名' },
             }}
             fullWidth
             required
-            label="容器名"
+            label="配置名"
             variant="outlined"
           />
         </Grid>

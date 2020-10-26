@@ -3,13 +3,7 @@ import WxSearchField from '@/components/WxSearchField';
 import WxSnackBar from '@/components/WxSnackBar';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import { GITLAB_URL } from '@/constants';
-import {
-  Avatar,
-  Box,
-  IconButton,
-  Typography,
-  useTheme,
-} from '@material-ui/core';
+import { Avatar, Box, IconButton, Link, Typography, useTheme } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   AssistantPhotoSharp,
@@ -76,7 +70,6 @@ export default ({ menu }) => {
               value={name}
               onChange={setName}
             />
-            
           </>
         }
         actions={[
@@ -130,9 +123,13 @@ export default ({ menu }) => {
                   >
                     <FileCopy />
                   </IconButton>
-                  <Typography variant="body2">
+                  <Link
+                    href={data.http_url_to_repo.replace('http://192.168.0.8', GITLAB_URL)}
+                    target="_blank"
+                    onClick={e => e.stopPropagation()}
+                  >
                     {data.http_url_to_repo.replace('http://192.168.0.8', GITLAB_URL)}
-                  </Typography>
+                  </Link>
                 </Box>
               );
             },

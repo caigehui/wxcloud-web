@@ -3,6 +3,7 @@ import { config } from 'dotenv-flow';
 import CompressionPlugin from 'compression-webpack-plugin';
 import path from 'path';
 config({ silent: true });
+import { proxy } from './src/webapp';
 
 // env file 注入到前端
 const definitions = new DotenvFlow().definitions;
@@ -27,12 +28,7 @@ const Config = (extraOptions?: Object) =>
       define: {
         ...definitions,
       },
-      proxy: {
-        '/wxapi': {
-          target: definitions['process.env.PROXY_TARGET'],
-          changeOrigin: true,
-        },
-      },
+      proxy: proxy(),
       chainWebpack(memo) {
         // 设置 alias
         memo.resolve.alias.set('@wxapi', path.join(process.cwd(), 'src', '.wxboot', 'wxapi'));
