@@ -13,10 +13,10 @@ export default ({ buildLog, onClose }: any) => {
       consoleRef?.current?.writeln(JSON.stringify(data.error));
     } else if (data.type === 'init') {
       for (const msg of data.payload) {
-        msg && consoleRef?.current?.writeln(msg.trim());
+        msg && consoleRef?.current?.writeln(msg);
       }
     } else {
-      const content = data.payload?.trim();
+      const content = data.payload;
       content && consoleRef?.current?.writeln(content);
     }
   });
