@@ -24,6 +24,7 @@ LABEL wxsoft="wxboot-web"
 WORKDIR /app
 COPY --from=dist /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+COPY src/webapp.ts ./src/
 COPY package.json ./
 COPY tsconfig.json ./
 COPY .env ./

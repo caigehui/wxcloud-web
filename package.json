@@ -4,7 +4,7 @@
     "start": "umi dev",
     "build": "cross-env NODE_ENV=production umi build",
     "sync": "wxboot sync",
-    "web": "wxboot web",
+    "web": "cross-env NODE_ENV=production wxboot web",
     "lint": "eslint --ext .ts,.tsx src server ",
     "prettier": "prettier --write '{src,server}/**/*.{js,jsx,tsx,ts,less,md,json}'"
   },
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@types/echarts": "^4.6.6",
-    "@wxsoft/wxboot": "^1.0.165"
+    "@wxsoft/wxboot": "^1.0.167"
   },
   "devDependencies": {
     "@fingerprintjs/fingerprintjs": "^2.1.4",
