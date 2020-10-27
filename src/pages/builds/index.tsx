@@ -198,10 +198,7 @@ const Builds = ({ menu }) => {
 
 export default props => {
   return (
-    <SocketIOProvider
-      url={new URL(process.env.PROXY_TARGET).host}
-      opts={{ path: '/wxcloud-socket', transports: ['websocket'] }}
-    >
+    <SocketIOProvider url="/" opts={{ path: '/wxcloud-socket', transports: ['websocket'] }}>
       <Builds {...props} />
     </SocketIOProvider>
   );

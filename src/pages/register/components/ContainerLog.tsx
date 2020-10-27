@@ -11,9 +11,11 @@ export default ({ containerLog, onClose }: any) => {
 
   const { socket } = useSocket('message', data => {
     if (data.type === 'err') {
-      consoleRef?.current?.writeln(JSON.stringify(data.error));
+      data.error && consoleRef?.current?.writeln(JSON.stringify(data.error));
     } else {
-      const content = data.payload;
+      const content = data.payload || '';
+      console.log(content);
+      if (typeof content !== 'string') return;
       const timestamp = content.substring(0, content.indexOf(' '));
       consoleRef?.current?.writeln(
         (dayjs(timestamp).isValid() ? dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss') : '') +
@@ -52,7 +54,7 @@ export default ({ containerLog, onClose }: any) => {
       }
     >
       <Box height="700px" width="100%">
-        <WxConsole ref={consoleRef} />
+        <WxConsole ref={consoleRef} initMessage="" />
       </Box>
     </WxDialog>
   );

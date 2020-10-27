@@ -84,7 +84,7 @@ export default ({ children, menu }) => {
                   <Box
                     onClick={() => {
                       if (item.key === 'database') {
-                        window.open(state['url'] + '/wxeap-admin/dashboard/');
+                        window.open(state['url'] + '/wxeap-admin-dashboard/');
                       } else {
                         history.push('/register/' + item.key, history.location.state);
                       }
