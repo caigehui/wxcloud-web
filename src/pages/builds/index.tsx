@@ -198,7 +198,7 @@ const Builds = ({ menu }) => {
 
 export default props => {
   return (
-    <SocketIOProvider url="/" opts={{ path: '/wxcloud-socket', transports: ['websocket'] }}>
+    <SocketIOProvider url="/" opts={{  path: '/wxcloud-socket', transports: ['polling'] }}>
       <Builds {...props} />
     </SocketIOProvider>
   );
