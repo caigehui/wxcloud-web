@@ -1,4 +1,4 @@
-FROM mirrors.wxsoft.cn/library/node:alpine as dist
+FROM mirrors.wxsoft.cn/library/node:12-alpine as dist
 LABEL stage=dist
 WORKDIR /app
 COPY src ./src
@@ -11,7 +11,7 @@ COPY public ./public
 RUN yarn --registry=https://registry.npm.taobao.org
 RUN yarn build
 
-FROM mirrors.wxsoft.cn/library/node:alpine as builder
+FROM mirrors.wxsoft.cn/library/node:12-alpine as builder
 LABEL stage=builder
 WORKDIR /app
 COPY package.json ./
