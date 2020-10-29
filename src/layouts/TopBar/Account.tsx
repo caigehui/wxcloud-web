@@ -71,6 +71,7 @@ function Account() {
         <Avatar
           style={{
             padding: 2,
+            background: theme.palette.secondary.main,
           }}
           className={classes.avatar}
           src={user?.['avatar']?.url}

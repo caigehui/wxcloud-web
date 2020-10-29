@@ -60,7 +60,7 @@ export default ({ children, menu }) => {
   return (
     <SocketIOProvider
       url={state['url']}
-      opts={{ path: '/wxeap-admin-socket', transports: ['websocket'] }}
+      opts={{ path: '/wxeap-admin-socket', transports: ['polling'] }}
     >
       <Box display="flex" height="100%">
         <Box

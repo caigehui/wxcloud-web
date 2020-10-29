@@ -95,7 +95,12 @@ export default ({ menu }) => {
               return (
                 <Box display="flex" alignItems="center">
                   <Avatar
-                    style={{ width: 36, height: 36, marginRight: theme.spacing(2) }}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      marginRight: theme.spacing(2),
+                      background: theme.palette.secondary.main,
+                    }}
                     src={rowData.avatar_url + `?private_token=${user['gitlabToken']}`}
                   >
                     <AssistantPhotoSharp />

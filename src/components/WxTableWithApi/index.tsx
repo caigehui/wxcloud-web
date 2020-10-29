@@ -77,10 +77,13 @@ function WxTableWithApi(
       additionalFilter={
         <>
           {additionalFilter}{' '}
-          <Box ml={additionalFilter?2:0}>
+          <Box ml={additionalFilter ? 2 : 0}>
             <Button
-              onKeyPress={e => e.key === 'Enter' && tableRef?.current?.refresh()}
-              onClick={() => tableRef?.current?.refresh()}
+              onKeyPress={e => e.key === 'Enter' && tableRef?.current?.reset()}
+              onClick={() => {
+
+                tableRef?.current?.reset();
+              }}
               variant="contained"
               color="primary"
               startIcon={<Search />}

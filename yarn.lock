@@ -3476,16 +3476,16 @@
   optionalDependencies:
     "@node-rs/bcrypt" "0.3.0"
 
-"@wxsoft/parse-server@^4.3.15":
-  version "4.3.15"
-  resolved "https://registry.npmjs.org/@wxsoft/parse-server/-/parse-server-4.3.15.tgz#bedcd23aab062067b95201187dfb14fc1953ad16"
-  integrity sha512-lYi+w3L+c3iX8ax8hhg78uS9on13ixBMjxdTMAyw9PAgThgSTn6wykV77jCYsErlKelQsNSdfvSZI2tXPdSA+Q==
+"@wxsoft/parse-server@^4.3.17":
+  version "4.3.17"
+  resolved "https://registry.npmjs.org/@wxsoft/parse-server/-/parse-server-4.3.17.tgz#673911de94d9ede9b7bfe854e808afadeedc907e"
+  integrity sha512-TNUVcd7o6BPKRdy5V9gaMYaUvkv+H5DhwJYtoGurwHwSjfPCRc47GJ5n4CgxYaNU/iO8JPUX4z2IItDdDc3MSg==
   dependencies:
     "@parse/fs-files-adapter" "1.0.1"
     "@parse/push-adapter" "3.2.0"
     "@parse/s3-files-adapter" "1.4.0"
     "@parse/simple-mailgun-adapter" "1.1.0"
-    "@wxsoft/parse" "^2.15.6"
+    "@wxsoft/parse" "^2.15.12"
     apollo-server-express "2.15.1"
     bcryptjs "2.4.3"
     body-parser "1.19.0"
@@ -3528,10 +3528,10 @@
     ws "7.3.1"
     xmlhttprequest "1.8.0"
 
-"@wxsoft/parse@^2.15.6", "@wxsoft/parse@^2.15.7":
-  version "2.15.7"
-  resolved "https://registry.npmjs.org/@wxsoft/parse/-/parse-2.15.7.tgz#ef58294fa430a3705aa42d8cd5247146f6b1426c"
-  integrity sha512-3WLKcsu6ZQVYm3vvLRwE4J8WfS+CQ+u+bclF2l2M4DoJ1osiUpOJtBXhQWVvgSZcoupKee/Z5XYBC+DbOqEDeA==
+"@wxsoft/parse@^2.15.12":
+  version "2.15.12"
+  resolved "https://registry.npmjs.org/@wxsoft/parse/-/parse-2.15.12.tgz#ee83e317f95a1653dd49d8c1ef20eeac0c4b21b4"
+  integrity sha512-7TqvM9SCM9zzRKfHi9y4dJHa8BYqe+ZDyzCGSg9+FLBdleF7vJwKTFAjkhMSkGqK+g8Q7KDM0rWAwRBUs5Qsfw==
   dependencies:
     "@babel/runtime" "7.10.4"
     "@babel/runtime-corejs3" "7.10.4"
@@ -3541,13 +3541,13 @@
     ws "7.3.1"
     xmlhttprequest "1.8.0"
 
-"@wxsoft/wxboot@^1.0.165":
-  version "1.0.166"
-  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.166.tgz#6333b784adee249066985b1a51702ab72bdcb693"
-  integrity sha512-JgwgXnO9sfQJKQUBMOFwvbMU9tuYXNpXQtuAnOC09ETlKxIldR2a7Vf3hngm02IzC9ak7KPWE8v7HQAHt/lEAg==
+"@wxsoft/wxboot@^1.0.173":
+  version "1.0.173"
+  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.173.tgz#c2d443527c304ed7b99d271f568fb28909382f70"
+  integrity sha512-vDgkJ7t5MqBS4fBPD/GMAkAdHZSjs/8qbAUIRwoMRYh6Qj7JoXqV7Ue1WVODAvOlyyPuH2cMRO7xLq7UpYNGhw==
   dependencies:
-    "@wxsoft/parse" "^2.15.7"
-    "@wxsoft/parse-server" "^4.3.15"
+    "@wxsoft/parse" "^2.15.12"
+    "@wxsoft/parse-server" "^4.3.17"
     axios "^0.20.0"
     chalk "^4.1.0"
     chokidar "^3.4.2"

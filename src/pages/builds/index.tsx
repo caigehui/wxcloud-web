@@ -58,7 +58,7 @@ const Builds = ({ menu }) => {
       <WxTableWithApi
         ref={tableRef}
         onWxApi={onWxApi}
-        options={{ sorting: false }}
+        options={{ sorting: false, selection: true, selectionProps: { color: 'primary' } }}
         additionalFilter={
           <>
             <WxSearchField
@@ -87,8 +87,8 @@ const Builds = ({ menu }) => {
         deletable={rowData => ({
           disabled: !pmDelete,
           confirmOptions: {
-            title: `删除${rowData.project}的构建任务`,
-            message: `确定要删除${rowData.project}的构建任务吗？`,
+            title: `删除${rowData.length}个构建任务`,
+            message: `确定要删除这些构建任务吗？`,
             onConfirm: async () => {
               await requestWxApi((token: string) =>
                 request(
@@ -96,7 +96,7 @@ const Builds = ({ menu }) => {
                     url: '/WxBuilds/delete',
                     method: 'POST',
                     data: {
-                      id: rowData.objectId,
+                      id: rowData.map(i => i.objectId),
                     },
                   },
                   token,
@@ -127,6 +127,7 @@ const Builds = ({ menu }) => {
               );
               refresh();
             },
+            position: 'row',
           },
           {
             icon: () => <Description color="primary" />,
@@ -134,6 +135,8 @@ const Builds = ({ menu }) => {
             onClick: async (event, rowData) => {
               setBuildLog(rowData);
             },
+
+            position: 'row',
           },
         ]}
         columns={[
@@ -198,7 +201,7 @@ const Builds = ({ menu }) => {
 
 export default props => {
   return (
-    <SocketIOProvider url="/" opts={{  path: '/wxcloud-socket', transports: ['polling'] }}>
+    <SocketIOProvider url="/" opts={{ path: '/wxcloud-socket', transports: ['polling'] }}>
       <Builds {...props} />
     </SocketIOProvider>
   );

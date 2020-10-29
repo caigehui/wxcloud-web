@@ -6,7 +6,7 @@ export enum THEME {
 }
 
 export const PRIMARY_COLOR = '#4889F4';
-export const SECONDARY_COLOR = '#9254de';
+export const SECONDARY_COLOR = '#465875';
 
 export const WX_USER_KEY = 'wx_user';
 export const WX_MENU_KEY = 'wx_menu';

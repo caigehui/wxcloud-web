@@ -2,6 +2,7 @@ import WxPage from '@/components/WxPage';
 import WxSearchField from '@/components/WxSearchField';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import useAuth from '@/hooks/useAuth';
+import { Box, Button } from '@material-ui/core';
 import { Update } from '@material-ui/icons';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
 import dayjs from 'dayjs';
@@ -71,6 +72,21 @@ export default ({ menu }) => {
               value={name}
               onChange={setName}
             />
+            <Box ml={2}>
+              <Button
+                onClick={async () => {
+                  await buildRequest(location.state, {
+                    url: '/WxImage/deleteUnused',
+                    method: 'POST',
+                  });
+                  refresh();
+                }}
+                variant="contained"
+                color="primary"
+              >
+                清除无用镜像
+              </Button>
+            </Box>
           </>
         }
         columns={[

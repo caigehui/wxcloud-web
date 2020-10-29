@@ -4,6 +4,7 @@ import { Localization } from 'material-table';
 const defaultLocalization: Localization = {
   grouping: { placeholder: '拖动表头到这里进行分组', groupedBy: '分组' },
   toolbar: {
+    nRowsSelected: number => `已选择 ${number} 行`,
     searchPlaceholder: '搜索',
   },
   pagination: {

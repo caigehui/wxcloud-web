@@ -121,6 +121,20 @@ const WxTable = <RowData extends object>({
     refresh: () => {
       tableRef.current?.['onQueryChange']();
     },
+    reset: () => {
+      // 重置页数
+      tableRef.current?.setState(
+        {
+          query: {
+            ...tableRef.current?.state['query'],
+            page: 0,
+          },
+        },
+        () => {
+          tableRef.current?.['onQueryChange']();
+        },
+      );
+    },
   }));
 
   const [myData, setMyData] = useState<Array<RowData>>(data || []);
