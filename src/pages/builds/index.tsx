@@ -180,6 +180,10 @@ const Builds = ({ menu }) => {
             },
           },
           {
+            title: '消息',
+            field: 'message',
+          },
+          {
             title: '耗时(s)',
             field: 'duration',
           },
