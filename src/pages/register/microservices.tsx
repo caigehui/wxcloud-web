@@ -47,7 +47,6 @@ export default ({ menu }) => {
     () => buildRequest(location.state, { url: '/WxSystem/queryCpu' }),
     { formatResult: data => data.data, initialData: {} },
   );
-  console.log(cpu);
   const refresh = () => {
     tableRef.current?.refresh();
   };

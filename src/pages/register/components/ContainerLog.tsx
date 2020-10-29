@@ -14,7 +14,6 @@ export default ({ containerLog, onClose }: any) => {
       data.error && consoleRef?.current?.writeln(JSON.stringify(data.error));
     } else {
       const content = data.payload || '';
-      console.log(content);
       if (typeof content !== 'string') return;
       const timestamp = content.substring(0, content.indexOf(' '));
       consoleRef?.current?.writeln(

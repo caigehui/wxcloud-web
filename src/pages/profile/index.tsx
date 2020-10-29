@@ -90,7 +90,6 @@ export default () => {
       ),
     );
     await getCurrentUser();
-    console.log(ret);
   };
 
   return (

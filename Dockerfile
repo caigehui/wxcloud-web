@@ -1,4 +1,4 @@
-FROM node:alpine as dist
+FROM mirrors.wxsoft.cn/library/node:alpine as dist
 LABEL stage=dist
 WORKDIR /app
 COPY src ./src
@@ -11,14 +11,14 @@ COPY public ./public
 RUN yarn --registry=https://registry.npm.taobao.org
 RUN yarn build
 
-FROM node:alpine as builder
+FROM mirrors.wxsoft.cn/library/node:alpine as builder
 LABEL stage=builder
 WORKDIR /app
 COPY package.json ./
 COPY .npmrc ./
 RUN yarn --production --registry=https://registry.npm.taobao.org
 
-FROM keymetrics/pm2:12-alpine
+FROM mirrors.wxsoft.cn/library/pm2:12-alpine
 LABEL maintainer="coffeecool<1136687@qq.com>"
 LABEL wxsoft="wxboot-web"
 WORKDIR /app

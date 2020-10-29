@@ -20,7 +20,6 @@ export default ({ current, onClose, refresh }: any) => {
   const consoleRef = useRef<any>();
 
   const { socket } = useSocket('pullImage', data => {
-    console.log(data);
     if (data.status === 'failed') {
       setPulling(false);
       consoleRef?.current?.writeln(JSON.stringify(data.error));

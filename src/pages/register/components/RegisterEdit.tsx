@@ -181,7 +181,6 @@ export default ({ current, onClose, refresh, usernames }: any) => {
               required: { value: true, message: '请输入端口映射' },
             }}
             render={({ onChange, value }) => {
-              console.log(value);
               return (
                 <Autocomplete
                   multiple
