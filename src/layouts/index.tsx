@@ -17,6 +17,12 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     width: '100%',
   },
+  codespace: {
+    backgroundColor: theme.palette.background.default,
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+  },
   wrapper: {
     display: 'flex',
     flex: '1 1 auto',
@@ -44,7 +50,11 @@ export default function Layout({ children, location }: IRouteComponentProps) {
   if (location.pathname === '/login') return children;
   const classes = useStyles();
   const { user, menu } = useModel('useAuthModel');
+
   if (user) {
+    if (location.pathname.startsWith('/code/')) {
+      return <div className={classes.codespace}>{children}</div>;
+    }
     return (
       <div className={classes.root}>
         <Helmet>

@@ -71,7 +71,7 @@ export default ({ current, onClose, refresh }: any) => {
           baseURL: GITLAB_URL,
           url: `/api/v4/projects/${project.id}/hooks/`,
           data: {
-            url: 'http://192.168.0.245/wxapi/WxBuilds/hooks?apikey=' + process.env.API_KEY,
+            url: 'http://192.168.0.245/wxcloud/hooks?apikey=' + process.env.API_KEY,
             push_events: true,
             tag_push_events: true,
           },
@@ -116,8 +116,8 @@ export default ({ current, onClose, refresh }: any) => {
             rules={{
               required: { value: true, message: '请输入项目名称' },
               pattern: {
-                value: /^[a-zA-Z0-9_]+$/,
-                message: '项目名由字母、数字和下划线组成',
+                value: /^[a-zA-Z0-9_-]+$/,
+                message: '项目名由字母、数字、-和下划线组成',
               },
             }}
             fullWidth

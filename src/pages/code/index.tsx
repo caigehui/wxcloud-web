@@ -16,6 +16,10 @@ import request from '@wxsoft/wxboot/helpers/request';
 import React, { createRef, useState } from 'react';
 import { useModel } from 'umi';
 import ProjectEdit from './components/ProjectEdit';
+import git, { GitProgressEvent } from 'isomorphic-git';
+import http from 'isomorphic-git/http/web';
+import LightningFS from '@isomorphic-git/lightning-fs';
+const fs = new LightningFS('fs', { wipe: true });
 
 export default ({ menu }) => {
   const { user, getPermission } = useModel('useAuthModel');
@@ -84,7 +88,34 @@ export default ({ menu }) => {
           {
             icon: () => <ExitToApp color="primary" />,
             tooltip: '查看详情',
-            onClick: enter,
+            onClick: async (e, rowData) => {
+              e.stopPropagation();
+              // git.clone({
+              //   fs,
+              //   http,
+              //   dir: `/${rowData.name}`,
+              //   corsProxy: 'https://cors.isomorphic-git.org',
+              //   url: `https://gitlab.wxsoft.cn/wxsoft/${rowData.name}.git`,
+              //   onAuth: () => {
+              //     return {
+              //       username: 'robot',
+              //       password: 'cnwxsoft',
+              //     };
+              //   },
+              //   onProgress: (progress: GitProgressEvent) => {
+              //     const msg = `${progress.phase}, loaded: ${progress.loaded},  ${
+              //       progress.total ? `total${progress.total}` : ''
+              //     }`;
+              //     console.log(msg);
+              //   },
+              //   onAuthFailure: (...args) => {
+              //     console.log('failed', ...args);
+              //   },
+              //   onAuthSuccess: (...args) => {
+              //     console.log('successed', ...args);
+              //   },
+              // });
+            },
           },
         ]}
         columns={[

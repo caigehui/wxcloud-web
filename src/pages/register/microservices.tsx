@@ -22,7 +22,7 @@ import MicroEdit from './components/MicroEdit';
 import TuneInstance from './components/TuneInstance';
 import { buildRequest } from './utils';
 
-const readonlyServices = ['konga', 'kong', 'mqtt', 'mongodb', 'postgres', 'wxeap-admin'];
+const readonlyServices = []; // ['konga', 'kong', 'mqtt', 'mongodb', 'postgres', 'wxeap-admin'];
 
 export default ({ menu }) => {
   const tableRef = useRef(null);
