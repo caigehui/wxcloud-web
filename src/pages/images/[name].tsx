@@ -2,7 +2,7 @@ import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import requestWxApi from '@/utils/requestWxApi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import React, { createRef } from 'react';
 import { useModel } from 'umi';
 
@@ -16,18 +16,15 @@ export default ({ menu, location }) => {
     tableRef.current?.refresh();
   };
 
-  const onWxApi = ({ page, pageSize }) => (token: string) =>
-    request(
-      {
-        url: '/WxImages/listArtifacts',
-        params: {
-          name,
-          page,
-          pageSize,
-        },
+  const onWxApi = ({ page, pageSize }) =>
+    requestWxApi({
+      url: '/WxImages/listArtifacts',
+      params: {
+        name,
+        page,
+        pageSize,
       },
-      token,
-    );
+    });
 
   return (
     <WxPage menu={menu} title={name} showBackIcon>
@@ -41,19 +38,14 @@ export default ({ menu, location }) => {
             title: `删除${rowData.digest.substring(0, 15)}`,
             message: `确定要删除${rowData.digest.substring(0, 15)}吗？`,
             onConfirm: async () => {
-              await requestWxApi((token: string) =>
-                request(
-                  {
-                    url: '/WxImages/deleteArtifact',
-                    method: 'POST',
-                    data: {
-                      name,
-                      digest: rowData.digest,
-                    },
-                  },
-                  token,
-                ),
-              );
+              await requestWxApi({
+                url: '/WxImages/deleteArtifact',
+                method: 'POST',
+                data: {
+                  name,
+                  digest: rowData.digest,
+                },
+              });
               refresh();
               return true;
             },

@@ -3,7 +3,7 @@ import { history } from 'umi';
 import { useLocalStorageState, useTimeout } from 'ahooks';
 import requestWxApi from '@/utils/requestWxApi';
 import WxUser from '@wxsoft/wxboot/entities/WxUser';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import { WX_USER_KEY, WX_MENU_KEY, WX_SESSION_TOKEN_KEY } from '@/constants';
 import checkPermission from '@wxsoft/wxboot/helpers/checkPermission';
 import wxConfirm from '@/components/WxConfirm';
@@ -16,18 +16,14 @@ function useAuthModel() {
   const [menu, setMenu] = useLocalStorageState<[]>(WX_MENU_KEY, []);
 
   const getCurrentUser = useCallback(async () => {
-    const userData = await requestWxApi((sessionToken?: string) =>
-      request({ method: 'GET', url: '/WxUser/getCurrentUser' }, sessionToken),
-    );
+    const userData = await requestWxApi({ method: 'GET', url: '/WxUser/getCurrentUser' });
     const user = new WxUser(userData);
     setUser(user);
     setUserJSON(userData);
   }, []);
 
   const getMenu = useCallback(async () => {
-    const data = await requestWxApi((sessionToken?: string) =>
-      request({ method: 'GET', url: '/WxCommon/getMenu' }, sessionToken),
-    );
+    const data = await requestWxApi({ method: 'GET', url: '/WxCommon/getMenu' });
     setMenu(data);
   }, []);
 
@@ -43,19 +39,14 @@ function useAuthModel() {
    * 信任浏览器
    */
   const browser = useCallback(async (browserId: string, trust: boolean) => {
-    await requestWxApi((sessionToken?: string) =>
-      request(
-        {
-          method: 'POST',
-          url: '/WxUser/browser',
-          data: {
-            browserId,
-            trust,
-          },
-        },
-        sessionToken,
-      ),
-    );
+    await requestWxApi({
+      method: 'POST',
+      url: '/WxUser/browser',
+      data: {
+        browserId,
+        trust,
+      },
+    });
   }, []);
 
   useTimeout(async () => {
@@ -71,30 +62,26 @@ function useAuthModel() {
 
   const sendSmsCode = useCallback(async data => {
     const reCaptchaToken = await getReCaptchaToken();
-    return requestWxApi(() =>
-      request({
-        method: 'POST',
-        url: '/WxUser/sendSmsCode',
-        data: { ...data, reCaptchaToken },
-      }),
-    );
+    return requestWxApi({
+      method: 'POST',
+      url: '/WxUser/sendSmsCode',
+      data: { ...data, reCaptchaToken },
+    });
   }, []);
 
   const logIn = useCallback(async (data, sms?: boolean) => {
     const reCaptchaToken = await getReCaptchaToken();
-    const { token, first } = await requestWxApi(() =>
-      request({
-        data: {
-          ...data,
-          reCaptchaToken,
-          password: data.password
-            ? AES.encrypt(data.password, process.env.RECAPTCHAT_KEY).toString()
-            : undefined,
-        },
-        method: 'POST',
-        url: sms ? '/WxUser/signInWithSms' : '/WxUser/signIn',
-      }),
-    );
+    const { token, first } = await requestWxApi({
+      data: {
+        ...data,
+        reCaptchaToken,
+        password: data.password
+          ? AES.encrypt(data.password, process.env.RECAPTCHAT_KEY).toString()
+          : undefined,
+      },
+      method: 'POST',
+      url: sms ? '/WxUser/signInWithSms' : '/WxUser/signIn',
+    });
     if (typeof token === 'string') {
       localStorage.setItem(WX_SESSION_TOKEN_KEY, token);
     }

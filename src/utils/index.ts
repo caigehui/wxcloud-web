@@ -1,5 +1,7 @@
 import { THEME } from '@/constants';
 import Fingerprint2 from '@fingerprintjs/fingerprintjs';
+import { AES, enc } from 'crypto-js';
+import { RSAKey } from 'jsrsasign';
 
 /**
  * 将search字符串解析成对象
@@ -142,3 +144,27 @@ export const getReCaptchaToken = () => {
     }
   });
 };
+
+export function makeStr(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+let _wxrsa = null;
+
+export function handleClientKey(key: string) {
+  const rsa = new RSAKey();
+  rsa.readPrivateKeyFromPEMString(
+    AES.decrypt(key, process.env.APP_ID + process.env.API_KEY).toString(enc.Utf8),
+  );
+  _wxrsa = rsa;
+}
+
+export function getRsa() {
+  return _wxrsa;
+}

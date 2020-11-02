@@ -1,7 +1,6 @@
 import WxPage from '@/components/WxPage';
 import requestWxApi from '@/utils/requestWxApi';
 import { Box, Button, Link, Switch, TextField, Typography } from '@material-ui/core';
-import request from '@wxsoft/wxboot/helpers/request';
 import { useRequest } from 'ahooks';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -91,9 +90,7 @@ export default ({ menu }: any) => {
     },
   });
 
-  const { data } = useRequest(() =>
-    requestWxApi(token => request({ url: '/WxCommon/getSystemConfig' }, token)),
-  );
+  const { data } = useRequest(() => requestWxApi({ url: '/WxCommon/getSystemConfig' }));
 
   useEffect(() => {
     reset(data);
@@ -101,12 +98,7 @@ export default ({ menu }: any) => {
 
   const { loading, run } = useRequest(
     data =>
-      requestWxApi(token =>
-        request(
-          { url: '/WxCommon/saveSystemConfig', method: 'POST', data: { config: data } },
-          token,
-        ),
-      ),
+      requestWxApi({ url: '/WxCommon/saveSystemConfig', method: 'POST', data: { config: data } }),
     { manual: true },
   );
 

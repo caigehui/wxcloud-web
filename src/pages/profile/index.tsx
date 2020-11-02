@@ -15,7 +15,7 @@ import ChangePassword from './components/ChangePassword';
 import { Helmet } from 'react-helmet';
 import { useModel } from 'umi';
 import Parse from '@wxsoft/parse';
-import request, { serverURL } from '@wxsoft/wxboot/helpers/request';
+import { serverURL } from '@/utils/request';
 import requestWxApi from '@/utils/requestWxApi';
 import { Controller, useForm } from 'react-hook-form';
 import BrowserSafe from './components/BrowserSafe';
@@ -57,16 +57,11 @@ export default () => {
   }, [user]);
 
   const changeInfo = handleSubmit(async data => {
-    await requestWxApi((token: string) =>
-      request(
-        {
-          url: '/WxUser/changeInfo',
-          method: 'POST',
-          data: { ...data, email: data.email },
-        },
-        token,
-      ),
-    );
+    await requestWxApi({
+      url: '/WxUser/changeInfo',
+      method: 'POST',
+      data: { ...data, email: data.email },
+    });
     await getCurrentUser();
   });
 
@@ -77,18 +72,13 @@ export default () => {
     const avatar = new Parse.File(name, file);
     const savedFile = await avatar.save();
 
-    const ret = await requestWxApi((token: string) =>
-      request(
-        {
-          url: '/WxUser/changeAvatar',
-          method: 'POST',
-          data: {
-            file: savedFile,
-          },
-        },
-        token,
-      ),
-    );
+    await requestWxApi({
+      url: '/WxUser/changeAvatar',
+      method: 'POST',
+      data: {
+        file: savedFile,
+      },
+    });
     await getCurrentUser();
   };
 

@@ -1,11 +1,11 @@
 import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import WxTable, { WxTableProps } from '../WxTable';
-import requestWxApi, { WxRequest } from '@/utils/requestWxApi';
 import { Box, Button } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
+import { AxiosPromise } from 'axios';
 
 export interface WxTableWithApiProps {
-  onWxApi: (filterOptions: FilterOptions) => WxRequest;
+  onWxApi: (filterOptions: FilterOptions) => AxiosPromise<any>;
   enableDateFilter?: boolean;
   dateFilterLabel?: string;
   enableDateRangeFilter?: boolean;
@@ -53,12 +53,10 @@ function WxTableWithApi(
       {...restProps}
       options={options}
       fetchData={async ({ page, pageSize, search }) => {
-        const data = await requestWxApi(
-          onWxApi({ page: page + 1, pageSize, search, from, until, date }),
-        );
+        const data = await onWxApi({ page: page + 1, pageSize, search, from, until, date });
         return {
-          data: data.list,
-          totalCount: data.total ?? Number.MAX_SAFE_INTEGER,
+          data: data['list'],
+          totalCount: data['total'] ?? Number.MAX_SAFE_INTEGER,
           page,
         };
       }}
@@ -81,7 +79,6 @@ function WxTableWithApi(
             <Button
               onKeyPress={e => e.key === 'Enter' && tableRef?.current?.reset()}
               onClick={() => {
-
                 tableRef?.current?.reset();
               }}
               variant="contained"

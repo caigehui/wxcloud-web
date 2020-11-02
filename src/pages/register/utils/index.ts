@@ -1,5 +1,5 @@
-import request from '@wxsoft/wxboot/helpers/request';
-import { AxiosRequestConfig } from 'axios';
+
+import { AxiosError, AxiosRequestConfig } from 'axios';
 import nprogress from 'nprogress';
 import { history } from 'umi';
 import WxSnackBar from '@/components/WxSnackBar';
@@ -28,19 +28,16 @@ export async function buildRequest(
     !noProgress && nprogress.start();
     const { data: ret } = await req;
     !noProgress && nprogress.done();
-    if (ret.code === 0) {
-      return ret;
-    } else {
-      WxSnackBar.error(ret.message);
-      if (ret.code === 1001) {
-        history.push('/register');
-      }
-      return ret;
-    }
+    return ret;
   } catch (error) {
-    console.log(error);
+    console.log(error.status, error.response.data);
+    const data = error.response.data;
+    WxSnackBar.error(data.error);
+    if (data.code === 1001) {
+      history.push('/register');
+    }
     nprogress.done();
-    throw error;
+    throw data;
   }
 }
 

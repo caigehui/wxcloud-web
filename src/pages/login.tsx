@@ -94,9 +94,7 @@ export default function SignInSide() {
     1000,
     { immediate: false },
   );
-  const {
-    initialState,
-  } = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
 
   const [loginType, setLoginType] = useLocalStorageState('loginType', 'password');
 
@@ -170,7 +168,7 @@ export default function SignInSide() {
                     <Tab style={{ minWidth: 120 }} label="短信验证码" value="sms" />
                   </Tabs>
                 </Box>
-                {!!error && <Alert severity="error">{error?.message}</Alert>}
+                {!!error && <Alert severity="error">{error['error']}</Alert>}
                 {loginType === 'password' ? (
                   <>
                     <Controller

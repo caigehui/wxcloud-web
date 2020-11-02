@@ -2,7 +2,7 @@ import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import requestWxApi from '@/utils/requestWxApi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import React, { createRef } from 'react';
 import { useModel, history } from 'umi';
 
@@ -14,17 +14,14 @@ export default ({ menu }) => {
     tableRef.current?.refresh();
   };
 
-  const onWxApi = ({ page, pageSize }) => (token: string) =>
-    request(
-      {
-        url: '/WxImages/listRepo',
-        params: {
-          page,
-          pageSize,
-        },
+  const onWxApi = ({ page, pageSize }) =>
+    requestWxApi({
+      url: '/WxImages/listRepo',
+      params: {
+        page,
+        pageSize,
       },
-      token,
-    );
+    });
 
   return (
     <WxPage menu={menu} title="镜像仓库">
@@ -41,18 +38,13 @@ export default ({ menu }) => {
             title: `删除${rowData.name}`,
             message: `确定要删除${rowData.name}吗？`,
             onConfirm: async () => {
-              await requestWxApi((token: string) =>
-                request(
-                  {
-                    url: '/WxImages/deleteRepo',
-                    method: 'POST',
-                    data: {
-                      name: rowData.name.substring(rowData.name.indexOf('/') + 1),
-                    },
-                  },
-                  token,
-                ),
-              );
+              await requestWxApi({
+                url: '/WxImages/deleteRepo',
+                method: 'POST',
+                data: {
+                  name: rowData.name.substring(rowData.name.indexOf('/') + 1),
+                },
+              });
               refresh();
               return true;
             },

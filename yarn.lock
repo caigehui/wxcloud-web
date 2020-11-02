@@ -3556,10 +3556,10 @@
     ws "7.3.1"
     xmlhttprequest "1.8.0"
 
-"@wxsoft/wxboot@^1.0.175":
-  version "1.0.175"
-  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.175.tgz#0295fb08f5aac6728fe9e8f10cd65260efba89a3"
-  integrity sha512-EPm2vHczdmVyXFgxQ2R8U7cIq0GMI6t4PMJQnX5kr16z0P8a+6lLX4p1U/sjQLD/UA0A4041rPzO9d5g3MgRBA==
+"@wxsoft/wxboot@^1.0.177":
+  version "1.0.177"
+  resolved "https://registry.npmjs.org/@wxsoft/wxboot/-/wxboot-1.0.177.tgz#2a3600f280ff60309bfdbf974c04093eaa063bfc"
+  integrity sha512-7Gw1Z9de4IlmlgxZqTTPFoe/IUh+wUSZsyE66mmkeExx98uqnJCD5zxjyIKFSz6K4KSLIh4FyB3p465uqun0VQ==
   dependencies:
     "@wxsoft/parse" "^2.15.12"
     "@wxsoft/parse-server" "^4.3.17"
@@ -9698,6 +9698,11 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.2.3"
     verror "1.10.0"
+
+jsrsasign@^10.0.4:
+  version "10.0.4"
+  resolved "https://registry.npmjs.org/jsrsasign/-/jsrsasign-10.0.4.tgz#45f62cb9088c5948cd804181d3484c7ab48165e0"
+  integrity sha512-G08GDeAwgVkN5PGE9TnJ/4ixV3zkq560RigOoqrRvVc8H4GjfPVTz54/qGPLHK1KGHGP36/2eaLU1HuXmOJgug==
 
 jss-plugin-camel-case@^10.0.3:
   version "10.4.0"

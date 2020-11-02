@@ -38,7 +38,7 @@ export default ({ item }) => {
           </Link>
         </Typography>
       </Box>
-      {item.feat && (
+      {item.feat?.length > 0 && (
         <Box mt={2}>
           <Typography variant="h4" gutterBottom>
             新特性：
@@ -59,7 +59,7 @@ export default ({ item }) => {
           ))}
         </Box>
       )}
-      {item.perf && (
+      {item.perf?.length > 0 && (
         <Box mt={2}>
           <Typography variant="h4" gutterBottom>
             优化：
@@ -80,7 +80,7 @@ export default ({ item }) => {
           ))}
         </Box>
       )}
-      {item.fix && (
+      {item.fix?.length > 0 && (
         <Box mt={2}>
           <Typography variant="h4" gutterBottom>
             修复：
@@ -101,7 +101,7 @@ export default ({ item }) => {
           ))}
         </Box>
       )}
-      {item.chore && (
+      {item.chore?.length > 0 && (
         <Box mt={2}>
           <Typography variant="h4" gutterBottom>
             其他更改：

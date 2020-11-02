@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import validator from 'validator';
 import { Delete, Edit } from '@material-ui/icons';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import { useRequest } from 'ahooks';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -49,28 +49,23 @@ export default ({ current, onClose, refresh, permissions, menu }: any) => {
 
   const { run, loading } = useRequest(
     data =>
-      requestWxApi((token: string) =>
-        request(
-          {
-            url: current?.isNew ? '/WxUser/create' : '/WxUser/update',
-            method: 'POST',
-            data: {
-              user: {
-                ...current,
-                className: '_User',
-                username: data.username,
-                email: data.email,
-                nickname: data.nickname,
-                phoneNumber: data.phoneNumber,
-                id: current.objectId,
-                permissions: perm,
-              },
-              sendSms: !!data.sendSms,
-            },
+      requestWxApi({
+        url: current?.isNew ? '/WxUser/create' : '/WxUser/update',
+        method: 'POST',
+        data: {
+          user: {
+            ...current,
+            className: '_User',
+            username: data.username,
+            email: data.email,
+            nickname: data.nickname,
+            phoneNumber: data.phoneNumber,
+            id: current.objectId,
+            permissions: perm,
           },
-          token,
-        ),
-      ),
+          sendSms: !!data.sendSms,
+        },
+      }),
     { manual: true },
   );
 

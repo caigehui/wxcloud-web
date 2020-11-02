@@ -19,7 +19,7 @@
     ]
   },
   "dependencies": {
-    "@wxsoft/wxboot": "^1.0.175"
+    "@wxsoft/wxboot": "^1.0.177"
   },
   "devDependencies": {
     "@fingerprintjs/fingerprintjs": "^2.1.4",
@@ -52,6 +52,7 @@
     "eslint": "^7.5.0",
     "eslint-plugin-react": "^7.20.3",
     "isomorphic-git": "^1.7.8",
+    "jsrsasign": "^10.0.4",
     "lint-staged": "^10.0.7",
     "lodash": "^4.17.20",
     "material-table": "^1.68.1",

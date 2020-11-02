@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { randomBytes } from 'crypto';
 import validator from 'validator';
 import requestWxApi from '@/utils/requestWxApi';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useModel } from 'umi';
 
@@ -50,23 +50,18 @@ export default ({ current, onClose, refresh, usernames }: any) => {
   }, [current]);
 
   const submit = handleSubmit(async data => {
-    await requestWxApi((token: string) =>
-      request(
-        {
-          method: 'POST',
-          url: '/WxRegister/save',
-          data: {
-            item: {
-              ...current,
-              ...data,
-              id: current?.objectId,
-              className: 'WxRegister',
-            },
-          },
+    await requestWxApi({
+      method: 'POST',
+      url: '/WxRegister/save',
+      data: {
+        item: {
+          ...current,
+          ...data,
+          id: current?.objectId,
+          className: 'WxRegister',
         },
-        token,
-      ),
-    );
+      },
+    });
     refresh();
     onClose();
   });

@@ -3,6 +3,8 @@ import { AxiosPromise } from 'axios';
 import { history } from 'umi';
 import WxSnackBar from '@/components/WxSnackBar';
 import { WX_SESSION_TOKEN_KEY } from '@/constants';
+import { AxiosRequestConfig } from 'axios';
+import request from './request';
 
 export type WxRequest = (sessionToken?: string) => AxiosPromise<any>;
 export type WxApi = (data?: any) => WxRequest;
@@ -12,33 +14,29 @@ export type WxApi = (data?: any) => WxRequest;
  * @param wxRequest wxRequest方法
  * @param whole 是否返回全部结构，默认只返回data
  */
-async function requestWxApi(wxRequest: WxRequest, whole?: boolean) {
+async function requestWxApi(config: AxiosRequestConfig, whole?: boolean) {
   try {
     const sessionToken = localStorage.getItem(WX_SESSION_TOKEN_KEY) || '';
     nprogress.start();
-    const { data: ret } = await wxRequest(sessionToken);
+    const { data: ret } = await request(config, sessionToken);
     nprogress.done();
-    if (ret.code === 0) {
-      return whole ? ret : ret.data;
-    } else {
-      ret.message &&
-        WxSnackBar.error(
-          typeof ret.message === 'object' ? JSON.stringify(ret.message) : ret.message,
-        );
-      if (ret.code === 1001) {
-        history.push('/logout');
-      }
-      throw ret;
-    }
+    return whole ? ret : ret.data;
   } catch (error) {
-    console.error(error.response);
     nprogress.done();
-    if (error.response?.data?.code === 209) {
-      WxSnackBar.error('身份已过期，请重新登录');
+
+    const data = error.response?.data || error;
+    console.error(error.status, data);
+
+    WxSnackBar.error(
+      typeof data.error === 'object' && data.error ? JSON.stringify(data.error) : data.error,
+    );
+
+    // 身份过期
+    if (data.code === 1001 || data.code === 209) {
       history.push('/logout');
-    } else {
-      throw error;
     }
+
+    throw data;
   }
 }
 

@@ -9,7 +9,6 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import React from 'react';
 import { useRequest, useSessionStorageState } from 'ahooks';
 import requestWxApi from '@/utils/requestWxApi';
-import request from '@wxsoft/wxboot/helpers/request';
 import WxEmpty from '@/components/WxEmpty';
 import ReleaseItem from './component/ReleaseItem';
 
@@ -17,29 +16,21 @@ export default ({ menu }) => {
   const theme = useTheme();
   const [currentProject, setCurrentProject] = useSessionStorageState('currentProject', null);
 
-  const { data: projects } = useRequest(
-    () => requestWxApi(token => request({ url: '/WxReleases/getProjects' }, token)),
-    {
-      initialData: [],
-      onSuccess: prjs => !currentProject && setCurrentProject(prjs[0]),
-    },
-  );
+  const { data: projects } = useRequest(() => requestWxApi({ url: '/WxReleases/getProjects' }), {
+    initialData: [],
+    onSuccess: prjs => !currentProject && setCurrentProject(prjs[0]),
+  });
 
   const { data: releases } = useRequest(
     () =>
-      requestWxApi(token =>
-        request(
-          {
-            url: '/WxReleases/list',
-            params: {
-              page: 1,
-              pageSize: 999,
-              conditions: JSON.stringify([['project', 'equalTo', currentProject]]),
-            },
-          },
-          token,
-        ),
-      ),
+      requestWxApi({
+        url: '/WxReleases/list',
+        params: {
+          page: 1,
+          pageSize: 999,
+          conditions: JSON.stringify([['project', 'equalTo', currentProject]]),
+        },
+      }),
     {
       initialData: [],
       formatResult: data => data.list,

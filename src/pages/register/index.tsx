@@ -1,7 +1,7 @@
 import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import { AddCircleOutlineOutlined, Edit, ExitToApp, Search } from '@material-ui/icons';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import React, { createRef, useState } from 'react';
 import { useHistory, useModel } from 'umi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
@@ -40,14 +40,9 @@ export default ({ menu }: any) => {
   );
 
   const { data: usernames } = useRequest(() =>
-    requestWxApi((token: string) =>
-      request(
-        {
-          url: '/WxRegister/getUserNames',
-        },
-        token,
-      ),
-    ),
+    requestWxApi({
+      url: '/WxRegister/getUserNames',
+    }),
   );
 
   const refresh = () => {
@@ -73,23 +68,20 @@ export default ({ menu }: any) => {
 
   useAuth(getPermission([REGULAR_PERMISSIONS.READ[0]], 'register'));
 
-  const onWxApi = ({ page, pageSize, from, until }) => (token: string) =>
-    request(
-      {
-        url: '/WxRegister/list',
-        params: {
-          page,
-          pageSize,
-          conditions: JSON.stringify([
-            nameSearch && ['name', 'contains', nameSearch],
-            from && ['createdAt', 'greaterThanOrEqualTo', from],
-            until && ['createdAt', 'lessThanOrEqualTo', until],
-          ]),
-          includeKeys: 'createdBy,managedBy',
-        },
+  const onWxApi = ({ page, pageSize, from, until }) =>
+    requestWxApi({
+      url: '/WxRegister/list',
+      params: {
+        page,
+        pageSize,
+        conditions: JSON.stringify([
+          nameSearch && ['name', 'contains', nameSearch],
+          from && ['createdAt', 'greaterThanOrEqualTo', from],
+          until && ['createdAt', 'lessThanOrEqualTo', until],
+        ]),
+        includeKeys: 'createdBy,managedBy',
       },
-      token,
-    );
+    });
 
   return (
     <WxPage
@@ -151,18 +143,13 @@ export default ({ menu }: any) => {
             title: `删除${rowData.name}`,
             message: `确定要删除${rowData.name}吗？删除后不会停止该系统的所有服务`,
             onConfirm: async () => {
-              await requestWxApi((token: string) =>
-                request(
-                  {
-                    url: '/WxRegister/delete',
-                    method: 'POST',
-                    data: {
-                      id: rowData.objectId,
-                    },
-                  },
-                  token,
-                ),
-              );
+              await requestWxApi({
+                url: '/WxRegister/delete',
+                method: 'POST',
+                data: {
+                  id: rowData.objectId,
+                },
+              });
               refresh();
               return true;
             },

@@ -40,7 +40,7 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={({ page, pageSize }) => () =>
+        onWxApi={({ page, pageSize }) =>
           buildRequest(
             location.state,
             {
@@ -52,7 +52,8 @@ export default ({ menu }) => {
               },
             },
             true,
-          )}
+          )
+        }
         options={{ sorting: false }}
         actions={[
           {

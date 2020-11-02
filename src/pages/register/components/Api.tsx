@@ -51,10 +51,15 @@ export default function Api({ item, root, controller }: any) {
         url,
         method: item.type,
         data: useRaw ? raw : editSrc,
+        headers: {
+          'X-Parse-Application-Id': 'wxcloud',
+          apikey: process.env.API_KEY,
+          'Content-Type': 'application/json',
+        },
       });
       setResponse(ret.data);
     } catch (error) {
-      setResponse({ code: error.code, message: error.message });
+      setResponse({ code: error.code, error: error.error });
     }
   }, [editSrc]);
   return (

@@ -10,7 +10,6 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-import request from '@wxsoft/wxboot/helpers/request';
 import { useRequest } from 'ahooks';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -31,19 +30,14 @@ export default () => {
   const theme = useTheme();
   const { run, loading } = useRequest(
     data =>
-      requestWxApi((token: string) =>
-        request(
-          {
-            url: '/WxUser/changePassword',
-            method: 'POST',
-            data: {
-              oldPassword: AES.encrypt(data.oldPassword, process.env.RECAPTCHAT_KEY).toString(),
-              newPassword: AES.encrypt(data.newPassword, process.env.RECAPTCHAT_KEY).toString(),
-            },
-          },
-          token,
-        ),
-      ),
+      requestWxApi({
+        url: '/WxUser/changePassword',
+        method: 'POST',
+        data: {
+          oldPassword: AES.encrypt(data.oldPassword, process.env.RECAPTCHAT_KEY).toString(),
+          newPassword: AES.encrypt(data.newPassword, process.env.RECAPTCHAT_KEY).toString(),
+        },
+      }),
     { manual: true },
   );
 

@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks';
 import requestWxApi from '../utils/requestWxApi';
-import { AxiosPromise } from 'axios';
+import { AxiosPromise, AxiosRequestConfig } from 'axios';
 
 export type WxRequest = (sessionToken?: string) => AxiosPromise<any>;
 export type WxApi = (data?: any) => WxRequest;
@@ -13,8 +13,8 @@ export interface UseWxApiOptions {
   onSuccess?: (data: any) => void;
 }
 
-function useWxApi(wxApi: WxApi, options?: UseWxApiOptions) {
-  return useRequest((data?: any) => requestWxApi(wxApi(data)), {
+function useWxApi(config: AxiosRequestConfig, options?: UseWxApiOptions) {
+  return useRequest((data?: any) => requestWxApi({ ...config, data }), {
     ...options,
   });
 }

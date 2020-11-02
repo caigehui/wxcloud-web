@@ -12,13 +12,14 @@ import {
   FileCopy,
 } from '@material-ui/icons';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import React, { createRef, useState } from 'react';
 import { useModel } from 'umi';
 import ProjectEdit from './components/ProjectEdit';
 import git, { GitProgressEvent } from 'isomorphic-git';
 import http from 'isomorphic-git/http/web';
 import LightningFS from '@isomorphic-git/lightning-fs';
+import requestWxApi from '@/utils/requestWxApi';
 const fs = new LightningFS('fs', { wipe: true });
 
 export default ({ menu }) => {
@@ -33,18 +34,15 @@ export default ({ menu }) => {
   };
   const pmGitlab = getPermission([REGULAR_PERMISSIONS.CREATE[12]], 'code');
 
-  const onWxApi = ({ page, pageSize }) => (token: string) =>
-    request(
-      {
-        url: '/WxCode/listProjects',
-        params: {
-          name,
-          page,
-          pageSize,
-        },
+  const onWxApi = ({ page, pageSize }) =>
+    requestWxApi({
+      url: '/WxCode/listProjects',
+      params: {
+        name,
+        page,
+        pageSize,
       },
-      token,
-    );
+    });
 
   const enter = (e, rowData) => {
     window.open('/code/' + rowData.name);

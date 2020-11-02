@@ -3,7 +3,7 @@ import WxTableWithApi from '@/components/WxTableWithApi';
 import requestWxApi from '@/utils/requestWxApi';
 import { Chip, Link, MenuItem, TextField, useTheme } from '@material-ui/core';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import React, { createRef, useState } from 'react';
 import { useModel } from 'umi';
 import { colors } from '@material-ui/core';
@@ -36,22 +36,19 @@ const Builds = ({ menu }) => {
     refresh();
   });
 
-  const onWxApi = ({ page, pageSize }) => (token: string) =>
-    request(
-      {
-        url: '/WxBuilds/list',
-        params: {
-          page,
-          pageSize,
-          conditions: JSON.stringify([
-            nameSearch && ['project', 'contains', nameSearch],
-            status !== 'all' && ['status', 'equalTo', parseInt(status)],
-          ]),
-          includeKeys: 'user',
-        },
+  const onWxApi = ({ page, pageSize }) =>
+    requestWxApi({
+      url: '/WxBuilds/list',
+      params: {
+        page,
+        pageSize,
+        conditions: JSON.stringify([
+          nameSearch && ['project', 'contains', nameSearch],
+          status !== 'all' && ['status', 'equalTo', parseInt(status)],
+        ]),
+        includeKeys: 'user',
       },
-      token,
-    );
+    });
 
   return (
     <WxPage menu={menu} title="构建任务">
@@ -90,18 +87,13 @@ const Builds = ({ menu }) => {
             title: `删除${rowData.length}个构建任务`,
             message: `确定要删除这些构建任务吗？`,
             onConfirm: async () => {
-              await requestWxApi((token: string) =>
-                request(
-                  {
-                    url: '/WxBuilds/delete',
-                    method: 'POST',
-                    data: {
-                      id: rowData.map(i => i.objectId),
-                    },
-                  },
-                  token,
-                ),
-              );
+              await requestWxApi({
+                url: '/WxBuilds/delete',
+                method: 'POST',
+                data: {
+                  id: rowData.map(i => i.objectId),
+                },
+              });
               refresh();
               return true;
             },
@@ -113,18 +105,13 @@ const Builds = ({ menu }) => {
             icon: () => <Replay color="primary" />,
             tooltip: '重试',
             onClick: async (event, rowData) => {
-              await requestWxApi((token: string) =>
-                request(
-                  {
-                    url: '/WxBuilds/retry',
-                    method: 'POST',
-                    data: {
-                      id: rowData.objectId,
-                    },
-                  },
-                  token,
-                ),
-              );
+              await requestWxApi({
+                url: '/WxBuilds/retry',
+                method: 'POST',
+                data: {
+                  id: rowData.objectId,
+                },
+              });
               refresh();
             },
             position: 'row',

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { useModel } from 'umi';
 import { hideLoader } from './utils/globalLoader';
-import { waitFor, getFingerprint, addReCaptcha } from '@/utils';
+import { waitFor, getFingerprint, addReCaptcha, handleClientKey } from '@/utils';
 import { SnackbarUtilsConfigurator, WxSnackBarProvider } from '@/components/WxSnackBar';
 import { createTheme } from '@/theme';
 import useGlobalStyles from '@/theme/global';
@@ -15,11 +15,14 @@ type AppProps = {
 
 export async function getInitialState() {
   const data = await getClientConfig();
+  handleClientKey(data.key);
   await addReCaptcha(!!data?.enableReCaptcha);
   await waitFor(1000);
   const fingerprint = await getFingerprint();
   hideLoader();
-  return { fingerprint };
+  return {
+    fingerprint,
+  };
 }
 
 const App = ({ children }: AppProps) => {

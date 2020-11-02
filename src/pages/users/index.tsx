@@ -1,7 +1,7 @@
 import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
 import { AddCircleOutlineOutlined, Edit, Search } from '@material-ui/icons';
-import request from '@wxsoft/wxboot/helpers/request';
+
 import React, { createRef, useState } from 'react';
 import { useModel } from 'umi';
 import { REGULAR_PERMISSIONS } from '@wxsoft/wxboot/constants';
@@ -28,30 +28,22 @@ export default ({ menu }: any) => {
 
   useAuth(getPermission([REGULAR_PERMISSIONS.READ[0]], 'users'));
 
-  const onWxApi = ({ page, pageSize }) => (token: string) =>
-    request(
-      {
-        url: '/WxUser/list',
-        params: {
-          page,
-          pageSize,
-          phoneNumber: phoneSearch,
-          name: nameSearch,
-        },
+  const onWxApi = ({ page, pageSize }) =>
+    requestWxApi({
+      url: '/WxUser/list',
+      params: {
+        page,
+        pageSize,
+        phoneNumber: phoneSearch,
+        name: nameSearch,
       },
-      token,
-    );
+    });
 
   const { data: permissions } = useRequest(
     () =>
-      requestWxApi(token =>
-        request(
-          {
-            url: '/WxPermission/list',
-          },
-          token,
-        ),
-      ),
+      requestWxApi({
+        url: '/WxPermission/list',
+      }),
     { initialData: {} },
   );
 
@@ -137,18 +129,13 @@ export default ({ menu }: any) => {
             title: `删除${rowData.nickname}`,
             message: `确定要删除${rowData.nickname}吗？`,
             onConfirm: async () => {
-              await requestWxApi((token: string) =>
-                request(
-                  {
-                    url: '/WxUser/delete',
-                    method: 'POST',
-                    data: {
-                      id: rowData.objectId,
-                    },
-                  },
-                  token,
-                ),
-              );
+              await requestWxApi({
+                url: '/WxUser/delete',
+                method: 'POST',
+                data: {
+                  id: rowData.objectId,
+                },
+              });
               refresh();
               return true;
             },

@@ -19,7 +19,7 @@ function JobLogs({ menu }: any) {
   const { getPermission } = useModel('useAuthModel');
   useAuth(getPermission([1], 'apilogs'));
 
-  const request = ({ page, pageSize, from, until }) => () =>
+  const request = ({ page, pageSize, from, until }) =>
     buildRequest(
       location.state,
       {
