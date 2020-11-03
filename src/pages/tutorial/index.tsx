@@ -170,6 +170,17 @@ export default ({ menu }) => {
                 >
                   下载证书
                 </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => {
+                    download('client.private.pem', state['clientPrivateKey']);
+                  }}
+                  style={{ marginRight: theme.spacing(2) }}
+                  startIcon={<Download />}
+                >
+                  下载私钥（可选）
+                </Button>
                 <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>
                   下一步
                 </Button>

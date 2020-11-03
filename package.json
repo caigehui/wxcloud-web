@@ -19,7 +19,7 @@
     ]
   },
   "dependencies": {
-    "@wxsoft/wxboot": "^1.0.177"
+    "@wxsoft/wxboot": "^1.1.14"
   },
   "devDependencies": {
     "@fingerprintjs/fingerprintjs": "^2.1.4",

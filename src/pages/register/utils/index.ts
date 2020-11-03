@@ -45,8 +45,8 @@ export async function buildRequest(
     !noProgress && nprogress.done();
     return ret;
   } catch (error) {
-    console.log(error.status, error.response.data);
-    const data = error.response.data;
+    const data = error.response?.data || error;
+    console.log(error.status, data);
     WxSnackBar.error(data.error);
     if (data.code === 1001) {
       history.push('/register');
