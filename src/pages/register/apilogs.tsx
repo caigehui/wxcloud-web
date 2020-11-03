@@ -20,22 +20,18 @@ function JobLogs({ menu }: any) {
   useAuth(getPermission([1], 'apilogs'));
 
   const request = ({ page, pageSize, from, until }) =>
-    buildRequest(
-      location.state,
-      {
-        url: '/WxLog/queryApiLogs',
-        params: {
-          page,
-          pageSize,
-          from,
-          until,
-          level,
-          url,
-          appName,
-        },
+    buildRequest(location.state, {
+      url: '/WxLog/queryApiLogs',
+      params: {
+        page,
+        pageSize,
+        from,
+        until,
+        level,
+        url,
+        appName,
       },
-      true,
-    );
+    }).then(i => i.data);
 
   return (
     <WxPage menu={menu}>

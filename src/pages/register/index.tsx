@@ -1,6 +1,6 @@
 import WxPage from '@/components/WxPage';
 import WxTableWithApi from '@/components/WxTableWithApi';
-import { AddCircleOutlineOutlined, Edit, ExitToApp, Search } from '@material-ui/icons';
+import { AddCircleOutlineOutlined, Edit, ExitToApp, Search, Settings } from '@material-ui/icons';
 
 import React, { createRef, useState } from 'react';
 import { useHistory, useModel } from 'umi';
@@ -50,6 +50,7 @@ export default ({ menu }: any) => {
   };
 
   const enter = async (e, rowData) => {
+    e?.stopPropagation();
     if (loading) return;
     try {
       WxSnackBar.loading('正在连接服务器');
@@ -58,6 +59,7 @@ export default ({ menu }: any) => {
       history.push('/register/general', rowData);
     } catch (error) {
       WxSnackBar.stopLoading();
+      console.error(error);
       WxSnackBar.error('无法访问该服务器');
     }
   };
@@ -132,9 +134,24 @@ export default ({ menu }: any) => {
           },
           {
             disabled: !pmUpdate,
-            icon: () => <ExitToApp color="primary" />,
+            icon: () => <Settings color="primary" />,
             tooltip: '管理',
             onClick: enter,
+          },
+          {
+            disabled: !pmUpdate,
+            icon: () => <ExitToApp color="primary" />,
+            tooltip: '起步',
+            onClick: async (event, rowData) => {
+              event.stopPropagation();
+              const ret = await requestWxApi({
+                url: '/WxRegister/detail',
+                params: {
+                  id: rowData.objectId,
+                },
+              });
+              history.push('/tutorial', ret);
+            },
           },
         ]}
         deletable={rowData => ({

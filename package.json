@@ -38,7 +38,6 @@
     "@umijs/plugin-initial-state": "^2.2.1",
     "@umijs/plugin-model": "^2.5.4",
     "@umijs/test": "^3.2.10",
-    "@wxsoft/parse": "2.15.3",
     "@wxsoft/parse-dashboard": "^2.1.0",
     "@wxsoft/parse-server": "4.3.7",
     "ahooks": "^2.6.0",

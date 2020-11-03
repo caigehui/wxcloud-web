@@ -46,20 +46,22 @@ export default function Api({ item, root, controller }: any) {
 
   const run = useCallback(async () => {
     try {
-      const ret = await buildRequest(location.state, {
-        baseURL: '',
-        url,
-        method: item.type,
-        data: useRaw ? raw : editSrc,
-        headers: {
-          'X-Parse-Application-Id': 'wxcloud',
-          apikey: process.env.API_KEY,
-          'Content-Type': 'application/json',
+      const ret = await buildRequest(
+        location.state,
+        {
+          baseURL: '',
+          url,
+          method: item.type,
+          data: useRaw ? raw : editSrc,
         },
-      });
+        true,
+        false,
+        root,
+      );
       setResponse(ret.data);
     } catch (error) {
-      setResponse({ code: error.code, error: error.error });
+      const data = error.response?.data || error;
+      setResponse({ code: data.code, error: data.error });
     }
   }, [editSrc]);
   return (

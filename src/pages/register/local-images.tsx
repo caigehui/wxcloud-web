@@ -41,18 +41,14 @@ export default ({ menu }) => {
       <WxTableWithApi
         ref={tableRef}
         onWxApi={({ page, pageSize }) =>
-          buildRequest(
-            location.state,
-            {
-              url: '/WxImage/list',
-              params: {
-                page,
-                pageSize,
-                name,
-              },
+          buildRequest(location.state, {
+            url: '/WxImage/list',
+            params: {
+              page,
+              pageSize,
+              name,
             },
-            true,
-          )
+          }).then(i => i.data)
         }
         options={{ sorting: false }}
         actions={[

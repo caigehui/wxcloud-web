@@ -67,15 +67,12 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={({ page, pageSize }) => () =>
-          buildRequest(
-            location.state,
-            {
-              url: '/WxMicro/list',
-              params: { page, pageSize, name },
-            },
-            true,
-          )}
+        onWxApi={({ page, pageSize }) =>
+          buildRequest(location.state, {
+            url: '/WxMicro/list',
+            params: { page, pageSize, name },
+          }).then(i => i.data)
+        }
         options={{ sorting: false, search: false }}
         additionalFilter={
           <>

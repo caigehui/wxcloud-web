@@ -17,23 +17,19 @@ function JobLogs({ menu }: any) {
   const { getPermission } = useModel('useAuthModel');
   useAuth(getPermission([1], 'joblogs'));
 
-  const request = ({ page, pageSize, from, until }) => () =>
-    buildRequest(
-      location.state,
-      {
-        url: '/WxLog/queryJobLogs',
-        params: {
-          page,
-          pageSize,
-          from,
-          until,
-          level,
-          taskName,
-          appName,
-        },
+  const request = ({ page, pageSize, from, until }) =>
+    buildRequest(location.state, {
+      url: '/WxLog/queryJobLogs',
+      params: {
+        page,
+        pageSize,
+        from,
+        until,
+        level,
+        taskName,
+        appName,
       },
-      true,
-    );
+    }).then(i => i.data);
 
   return (
     <WxPage menu={menu}>

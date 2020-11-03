@@ -15,13 +15,13 @@ import ChangePassword from './components/ChangePassword';
 import { Helmet } from 'react-helmet';
 import { useModel } from 'umi';
 import Parse from '@wxsoft/parse';
-import { serverURL } from '@/utils/request';
 import requestWxApi from '@/utils/requestWxApi';
 import { Controller, useForm } from 'react-hook-form';
 import BrowserSafe from './components/BrowserSafe';
+import WxSnackBar from '@/components/WxSnackBar';
 
 Parse.initialize(process.env.APP_ID);
-Parse.serverURL = serverURL;
+Parse.serverURL = '/files';
 
 interface FormData {
   email: string;
@@ -70,16 +70,19 @@ export default () => {
     if (!file) return;
     const name = file?.name;
     const avatar = new Parse.File(name, file);
-    const savedFile = await avatar.save();
-
-    await requestWxApi({
-      url: '/WxUser/changeAvatar',
-      method: 'POST',
-      data: {
-        file: savedFile,
-      },
-    });
-    await getCurrentUser();
+    try {
+      const savedFile = await avatar.save();
+      await requestWxApi({
+        url: '/WxUser/changeAvatar',
+        method: 'POST',
+        data: {
+          file: savedFile,
+        },
+      });
+      await getCurrentUser();
+    } catch (error) {
+      WxSnackBar.error('上传头像失败！');
+    }
   };
 
   return (

@@ -1,25 +1,40 @@
-
-import { AxiosError, AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import nprogress from 'nprogress';
 import { history } from 'umi';
 import WxSnackBar from '@/components/WxSnackBar';
 import { EChartOption } from 'echarts/lib/echarts';
 import dayjs from 'dayjs';
 import get from 'lodash/get';
+import request from '@/utils/request';
+import { makeStr } from '@/utils';
+import { SHA1 } from 'crypto-js';
+import { RSAKey } from 'jsrsasign';
 
 export async function buildRequest(
   state,
   options: AxiosRequestConfig,
   noHandle?: boolean,
   noProgress?: boolean,
+  appId?: string,
 ) {
+  const timestamp = Date.now().toString();
+  const echostr = makeStr(32);
+  const wxbootMasterKey = state.secret;
+  const md5 = SHA1(JSON.stringify({ echostr, timestamp, wxbootMasterKey })).toString();
+
+  const rsa = new RSAKey();
+  rsa.readPrivateKeyFromPEMString(state.clientPrivateKey);
+
   const req = request({
     baseURL: state.url + '/wxeap-admin/wxapi',
     headers: {
-      'X-Parse-Application-Id': 'wxeap-admin',
+      'X-Parse-Application-Id': appId || 'wxeap-admin',
       apikey: process.env.API_KEY,
-      'X-Wxboot-Master-Key': state.secret,
+      'X-Wxboot-Master-Key': wxbootMasterKey,
       'Content-Type': 'application/json',
+      'X-timestamp': timestamp,
+      'X-echostr': echostr,
+      'X-sign': rsa.sign?.(md5, 'sha1'),
     },
     ...options,
   });

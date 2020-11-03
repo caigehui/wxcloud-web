@@ -37,19 +37,16 @@ export default ({ menu }) => {
     >
       <WxTableWithApi
         ref={tableRef}
-        onWxApi={({ page, pageSize }) => () =>
-          buildRequest(
-            location.state,
-            {
-              url: '/WxGateway/listConfig',
-              params: {
-                page,
-                pageSize,
-                name,
-              },
+        onWxApi={({ page, pageSize }) =>
+          buildRequest(location.state, {
+            url: '/WxGateway/listConfig',
+            params: {
+              page,
+              pageSize,
+              name,
             },
-            true,
-          )}
+          }).then(i => i.data)
+        }
         options={{ sorting: false, search: false }}
         additionalFilter={
           <>

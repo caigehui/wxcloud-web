@@ -13,8 +13,8 @@ export interface UseWxApiOptions {
   onSuccess?: (data: any) => void;
 }
 
-function useWxApi(config: AxiosRequestConfig, options?: UseWxApiOptions) {
-  return useRequest((data?: any) => requestWxApi({ ...config, data }), {
+function useWxApi(req: (data?: any) => AxiosRequestConfig, options?: UseWxApiOptions) {
+  return useRequest((data?: any) => requestWxApi(req(data)), {
     ...options,
   });
 }

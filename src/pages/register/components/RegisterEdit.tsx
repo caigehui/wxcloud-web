@@ -8,7 +8,7 @@ import validator from 'validator';
 import requestWxApi from '@/utils/requestWxApi';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { useModel } from 'umi';
+import { useHistory, useModel } from 'umi';
 
 interface FormData {
   code: string;
@@ -16,8 +16,6 @@ interface FormData {
   url: string;
   secret: string;
   masterKey: string;
-  restApiKey: string;
-  javascriptKey: string;
   managedBy: Object[];
 }
 
@@ -25,6 +23,7 @@ export default ({ current, onClose, refresh, usernames }: any) => {
   const theme = useTheme();
   const isNew = current?.isNew;
   const { user } = useModel('useAuthModel');
+  const history = useHistory();
 
   const { handleSubmit, errors, control, reset } = useForm<FormData>({
     mode: 'onChange',
@@ -50,7 +49,7 @@ export default ({ current, onClose, refresh, usernames }: any) => {
   }, [current]);
 
   const submit = handleSubmit(async data => {
-    await requestWxApi({
+    const ret = await requestWxApi({
       method: 'POST',
       url: '/WxRegister/save',
       data: {
@@ -62,6 +61,9 @@ export default ({ current, onClose, refresh, usernames }: any) => {
         },
       },
     });
+    if (isNew) {
+      history.push('/tutorial', ret);
+    }
     refresh();
     onClose();
   });
@@ -97,11 +99,11 @@ export default ({ current, onClose, refresh, usernames }: any) => {
             helperText={errors?.name?.message}
             error={!!errors.name}
             rules={{
-              required: { value: true, message: '请输入单位名称' },
+              required: { value: true, message: '请输入服务器名称' },
             }}
             fullWidth
             required
-            label="单位名称"
+            label="服务器名称"
             variant="outlined"
           />
         </Grid>
@@ -114,11 +116,11 @@ export default ({ current, onClose, refresh, usernames }: any) => {
             helperText={errors?.code?.message}
             error={!!errors.code}
             rules={{
-              required: { value: true, message: '请输入单位代号' },
+              required: { value: true, message: '请输入服务器代号' },
             }}
             required
             fullWidth
-            label="单位代号"
+            label="服务器代号"
             variant="outlined"
           />
         </Grid>
