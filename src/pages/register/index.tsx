@@ -141,7 +141,7 @@ export default ({ menu }: any) => {
           {
             disabled: !pmUpdate,
             icon: () => <ExitToApp color="primary" />,
-            tooltip: '起步',
+            tooltip: '配置',
             onClick: async (event, rowData) => {
               event.stopPropagation();
               const ret = await requestWxApi({

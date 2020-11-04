@@ -73,8 +73,23 @@ export default ({ menu }) => {
   };
 
   return (
-    <WxPage menu={menu} title={'服务端配置教程'} showBackIcon>
+    <WxPage menu={menu} title={'服务器配置'} showBackIcon>
       <Stepper activeStep={activeStep} orientation="vertical">
+        <Step>
+          <StepLabel>
+            <Typography variant="h4">开始</Typography>
+          </StepLabel>
+          <StepContent>
+            <Typography>
+              想要通过网欣云管理你的服务器，首先请准备一台Linux服务器，然后按照接下来的四个步骤依次进行配置
+            </Typography>
+            <Box display="flex" mt={2}>
+              <Button variant="contained" color="primary" onClick={() => setActiveStep(1)}>
+                下一步
+              </Button>
+            </Box>
+          </StepContent>
+        </Step>
         <Step>
           <StepLabel>
             <Typography variant="h4">安装Docker环境</Typography>
@@ -105,7 +120,10 @@ export default ({ menu }) => {
                 安装Docker
               </Typography>
               <Box display="flex" mt={2}>
-                <Button variant="contained" color="primary" onClick={() => setActiveStep(1)}>
+                <Button onClick={() => setActiveStep(0)} style={{ marginRight: theme.spacing(2) }}>
+                  上一步
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => setActiveStep(2)}>
                   下一步
                 </Button>
               </Box>
@@ -134,10 +152,10 @@ export default ({ menu }) => {
               </CommandBox>
               <Typography>完成安装</Typography>
               <Box display="flex" mt={2}>
-                <Button onClick={() => setActiveStep(0)} style={{ marginRight: theme.spacing(2) }}>
+                <Button onClick={() => setActiveStep(1)} style={{ marginRight: theme.spacing(2) }}>
                   上一步
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => setActiveStep(2)}>
+                <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>
                   下一步
                 </Button>
               </Box>
@@ -156,7 +174,7 @@ export default ({ menu }) => {
               </Typography>
 
               <Box display="flex" mt={2}>
-                <Button onClick={() => setActiveStep(1)} style={{ marginRight: theme.spacing(2) }}>
+                <Button onClick={() => setActiveStep(2)} style={{ marginRight: theme.spacing(2) }}>
                   上一步
                 </Button>
                 <Button
@@ -181,7 +199,7 @@ export default ({ menu }) => {
                 >
                   下载私钥（可选）
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>
+                <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>
                   下一步
                 </Button>
               </Box>
@@ -207,21 +225,21 @@ export default ({ menu }) => {
               <CommandBox>$ docker-compose up -d</CommandBox>
               <Typography>完成部署</Typography>
               <Box display="flex" mt={2}>
-                <Button onClick={() => setActiveStep(2)} style={{ marginRight: theme.spacing(2) }}>
+                <Button onClick={() => setActiveStep(3)} style={{ marginRight: theme.spacing(2) }}>
                   上一步
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>
+                <Button variant="contained" color="primary" onClick={() => setActiveStep(5)}>
                   完成
                 </Button>
               </Box>
             </Box>
           </StepContent>
         </Step>
-        {activeStep > 3 && (
+        {activeStep > 4 && (
           <Paper square elevation={0}>
             <Box pt={2} display="flex">
-              <Button onClick={() => setActiveStep(0)} style={{ marginRight: theme.spacing(2) }}>
-                重新开始
+              <Button onClick={() => setActiveStep(4)} style={{ marginRight: theme.spacing(2) }}>
+                上一步
               </Button>
               <Button variant="contained" color="primary" onClick={enter}>
                 管理服务器
