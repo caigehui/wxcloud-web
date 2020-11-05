@@ -140,7 +140,7 @@ export default ({ menu }) => {
                 Docker Compose 是Docker官方提供的容器编排工具，可以使用下面的命令快速安装
               </Typography>
               <CommandBox>
-                $ sudo curl -H "apikey: {process.env.API_KEY}" -o /usr/local/bin/docker-compose
+                $ sudo curl -H "apikey: {process.env.API_KEY}" -o /usr/local/bin/docker-compose{' '}
                 {window.location.origin}
                 /wxcloud/download/docker-compose-Linux-x86_64
               </CommandBox>

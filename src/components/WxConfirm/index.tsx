@@ -8,6 +8,7 @@ import { getDefaultTheme } from '@/utils';
 
 export interface WxConfirmOptions {
   title?: string;
+  width?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   message: React.ReactNode;
   onConfirm: () => Promise<boolean> | void;
   onCancel?: () => void;
@@ -64,6 +65,7 @@ function WxConfirm({ onClose, options }: IWxConfirmProps) {
       <WxDialog
         title={options.title}
         open={open}
+        width={options.width}
         disableBackdropClick={options.disableBackdropClick}
         onClose={() => !loading && setOpen(false)}
         onExited={onClose}
@@ -95,6 +97,8 @@ function WxConfirm({ onClose, options }: IWxConfirmProps) {
       >
         {typeof options.message === 'string' ? (
           <DialogContentText>{options.message}</DialogContentText>
+        ) : typeof options.message === 'function' ? (
+          options.message(() => setOpen(false))
         ) : (
           options.message
         )}

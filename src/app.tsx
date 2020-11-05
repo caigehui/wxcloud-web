@@ -14,15 +14,19 @@ type AppProps = {
 };
 
 export async function getInitialState() {
-  const data = await getClientConfig();
-  handleClientKey(data.key);
-  await addReCaptcha(!!data?.enableReCaptcha);
-  await waitFor(1000);
-  const fingerprint = await getFingerprint();
-  hideLoader();
-  return {
-    fingerprint,
-  };
+  try {
+    const data = await getClientConfig();
+    handleClientKey(data.key);
+    await addReCaptcha(!!data?.enableReCaptcha);
+    await waitFor(1000);
+    const fingerprint = await getFingerprint();
+    hideLoader();
+    return {
+      fingerprint,
+    };
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const App = ({ children }: AppProps) => {
