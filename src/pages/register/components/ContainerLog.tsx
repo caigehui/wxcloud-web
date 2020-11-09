@@ -43,7 +43,7 @@ export default ({ containerLog, onClose }: any) => {
       open={!!containerLog}
       onClose={close}
       titleIcon={<Edit />}
-      title={containerLog?.Name + '镜像日志'}
+      title={containerLog?.Name + '容器日志'}
       actions={
         <>
           <Button onClick={close} color="primary">

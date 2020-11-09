@@ -68,9 +68,9 @@ const themeConfigs = [
         active: colors.blueGrey[500],
       },
       background: {
-        default: colors.common.white,
+        default: '#ffffff',
         dark: '#f4f6f8',
-        paper: colors.common.white,
+        paper: '#ffffff',
         bar: 'rgb(200, 200, 200)!important',
       },
       primary: {

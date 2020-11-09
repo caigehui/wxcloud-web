@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import LightningFS from '@isomorphic-git/lightning-fs';
 import git from 'isomorphic-git';
 import { Box, makeStyles, useTheme } from '@material-ui/core';
@@ -6,8 +6,12 @@ import color from 'color';
 import { Folder, makeDirectory } from '../utils';
 import { ExpandMore, FolderOpen, KeyboardArrowRight } from '@material-ui/icons';
 import { useLocalStorageState } from 'ahooks';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { folderIcons } from '../utils/folderIcons';
 import { fileIcons } from '../utils/fileIcons';
+import { THEME } from '@/constants';
+import { TABS_HEIGHT } from '../[name]';
+import { useModel } from 'umi';
 const fs = new LightningFS('fs');
 
 const useStyles = makeStyles(theme => ({
@@ -23,10 +27,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     bottom: 0,
     width: 1,
-    backgroundColor: color(theme.palette.background.paper)
-      .lighten(0.2)
-      .hex()
-      .toString(),
+    backgroundColor: theme.palette.background.paper,
   },
   area: {
     display: 'flex',
@@ -36,7 +37,10 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 1,
     paddingBottom: 1,
     '&:hover': {
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: color(theme.palette.background.paper)
+        .lighten(0.1)
+        .hex()
+        .toString(),
     },
   },
   arrow: {
@@ -59,22 +63,49 @@ const useStyles = makeStyles(theme => ({
   },
   bar1: {
     color: theme.palette.text.primary,
-    height: 32,
-    lineHeight: '32px',
+    height: TABS_HEIGHT,
+    lineHeight: `${TABS_HEIGHT}px`,
     paddingLeft: theme.spacing(2),
   },
   bar2: {
+    overflow: 'hidden',
     color: theme.palette.text.primary,
     height: 28,
     lineHeight: '28px',
     background: theme.palette.background.paper,
     paddingLeft: theme.spacing(2),
     fontSize: 16,
-    boxShadow: '0px 3px 8px 1px rgba(0,0,0,0.3)',
+    boxShadow: '0px 6px 8px 1px rgba(0,0,0,0.1)',
+  },
+  scroll: {
+    flex: 1,
+  },
+  thumb: {
+    cursor: 'pointer',
+    borderRadius: 'inherit',
+    backgroundColor:
+      theme['name'] === THEME.LIGHT
+        ? color(theme.palette.background.paper)
+            .darken(0.2)
+            .hex()
+            .toString()
+        : color(theme.palette.background.paper)
+            .lighten(0.5)
+            .hex()
+            .toString(),
   },
 }));
 
-const Area = ({ folder, focusItem, setFocusItem, openFolders, setOpenFolders, depth }) => {
+const Area = ({
+  folder,
+  focusItem,
+  setFocusItem,
+  openFolders,
+  setOpenFolders,
+  openItems,
+  setOpenItems,
+  depth,
+}) => {
   const styles = useStyles();
   const theme = useTheme();
   return (
@@ -85,12 +116,16 @@ const Area = ({ folder, focusItem, setFocusItem, openFolders, setOpenFolders, de
         const opened = openFolders.some(j => j === i.path);
 
         const onClick = () => {
-          setFocusItem(i.path);
           if (isFolder) {
             if (opened) {
               setOpenFolders(openFolders.filter(j => j !== i.path));
             } else {
               setOpenFolders([...openFolders, i.path]);
+            }
+          } else {
+            setFocusItem(i.path);
+            if (!openItems.some(j => j.path === i.path)) {
+              setOpenItems([...openItems, { name: i.name, path: i.path }]);
             }
           }
         };
@@ -105,9 +140,8 @@ const Area = ({ folder, focusItem, setFocusItem, openFolders, setOpenFolders, de
             )?.name || 'file';
 
         return (
-          <>
+          <React.Fragment key={index}>
             <Box
-              key={index}
               className={styles.area}
               bgcolor={
                 focusItem === i.path
@@ -133,21 +167,29 @@ const Area = ({ folder, focusItem, setFocusItem, openFolders, setOpenFolders, de
                 focusItem={focusItem}
                 setFocusItem={setFocusItem}
                 openFolders={openFolders}
+                openItems={openItems}
+                setOpenItems={setOpenItems}
                 setOpenFolders={setOpenFolders}
               />
             )}
-          </>
+          </React.Fragment>
         );
       })}
     </Box>
   );
 };
 
-export default ({ ready, name }) => {
-  const [folder, setFolder] = useState<Folder>(null);
-  const [openFolders, setOpenFolders] = useLocalStorageState<string[]>(`${name}-open-folders`, []);
-  const [focusItem, setFocusItem] = useState(null);
-  const theme = useTheme();
+export default ({ ready, name, focusItem, setFocusItem, openItems, setOpenItems }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const { user } = useModel('useAuthModel');
+  const [folder, setFolder] = useLocalStorageState<Folder>(`${user.id}-${name}-folder`, null);
+  // 文件浏览器展开的文件
+  const [openFolders, setOpenFolders] = useLocalStorageState<string[]>(
+    `${user.id}-${name}-open-folders`,
+    [],
+  );
+
   const styles = useStyles();
 
   useEffect(() => {
@@ -156,10 +198,15 @@ export default ({ ready, name }) => {
         const init: Folder = { name: '', path: '', children: [] };
         makeDirectory(files, init);
         setFolder(init);
-        console.log(init);
       });
     }
   }, [ready]);
+
+  useEffect(() => {
+    if (folder) {
+      setScrollHeight(scrollRef.current?.clientHeight);
+    }
+  }, [folder]);
 
   if (!folder)
     return (
@@ -170,18 +217,27 @@ export default ({ ready, name }) => {
 
   return (
     <Box height="100%" display="flex" flexDirection="column">
-      <Box className={styles.bar1}>文件目录</Box>
-      <Box className={styles.bar2}>{name}</Box>
-      <Box overflow="auto" flex={1} paddingBottom="100px">
-        <Area
-          focusItem={focusItem}
-          setFocusItem={setFocusItem}
-          openFolders={openFolders}
-          setOpenFolders={setOpenFolders}
-          folder={folder}
-          depth={0}
-        />
-      </Box>
+      <div className={styles.bar1}>文件目录</div>
+      <div className={styles.bar2}>{name}</div>
+      <div ref={el => (scrollRef.current = el)} className={styles.scroll}>
+        <Scrollbars
+          autoHide
+          style={{ height: scrollHeight }}
+          renderThumbVertical={props => <div className={styles.thumb} {...props} />}
+        >
+          <Area
+            focusItem={focusItem}
+            setFocusItem={setFocusItem}
+            openFolders={openFolders}
+            setOpenFolders={setOpenFolders}
+            openItems={openItems}
+            setOpenItems={setOpenItems}
+            folder={folder}
+            depth={0}
+          />
+          <Box height={100} />
+        </Scrollbars>
+      </div>
     </Box>
   );
 };

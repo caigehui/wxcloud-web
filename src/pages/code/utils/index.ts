@@ -1,3 +1,5 @@
+import * as monaco from 'monaco-editor';
+
 export interface Folder {
   name: string;
   path: string;
@@ -151,11 +153,11 @@ export function makeDirectory(files: string[], ret: Folder) {
       if (folders.some(i => i.name === folder)) {
         folders.find(i => i.name === folder).children.push(childFile);
       } else {
-        folders.push({ name: folder, path: ret.name + '/' + folder, children: [childFile] });
+        folders.push({ name: folder, path: ret.path + '/' + folder, children: [childFile] });
       }
     } else {
       // 文件直接加入
-      filesToBeAdd.push({ name: file, path: ret.name + '/' + file });
+      filesToBeAdd.push({ name: file, path: ret.path + '/' + file });
     }
   }
 
@@ -166,3 +168,25 @@ export function makeDirectory(files: string[], ret: Folder) {
   }
   ret.children.push(...filesToBeAdd);
 }
+
+const compilerDefaults = {
+  jsx: monaco.languages.typescript.JsxEmit.React,
+  target: monaco.languages.typescript.ScriptTarget.ES2018,
+  moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+  module: monaco.languages.typescript.ModuleKind.CommonJS,
+  experimentalDecorators: true,
+  noEmit: true,
+  allowJs: true,
+  resolveJsonModule: true,
+  allowSyntheticDefaultImports: true,
+  emitDecoratorMetadata: true,
+};
+
+monaco.languages.typescript.typescriptDefaults.setCompilerOptions(compilerDefaults);
+monaco.languages.typescript.javascriptDefaults.setCompilerOptions(compilerDefaults);
+
+monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+  noSemanticValidation: true,
+  noSyntaxValidation: false,
+  noSuggestionDiagnostics: false,
+});

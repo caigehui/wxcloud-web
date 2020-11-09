@@ -5,11 +5,12 @@ import {
   makeStyles,
   SvgIcon,
   TextField,
+  Tooltip,
   Typography,
   useTheme,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { File, GitBranch } from 'react-feather';
+import { File, GitBranch, Search } from 'react-feather';
 import clsx from 'clsx';
 import { ReactComponent as Logo } from '@/assets/logo.svg';
 import { ReactComponent as Docker } from '@/assets/docker.svg';
@@ -19,13 +20,19 @@ import Crypto from 'crypto-js';
 import LightningFS from '@isomorphic-git/lightning-fs';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/web';
+import { Helmet } from 'react-helmet';
 import WxLoading from '@/components/WxLoading';
 import wxConfirm from '@/components/WxConfirm';
 import { useModel } from 'umi';
 import WxSnackBar from '@/components/WxSnackBar';
 import { Error } from '@material-ui/icons';
 import requestWxApi from '@/utils/requestWxApi';
+import { useLocalStorageState } from 'ahooks';
+import Editor from './components/Editor';
+import { useHotkeys } from 'react-hotkeys-hook';
 const fs = new LightningFS('fs');
+
+export const TABS_HEIGHT = 45;
 
 const useStyles = makeStyles(theme => ({
   menuItem: {
@@ -42,7 +49,6 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       background: theme.palette.action.hover,
     },
-    marginBottom: theme.spacing(1),
   },
   menuItemActived: {
     background: theme.palette.action.hover,
@@ -57,13 +63,45 @@ const useStyles = makeStyles(theme => ({
 export default ({ location }) => {
   const styles = useStyles();
   const theme = useTheme();
-  const name = location.pathname.replace('/code/', '');
-  const [activedIndex, setActivedIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [failure, setFailure] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const [ready, setReady] = useState(false);
   const { user } = useModel('useAuthModel');
+  const name = location.pathname.replace('/code/', '');
+  // 又Section宽度
+  const [editorWidth, setEditorWidth] = useState(0);
+  // 侧边栏菜单当前Index
+  const [siderActiveIndex, setSiderActiveIndex] = useState(0);
+  // git初始化
+  const [loading, setLoading] = useState(false);
+  // git初始化失败
+  const [failure, setFailure] = useState(null);
+  // git重试
+  const [retryCount, setRetryCount] = useState(0);
+  // 初始化成功
+  const [ready, setReady] = useState(false);
+  // 聚焦的文件
+  const [focusItem, setFocusItem] = useLocalStorageState(`${user.id}-${name}-focus-item`, null);
+  // 已经打开过的文件
+  const [openItems, setOpenItems] = useLocalStorageState(`${user.id}-${name}-open-items`, []);
+
+  useHotkeys(
+    'ctrl+alt+w',
+    () => {
+      const items = openItems.filter(j => j.path !== focusItem);
+      setFocusItem(items[items.length - 1]?.path);
+      setOpenItems([...items]);
+    },
+    {},
+    [focusItem, openItems],
+  );
+
+  useHotkeys(
+    'ctrl+alt+k+w',
+    () => {
+      setFocusItem(null);
+      setOpenItems([]);
+    },
+    {},
+    [focusItem, openItems],
+  );
 
   useEffect(() => {
     async function clone() {
@@ -154,8 +192,9 @@ export default ({ location }) => {
         });
         setReady(true);
       } catch (error) {
-        setFailure(true);
+        setFailure('代码拉取失败');
       }
+      setFailure(null);
       setLoading(false);
     }
     clone();
@@ -163,6 +202,9 @@ export default ({ location }) => {
 
   return (
     <Box display="flex" flexDirection="column" height="100%" width="100%">
+      <Helmet>
+        <title>{name} - wxcloud studio</title>
+      </Helmet>
       <Box px={2} height={36} width="100%" display="flex" alignItems="center" flexShrink={0}>
         <Logo width={24} height={24} />
         <Box ml={3}>
@@ -202,30 +244,46 @@ export default ({ location }) => {
           height="100%"
           alignItems="center"
         >
-          <Box
-            onClick={() => setActivedIndex(0)}
-            className={clsx(styles.menuItem, activedIndex === 0 && styles.menuItemActived)}
-          >
-            <SvgIcon className={styles.menuIcon} color="inherit">
-              <File />
-            </SvgIcon>
-          </Box>
-          <Box
-            onClick={() => setActivedIndex(1)}
-            className={clsx(styles.menuItem, activedIndex === 1 && styles.menuItemActived)}
-          >
-            <SvgIcon className={styles.menuIcon} color="inherit">
-              <GitBranch />
-            </SvgIcon>
-          </Box>
-          <Box
-            onClick={() => setActivedIndex(2)}
-            className={clsx(styles.menuItem, activedIndex === 2 && styles.menuItemActived)}
-          >
-            <SvgIcon className={styles.menuIcon} color="inherit">
-              <Docker width={28} height={28} />
-            </SvgIcon>
-          </Box>
+          <Tooltip title="文件" placement="right" enterDelay={500}>
+            <Box
+              onClick={() => setSiderActiveIndex(0)}
+              className={clsx(styles.menuItem, siderActiveIndex === 0 && styles.menuItemActived)}
+            >
+              <SvgIcon className={styles.menuIcon} color="inherit">
+                <File />
+              </SvgIcon>
+            </Box>
+          </Tooltip>{' '}
+          <Tooltip title="搜索" placement="right" enterDelay={500}>
+            <Box
+              onClick={() => setSiderActiveIndex(1)}
+              className={clsx(styles.menuItem, siderActiveIndex === 1 && styles.menuItemActived)}
+            >
+              <SvgIcon className={styles.menuIcon} color="inherit">
+                <Search />
+              </SvgIcon>
+            </Box>
+          </Tooltip>
+          <Tooltip title="Git Commit" placement="right" enterDelay={500}>
+            <Box
+              onClick={() => setSiderActiveIndex(2)}
+              className={clsx(styles.menuItem, siderActiveIndex === 2 && styles.menuItemActived)}
+            >
+              <SvgIcon className={styles.menuIcon} color="inherit">
+                <GitBranch />
+              </SvgIcon>
+            </Box>
+          </Tooltip>
+          <Tooltip title="Docker部署" placement="right" enterDelay={500}>
+            <Box
+              onClick={() => setSiderActiveIndex(3)}
+              className={clsx(styles.menuItem, siderActiveIndex === 3 && styles.menuItemActived)}
+            >
+              <SvgIcon className={styles.menuIcon} color="inherit">
+                <Docker width={28} height={28} />
+              </SvgIcon>
+            </Box>
+          </Tooltip>
         </Box>
         <Container style={{ height: '100%', flex: 1 }}>
           <Section
@@ -234,15 +292,30 @@ export default ({ location }) => {
             minSize={150}
           >
             {(() => {
-              switch (activedIndex) {
+              switch (siderActiveIndex) {
                 case 0:
-                  return <FileExplorer name={name} ready={ready} />;
+                  return (
+                    <FileExplorer
+                      name={name}
+                      ready={ready}
+                      focusItem={focusItem}
+                      setFocusItem={setFocusItem}
+                      setOpenItems={setOpenItems}
+                      openItems={openItems}
+                    />
+                  );
               }
             })()}
           </Section>
-          <Bar size={10} style={{ background: 'transparent', cursor: 'col-resize' }} />
-          <Section style={{ background: theme.palette.background.default, flex: 1 }} minSize={600}>
-            {failure && (
+          <Bar size={10} style={{ background: 'transparent', cursor: 'col-resize' }}>
+            <Box height={TABS_HEIGHT} bgcolor={theme.palette.background['dark']} width="100%" />
+          </Bar>
+          <Section
+            onSizeChanged={width => setEditorWidth(width)}
+            style={{ background: theme.palette.background.default, width: 'auto' }}
+            minSize={600}
+          >
+            {!!failure ? (
               <Box
                 display="flex"
                 alignItems="center"
@@ -253,10 +326,19 @@ export default ({ location }) => {
               >
                 <Error style={{ height: 100, width: 100 }} color="error" />
                 <Box my={1}>
-                  <Typography color="textSecondary"> 拉取代码失败 </Typography>
+                  <Typography color="textSecondary"> {failure} </Typography>
                 </Box>
                 <Button onClick={() => setRetryCount(retryCount + 1)}>重试</Button>
               </Box>
+            ) : (
+              <Editor
+                name={name}
+                focusItem={focusItem}
+                setFocusItem={setFocusItem}
+                width={editorWidth}
+                openItems={openItems}
+                setOpenItems={setOpenItems}
+              />
             )}
           </Section>
         </Container>
