@@ -5,9 +5,8 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import color from 'color';
 import { THEME } from '@/constants';
 import Monaco from './Monaco';
-import { ReactComponent as LogoLight } from '@/assets/logo-light.svg';
-import { ReactComponent as LogoDark } from '@/assets/logo-dark.svg';
 import TabItem from './TabItem';
+import EditorBlank from './EditorBlank';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -39,10 +38,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default ({ focusItem, name, setFocusItem, openItems, width, setOpenItems }) => {
+export default ({
+  focusItem,
+  name,
+  setFocusItem,
+  openItems,
+  width,
+  setOpenItems,
+  unsavedItems,
+  setUnsavedItems,
+}) => {
   const styles = useStyles();
   const theme = useTheme();
   const scrollRef = useRef(null);
+  const editorRef = useRef(null);
 
   return (
     <Box className={styles.container} width={width}>
@@ -68,30 +77,38 @@ export default ({ focusItem, name, setFocusItem, openItems, width, setOpenItems 
               <TabItem
                 key={item.path}
                 openItems={openItems}
-                setOpenItems={setOpenItems}
                 focusItem={focusItem}
+                unsavedItems={unsavedItems}
                 setFocusItem={setFocusItem}
                 item={item}
                 scrollRef={scrollRef}
                 width={width}
+                editorRef={editorRef}
               />
             );
           })}
         </div>
       </Scrollbars>
-      <Box flex={1} display="flex" justifyContent="center" alignItems="center">
+      <Box
+        flex={1}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         {focusItem ? (
           <Monaco
+            ref={el => (editorRef.current = el)}
             focusItem={focusItem}
             name={name}
             setFocusItem={setFocusItem}
             openItems={openItems}
             setOpenItems={setOpenItems}
+            unsavedItems={unsavedItems}
+            setUnsavedItems={setUnsavedItems}
           />
-        ) : theme['name'] === THEME.LIGHT ? (
-          <LogoLight />
         ) : (
-          <LogoDark />
+          <EditorBlank />
         )}
       </Box>
     </Box>

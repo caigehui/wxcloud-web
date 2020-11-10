@@ -29,7 +29,6 @@ import { Error } from '@material-ui/icons';
 import requestWxApi from '@/utils/requestWxApi';
 import { useLocalStorageState } from 'ahooks';
 import Editor from './components/Editor';
-import { useHotkeys } from 'react-hotkeys-hook';
 const fs = new LightningFS('fs');
 
 export const TABS_HEIGHT = 45;
@@ -81,27 +80,8 @@ export default ({ location }) => {
   const [focusItem, setFocusItem] = useLocalStorageState(`${user.id}-${name}-focus-item`, null);
   // 已经打开过的文件
   const [openItems, setOpenItems] = useLocalStorageState(`${user.id}-${name}-open-items`, []);
-
-  useHotkeys(
-    'ctrl+alt+w',
-    () => {
-      const items = openItems.filter(j => j.path !== focusItem);
-      setFocusItem(items[items.length - 1]?.path);
-      setOpenItems([...items]);
-    },
-    {},
-    [focusItem, openItems],
-  );
-
-  useHotkeys(
-    'ctrl+alt+k+w',
-    () => {
-      setFocusItem(null);
-      setOpenItems([]);
-    },
-    {},
-    [focusItem, openItems],
-  );
+  // 未保存文件
+  const [unsavedItems, setUnsavedItems] = useState([]);
 
   useEffect(() => {
     async function clone() {
@@ -338,6 +318,8 @@ export default ({ location }) => {
                 width={editorWidth}
                 openItems={openItems}
                 setOpenItems={setOpenItems}
+                unsavedItems={unsavedItems}
+                setUnsavedItems={setUnsavedItems}
               />
             )}
           </Section>

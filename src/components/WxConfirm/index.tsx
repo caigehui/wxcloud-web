@@ -12,7 +12,9 @@ export interface WxConfirmOptions {
   message: React.ReactNode;
   onConfirm: () => Promise<boolean> | void;
   onCancel?: () => void;
+  onNuetral?: () => void;
   confirmText?: string;
+  nuetralText?: string;
   cancelText?: string;
   disableBackdropClick?: boolean;
 }
@@ -83,6 +85,20 @@ function WxConfirm({ onClose, options }: IWxConfirmProps) {
                 {options.cancelText || '取消'}
               </Button>
             </Box>
+            {options.nuetralText && (
+              <Box color={myTheme.palette.text.hint}>
+                <Button
+                  disabled={loading}
+                  onClick={() => {
+                    options.onNuetral?.();
+                    setOpen(false);
+                  }}
+                  color="inherit"
+                >
+                  {options.nuetralText}
+                </Button>
+              </Box>
+            )}
             <Box color={myTheme.palette.primary.main}>
               <Button onClick={onConfirm} disabled={loading} color="inherit">
                 {loading ? (

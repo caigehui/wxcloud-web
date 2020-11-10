@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core';
 import LightningFS from '@isomorphic-git/lightning-fs';
 const fs = new LightningFS('fs');
 import { THEME } from '@/constants';
+import wxConfirm from '@/components/WxConfirm';
 
 const styles = {
   editor: {
@@ -12,15 +13,27 @@ const styles = {
   },
 };
 
-class Monaco extends React.Component<any> {
+interface IState {
+  editor: monaco.editor.IStandaloneCodeEditor;
+  originalValues: { item: string; value: string }[];
+}
+
+class Monaco extends React.Component<any, IState> {
   ref: HTMLDivElement;
 
-  state = {
+  state: IState = {
     editor: null,
+    originalValues: [],
   };
 
   async componentDidMount() {
-    const { theme, focusItem, name } = this.props;
+    window.onbeforeunload = () => {
+      if (this.props.unsavedItems.length > 0) {
+        return 'leave';
+      }
+    };
+
+    const { theme } = this.props;
     monaco.editor.defineTheme('dark', {
       base: 'vs-dark',
       inherit: true,
@@ -54,11 +67,7 @@ class Monaco extends React.Component<any> {
       },
     });
     monaco.editor.setTheme(theme['name'] === THEME.LIGHT ? 'light' : 'dark');
-    const data = await fs.promises.readFile('/' + name + focusItem, { encoding: 'utf8' });
-    const model =
-      monaco.editor.getModel(monaco.Uri.file(focusItem)) ||
-      monaco.editor.createModel(data, undefined, monaco.Uri.file(focusItem));
-
+    const model = await this.getModel();
     const editor = monaco.editor.create(this.ref, {
       lineNumbers: 'on',
       fontSize: 18,
@@ -70,26 +79,38 @@ class Monaco extends React.Component<any> {
       wrappingIndent: 'indent',
       minimap: {},
     });
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, this.close);
+    editor.onDidChangeModelContent(this.onContentChanged);
+    // 关闭
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, () =>
+      this.onCloseTab(),
+    );
+    // 关闭全部
+    editor.addCommand(
+      monaco.KeyMod.chord(
+        monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_K,
+        monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W,
+      ),
+      () => this.onCloseAllTabs(),
+    );
+    // 保存文件
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, () =>
+      this.onSaveItem(),
+    );
+    // 保存全部文件
+    editor.addCommand(
+      monaco.KeyMod.chord(
+        monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_K,
+        monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S,
+      ),
+      () => this.onSaveAllItems(),
+    );
     this.setState({ editor });
   }
-
-  close = () => {
-    const { openItems, setFocusItem, focusItem, setOpenItems } = this.props;
-    const items = openItems.filter(j => j.path !== focusItem);
-    setFocusItem(items[items.length - 1]?.path);
-    setOpenItems([...items]);
-  };
 
   async componentDidUpdate(prevProps) {
     const { focusItem, name } = this.props;
     if (focusItem !== prevProps.focusItem && name) {
-      const data = await fs.promises.readFile('/' + name + focusItem, { encoding: 'utf8' });
-      const model =
-        monaco.editor.getModel(monaco.Uri.file(focusItem)) ||
-        monaco.editor.createModel(data, undefined, monaco.Uri.file(focusItem));
-
-      console.log(model);
+      const model = await this.getModel();
       this.state.editor.setModel(model);
     }
   }
@@ -97,6 +118,151 @@ class Monaco extends React.Component<any> {
   componentWillUnmount() {
     this.state.editor?.dispose();
   }
+
+  getModel = async () => {
+    const { focusItem, name } = this.props;
+    const data = await fs.promises.readFile('/' + name + focusItem, { encoding: 'utf8' });
+    const originalModel = monaco.editor.getModel(monaco.Uri.file(focusItem));
+    if (!originalModel) {
+      this.setState({
+        originalValues: [...this.state.originalValues, { item: focusItem, value: data }],
+      });
+    }
+    return originalModel || monaco.editor.createModel(data, undefined, monaco.Uri.file(focusItem));
+  };
+
+  onContentChanged = () => {
+    const { focusItem, setUnsavedItems, unsavedItems } = this.props;
+    const { editor, originalValues } = this.state;
+    if (editor.getValue() !== originalValues.find(i => i.item === focusItem)?.value) {
+      if (!unsavedItems.some(i => i === focusItem)) {
+        setUnsavedItems([...unsavedItems, focusItem]);
+      }
+    } else {
+      if (unsavedItems.some(i => i === focusItem)) {
+        setUnsavedItems(unsavedItems.filter(i => i !== focusItem));
+      }
+    }
+  };
+
+  onSaveItem = async (item?: string) => {
+    const { focusItem, name, unsavedItems, setUnsavedItems } = this.props;
+    item = item || focusItem;
+    await fs.promises.writeFile('/' + name + item, this.state.editor.getValue(), {
+      encoding: 'utf8',
+    });
+    if (unsavedItems.some(i => i === item)) {
+      setUnsavedItems(unsavedItems.filter(i => i !== item));
+
+      this.setState({
+        originalValues: this.state.originalValues.map(i => {
+          if (i.item === item) {
+            i.value = this.state.editor.getValue();
+          }
+          return i;
+        }),
+      });
+    }
+  };
+
+  onSaveAllItems = async () => {
+    const { unsavedItems, name, setUnsavedItems } = this.props;
+    const promises = [];
+    for (const item of unsavedItems) {
+      promises.push(
+        fs.promises.writeFile(
+          '/' + name + item,
+          monaco.editor.getModel(monaco.Uri.file(item)).getValue(),
+          {
+            encoding: 'utf8',
+          },
+        ),
+      );
+    }
+    await Promise.all(promises);
+    setUnsavedItems([]);
+    this.setState({
+      originalValues: [],
+    });
+  };
+
+  onCloseTab = (item?: string) => {
+    const {
+      openItems,
+      setFocusItem,
+      unsavedItems,
+      setUnsavedItems,
+      focusItem,
+      setOpenItems,
+    } = this.props;
+    item = item || focusItem;
+    const close = () => {
+      const items = openItems.filter(j => j.path !== item);
+      setFocusItem(items[items.length - 1]?.path);
+      setOpenItems([...items]);
+
+      if (unsavedItems.some(i => i === item)) {
+        setUnsavedItems(unsavedItems.filter(i => i !== item));
+        this.setState({
+          originalValues: this.state.originalValues.filter(i => i.item !== item),
+        });
+      }
+    };
+    if (unsavedItems.some(i => i === item)) {
+      wxConfirm({
+        title: '保存文件',
+        message: '您的更改会丢失如果不进行保存',
+        nuetralText: '不保存',
+        confirmText: '保存',
+        cancelText: '取消',
+        onConfirm: () => {
+          // 保存
+          this.onSaveItem(item);
+          close();
+        },
+        onNuetral: () => {
+          // 不保存
+          monaco.editor.getModel(monaco.Uri.file(focusItem)).dispose();
+          close();
+        },
+      });
+    } else {
+      close();
+    }
+  };
+
+  onCloseAllTabs = () => {
+    const { setFocusItem, unsavedItems, setUnsavedItems, setOpenItems } = this.props;
+    const closeAll = () => {
+      setFocusItem(null);
+      setOpenItems([]);
+      setUnsavedItems([]);
+      this.setState({
+        originalValues: [],
+      });
+    };
+    if (unsavedItems.length > 0) {
+      wxConfirm({
+        title: '保存文件',
+        message: '您的更改会丢失如果不进行保存',
+        nuetralText: '不保存',
+        confirmText: '保存',
+        cancelText: '取消',
+        onConfirm: async () => {
+          // 保存
+          await this.onSaveAllItems();
+          closeAll();
+          return true;
+        },
+        onNuetral: () => {
+          monaco.editor.getModels().forEach(model => model.dispose());
+          closeAll();
+        },
+      });
+    } else {
+      closeAll();
+    }
+  };
 
   render() {
     const { classes } = this.props;

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { fileIcons } from '../utils/fileIcons';
 import { Close } from '@material-ui/icons';
-import { makeStyles, Tooltip } from '@material-ui/core';
+import { Box, makeStyles, Tooltip } from '@material-ui/core';
 import Color from 'color';
 
 const useStyles = makeStyles(theme => ({
@@ -27,17 +27,33 @@ const useStyles = makeStyles(theme => ({
       '& $close': {
         opacity: 1,
       },
+      '& $unsaved': {
+        opacity: 0,
+      },
     },
   },
   close: {
-    transition: '.2s',
     opacity: 0,
     height: 18,
     width: 18,
     marginLeft: 6,
     flexShrink: 0,
+    position: 'relative',
     '&:active': {
       transform: 'scale(1.3)',
+    },
+  },
+  unsaved: {
+    opacity: 1,
+    fontSize: 25,
+    lineHeight: 25,
+    flexShrink: 0,
+    position: 'relative',
+    marginLeft: 6,
+    marginRight: -22,
+    marginBottom: 6,
+    '&:hover': {
+      opacity: 0,
     },
   },
   tabActive: {
@@ -45,6 +61,11 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     '& $close': {
       opacity: 1,
+    },
+  },
+  tabUnsaved: {
+    '& $close': {
+      opacity: 0,
     },
   },
   icon: {
@@ -67,9 +88,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default ({ setFocusItem, focusItem, setOpenItems, openItems, item, scrollRef, width }) => {
+export default ({
+  unsavedItems,
+  setFocusItem,
+  focusItem,
+  openItems,
+  item,
+  scrollRef,
+  width,
+  editorRef,
+}) => {
   const styles = useStyles();
   const ref = useRef<HTMLDivElement>();
+
+  const unsave = unsavedItems.some(i => i === item.path);
 
   useEffect(() => {
     if (focusItem === item.path) {
@@ -91,9 +123,7 @@ export default ({ setFocusItem, focusItem, setOpenItems, openItems, item, scroll
 
   const close = e => {
     e.stopPropagation();
-    const items = openItems.filter(j => j.path !== item.path);
-    setFocusItem(items[items.length - 1]?.path);
-    setOpenItems([...items]);
+    editorRef.current?.onCloseTab(item.path);
   };
 
   const jump = () => {
@@ -101,11 +131,14 @@ export default ({ setFocusItem, focusItem, setOpenItems, openItems, item, scroll
       setFocusItem(item.path);
     }
   };
-
   return (
     <div
       ref={el => (ref.current = el)}
-      className={clsx(styles.tab, item.path === focusItem && styles.tabActive)}
+      className={clsx(
+        styles.tab,
+        item.path === focusItem && styles.tabActive,
+        unsave && styles.tabUnsaved,
+      )}
       onClick={jump}
     >
       <img className={styles.icon} src={`/public/icons/${iconName}.svg`} />
@@ -119,6 +152,11 @@ export default ({ setFocusItem, focusItem, setOpenItems, openItems, item, scroll
             })()}
           </div>
         </Tooltip>
+      )}
+      {unsave && (
+        <Box className={styles.unsaved} onClick={close}>
+          ●
+        </Box>
       )}
       <Close className={styles.close} onClick={close} />
     </div>
