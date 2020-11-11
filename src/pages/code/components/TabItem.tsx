@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import clsx from 'clsx';
-import { fileIcons } from '../utils/fileIcons';
 import { Close } from '@material-ui/icons';
 import { Box, makeStyles, Tooltip } from '@material-ui/core';
 import Color from 'color';
+import { getFileIcon } from '../utils';
 
 const useStyles = makeStyles(theme => ({
   tab: {
@@ -112,13 +112,7 @@ export default ({
       }
     }
   }, [focusItem]);
-
-  const iconName =
-    fileIcons.icons.find(
-      j =>
-        j.fileExtensions?.some(z => z === item.name.substring(item.name.lastIndexOf('.') + 1)) ||
-        j.fileNames?.some(z => z === item.name),
-    )?.name || 'file';
+  const iconName = getFileIcon(item.name);
   const hasSameName = openItems.some(j => j !== item && j.name === item.name);
 
   const close = e => {

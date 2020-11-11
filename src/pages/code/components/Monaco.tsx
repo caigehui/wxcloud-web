@@ -13,6 +13,12 @@ const styles = {
   },
 };
 
+let myEditor: monaco.editor.IStandaloneCodeEditor = null;
+
+export function getEditor() {
+  return myEditor;
+}
+
 interface IState {
   editor: monaco.editor.IStandaloneCodeEditor;
   originalValues: { item: string; value: string }[];
@@ -71,14 +77,13 @@ class Monaco extends React.Component<any, IState> {
     const editor = monaco.editor.create(this.ref, {
       lineNumbers: 'on',
       fontSize: 18,
-      model,
       lineHeight: 28,
       wordWrap: 'wordWrapColumn',
       wordWrapColumn: 100,
       wordWrapMinified: true,
       wrappingIndent: 'indent',
-      minimap: {},
     });
+    model && editor.setModel(model);
     editor.onDidChangeModelContent(this.onContentChanged);
     // 关闭
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, () =>
@@ -104,6 +109,8 @@ class Monaco extends React.Component<any, IState> {
       ),
       () => this.onSaveAllItems(),
     );
+
+    myEditor = editor;
     this.setState({ editor });
   }
 
@@ -121,14 +128,18 @@ class Monaco extends React.Component<any, IState> {
 
   getModel = async () => {
     const { focusItem, name } = this.props;
+    if (!focusItem) return;
     const data = await fs.promises.readFile('/' + name + focusItem, { encoding: 'utf8' });
-    const originalModel = monaco.editor.getModel(monaco.Uri.file(focusItem));
+    const originalModel = monaco.editor.getModel(monaco.Uri.file('/' + name + focusItem));
     if (!originalModel) {
       this.setState({
         originalValues: [...this.state.originalValues, { item: focusItem, value: data }],
       });
     }
-    return originalModel || monaco.editor.createModel(data, undefined, monaco.Uri.file(focusItem));
+    return (
+      originalModel ||
+      monaco.editor.createModel(data, undefined, monaco.Uri.file('/' + name + focusItem))
+    );
   };
 
   onContentChanged = () => {
@@ -172,7 +183,7 @@ class Monaco extends React.Component<any, IState> {
       promises.push(
         fs.promises.writeFile(
           '/' + name + item,
-          monaco.editor.getModel(monaco.Uri.file(item)).getValue(),
+          monaco.editor.getModel(monaco.Uri.file('/' + name + item)).getValue(),
           {
             encoding: 'utf8',
           },
@@ -194,6 +205,7 @@ class Monaco extends React.Component<any, IState> {
       setUnsavedItems,
       focusItem,
       setOpenItems,
+      name,
     } = this.props;
     item = item || focusItem;
     const close = () => {
@@ -222,7 +234,7 @@ class Monaco extends React.Component<any, IState> {
         },
         onNuetral: () => {
           // 不保存
-          monaco.editor.getModel(monaco.Uri.file(focusItem)).dispose();
+          monaco.editor.getModel(monaco.Uri.file('/' + name + focusItem)).dispose();
           close();
         },
       });

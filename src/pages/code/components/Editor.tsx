@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default ({
+  ready,
   focusItem,
   name,
   setFocusItem,
@@ -96,7 +97,7 @@ export default ({
         justifyContent="center"
         alignItems="center"
       >
-        {focusItem ? (
+        {focusItem && ready ? (
           <Monaco
             ref={el => (editorRef.current = el)}
             focusItem={focusItem}

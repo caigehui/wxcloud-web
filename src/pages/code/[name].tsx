@@ -29,6 +29,7 @@ import { Error } from '@material-ui/icons';
 import requestWxApi from '@/utils/requestWxApi';
 import { useLocalStorageState } from 'ahooks';
 import Editor from './components/Editor';
+import FileSearch from './components/FileSearch';
 const fs = new LightningFS('fs');
 
 export const TABS_HEIGHT = 45;
@@ -74,14 +75,14 @@ export default ({ location }) => {
   const [failure, setFailure] = useState(null);
   // git重试
   const [retryCount, setRetryCount] = useState(0);
-  // 初始化成功
-  const [ready, setReady] = useState(false);
   // 聚焦的文件
   const [focusItem, setFocusItem] = useLocalStorageState(`${user.id}-${name}-focus-item`, null);
   // 已经打开过的文件
   const [openItems, setOpenItems] = useLocalStorageState(`${user.id}-${name}-open-items`, []);
   // 未保存文件
   const [unsavedItems, setUnsavedItems] = useState([]);
+  // 所有文件
+  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     async function clone() {
@@ -170,7 +171,9 @@ export default ({ location }) => {
             }
           },
         });
-        setReady(true);
+        // 获取文件目录
+        const files = await git.listFiles({ fs, dir: '/' + name });
+        setFiles(files);
       } catch (error) {
         setFailure('代码拉取失败');
       }
@@ -269,7 +272,7 @@ export default ({ location }) => {
           <Section
             style={{ background: theme.palette.background['dark'] }}
             defaultSize={250}
-            minSize={150}
+            minSize={200}
           >
             {(() => {
               switch (siderActiveIndex) {
@@ -277,13 +280,15 @@ export default ({ location }) => {
                   return (
                     <FileExplorer
                       name={name}
-                      ready={ready}
+                      files={files}
                       focusItem={focusItem}
                       setFocusItem={setFocusItem}
                       setOpenItems={setOpenItems}
                       openItems={openItems}
                     />
                   );
+                case 1:
+                  return <FileSearch name={name} files={files} />;
               }
             })()}
           </Section>
@@ -312,6 +317,7 @@ export default ({ location }) => {
               </Box>
             ) : (
               <Editor
+                ready={!!files}
                 name={name}
                 focusItem={focusItem}
                 setFocusItem={setFocusItem}

@@ -109,7 +109,7 @@ const themeConfigs = [
       },
       background: {
         default: '#282C34',
-        dark: '#1c2025',
+        dark: '#20232A',
         paper: '#282C34',
         bar: 'rgb(120, 120, 120)!important',
       },

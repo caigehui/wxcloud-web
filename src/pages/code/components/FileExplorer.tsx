@@ -1,18 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import LightningFS from '@isomorphic-git/lightning-fs';
-import git from 'isomorphic-git';
 import { Box, makeStyles, useTheme } from '@material-ui/core';
 import color from 'color';
-import { Folder, makeDirectory } from '../utils';
+import { Folder, getFileIcon, makeDirectory } from '../utils';
 import { ExpandMore, FolderOpen, KeyboardArrowRight } from '@material-ui/icons';
 import { useLocalStorageState } from 'ahooks';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { folderIcons } from '../utils/folderIcons';
-import { fileIcons } from '../utils/fileIcons';
+import folderIcons from '../utils/folderIcons';
+import filesIcon from '../utils/fileIcons';
 import { THEME } from '@/constants';
 import { TABS_HEIGHT } from '../[name]';
 import { useModel } from 'umi';
-const fs = new LightningFS('fs');
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -131,13 +128,9 @@ const Area = ({
         };
 
         const iconName = isFolder
-          ? folderIcons[0].icons.find(j => j.folderNames?.some(z => i.name === z))?.name ||
+          ? folderIcons[0]?.icons?.find(j => j.folderNames?.some(z => i.name === z))?.name ||
             `folder${opened ? '-open' : ''}`
-          : fileIcons.icons.find(
-              j =>
-                j.fileExtensions?.some(z => z === i.name.substring(i.name.lastIndexOf('.') + 1)) ||
-                j.fileNames?.some(z => z === i.name),
-            )?.name || 'file';
+          : getFileIcon(i.name);
 
         return (
           <React.Fragment key={index}>
@@ -179,7 +172,7 @@ const Area = ({
   );
 };
 
-export default ({ ready, name, focusItem, setFocusItem, openItems, setOpenItems }) => {
+export default ({ files, name, focusItem, setFocusItem, openItems, setOpenItems }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollHeight, setScrollHeight] = useState(0);
   const { user } = useModel('useAuthModel');
@@ -189,18 +182,15 @@ export default ({ ready, name, focusItem, setFocusItem, openItems, setOpenItems 
     `${user.id}-${name}-open-folders`,
     [],
   );
-
   const styles = useStyles();
 
   useEffect(() => {
-    if (ready) {
-      git.listFiles({ fs, dir: '/' + name }).then(files => {
-        const init: Folder = { name: '', path: '', children: [] };
-        makeDirectory(files, init);
-        setFolder(init);
-      });
+    if (files?.length > 0) {
+      const init: Folder = { name: '', path: '', children: [] };
+      makeDirectory(files, init);
+      setFolder(init);
     }
-  }, [ready]);
+  }, [files]);
 
   useEffect(() => {
     if (folder) {
