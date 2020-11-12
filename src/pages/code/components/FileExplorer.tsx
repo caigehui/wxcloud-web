@@ -6,12 +6,11 @@ import { ExpandMore, FolderOpen, KeyboardArrowRight } from '@material-ui/icons';
 import { useLocalStorageState } from 'ahooks';
 import { Scrollbars } from 'react-custom-scrollbars';
 import folderIcons from '../utils/folderIcons';
-import filesIcon from '../utils/fileIcons';
 import { THEME } from '@/constants';
 import { TABS_HEIGHT } from '../[name]';
 import { useModel } from 'umi';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -34,10 +33,7 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 1,
     paddingBottom: 1,
     '&:hover': {
-      backgroundColor: color(theme.palette.background.paper)
-        .lighten(0.1)
-        .hex()
-        .toString(),
+      backgroundColor: color(theme.palette.background.paper).lighten(0.1).hex().toString(),
     },
   },
   arrow: {
@@ -82,14 +78,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 'inherit',
     backgroundColor:
       theme['name'] === THEME.LIGHT
-        ? color(theme.palette.background.paper)
-            .darken(0.2)
-            .hex()
-            .toString()
-        : color(theme.palette.background.paper)
-            .lighten(0.5)
-            .hex()
-            .toString(),
+        ? color(theme.palette.background.paper).darken(0.2).hex().toString()
+        : color(theme.palette.background.paper).lighten(0.5).hex().toString(),
   },
 }));
 
@@ -110,25 +100,25 @@ const Area = ({
       {depth > 0 && <Box className={styles.divider} ml={`${16 + depth * 12}px`} />}
       {folder.children.map((i: Folder, index) => {
         const isFolder = !!i.children;
-        const opened = openFolders.some(j => j === i.path);
+        const opened = openFolders.some((j) => j === i.path);
 
         const onClick = () => {
           if (isFolder) {
             if (opened) {
-              setOpenFolders(openFolders.filter(j => j !== i.path));
+              setOpenFolders(openFolders.filter((j) => j !== i.path));
             } else {
               setOpenFolders([...openFolders, i.path]);
             }
           } else {
             setFocusItem(i.path);
-            if (!openItems.some(j => j.path === i.path)) {
+            if (!openItems.some((j) => j.path === i.path)) {
               setOpenItems([...openItems, { name: i.name, path: i.path }]);
             }
           }
         };
 
         const iconName = isFolder
-          ? folderIcons[0]?.icons?.find(j => j.folderNames?.some(z => i.name === z))?.name ||
+          ? folderIcons[0]?.icons?.find((j) => j.folderNames?.some((z) => i.name === z))?.name ||
             `folder${opened ? '-open' : ''}`
           : getFileIcon(i.name);
 
@@ -138,10 +128,7 @@ const Area = ({
               className={styles.area}
               bgcolor={
                 focusItem === i.path
-                  ? color(theme.palette.background.paper)
-                      .darken(0.1)
-                      .hex()
-                      .toString()
+                  ? color(theme.palette.background.paper).darken(0.1).hex().toString()
                   : 'transparent'
               }
               pl={`${16 + depth * 12}px`}
@@ -209,11 +196,11 @@ export default ({ files, name, focusItem, setFocusItem, openItems, setOpenItems 
     <Box height="100%" display="flex" flexDirection="column">
       <div className={styles.bar1}>文件目录</div>
       <div className={styles.bar2}>{name}</div>
-      <div ref={el => (scrollRef.current = el)} className={styles.scroll}>
+      <div ref={(el) => (scrollRef.current = el)} className={styles.scroll}>
         <Scrollbars
           autoHide
           style={{ height: scrollHeight }}
-          renderThumbVertical={props => <div className={styles.thumb} {...props} />}
+          renderThumbVertical={(props) => <div className={styles.thumb} {...props} />}
         >
           <Area
             focusItem={focusItem}

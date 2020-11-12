@@ -5,6 +5,8 @@ import LightningFS from '@isomorphic-git/lightning-fs';
 const fs = new LightningFS('fs');
 import { THEME } from '@/constants';
 import wxConfirm from '@/components/WxConfirm';
+import prettier from 'prettier/standalone';
+import parseTypescript from 'prettier/parser-typescript';
 
 const styles = {
   editor: {
@@ -109,7 +111,10 @@ class Monaco extends React.Component<any, IState> {
       ),
       () => this.onSaveAllItems(),
     );
-
+    // 代码编辑
+    editor.addCommand(monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F, () =>
+      this.onFormatCode(),
+    );
     myEditor = editor;
     this.setState({ editor });
   }
@@ -142,16 +147,44 @@ class Monaco extends React.Component<any, IState> {
     );
   };
 
+  onFormatCode = () => {
+    const { focusItem } = this.props;
+    const { editor } = this.state;
+    const fileExt = focusItem.substring(focusItem.lastIndexOf('.') + 1);
+
+    const ret = prettier.format(
+      editor.getValue(),
+      fileExt === 'ts' || fileExt === 'tsx'
+        ? {
+            parser: 'typescript',
+            plugins: [parseTypescript],
+            singleQuote: true,
+            trailingComma: 'all',
+            printWidth: 100,
+          }
+        : {
+            singleQuote: true,
+            trailingComma: 'all',
+            printWidth: 100,
+          },
+    );
+    if (ret !== editor.getValue()) {
+      const position = editor.getPosition();
+      editor.getModel().setValue(ret);
+      editor.setPosition(position);
+    }
+  };
+
   onContentChanged = () => {
     const { focusItem, setUnsavedItems, unsavedItems } = this.props;
     const { editor, originalValues } = this.state;
-    if (editor.getValue() !== originalValues.find(i => i.item === focusItem)?.value) {
-      if (!unsavedItems.some(i => i === focusItem)) {
+    if (editor.getValue() !== originalValues.find((i) => i.item === focusItem)?.value) {
+      if (!unsavedItems.some((i) => i === focusItem)) {
         setUnsavedItems([...unsavedItems, focusItem]);
       }
     } else {
-      if (unsavedItems.some(i => i === focusItem)) {
-        setUnsavedItems(unsavedItems.filter(i => i !== focusItem));
+      if (unsavedItems.some((i) => i === focusItem)) {
+        setUnsavedItems(unsavedItems.filter((i) => i !== focusItem));
       }
     }
   };
@@ -162,11 +195,11 @@ class Monaco extends React.Component<any, IState> {
     await fs.promises.writeFile('/' + name + item, this.state.editor.getValue(), {
       encoding: 'utf8',
     });
-    if (unsavedItems.some(i => i === item)) {
-      setUnsavedItems(unsavedItems.filter(i => i !== item));
+    if (unsavedItems.some((i) => i === item)) {
+      setUnsavedItems(unsavedItems.filter((i) => i !== item));
 
       this.setState({
-        originalValues: this.state.originalValues.map(i => {
+        originalValues: this.state.originalValues.map((i) => {
           if (i.item === item) {
             i.value = this.state.editor.getValue();
           }
@@ -209,18 +242,18 @@ class Monaco extends React.Component<any, IState> {
     } = this.props;
     item = item || focusItem;
     const close = () => {
-      const items = openItems.filter(j => j.path !== item);
+      const items = openItems.filter((j) => j.path !== item);
       setFocusItem(items[items.length - 1]?.path);
       setOpenItems([...items]);
 
-      if (unsavedItems.some(i => i === item)) {
-        setUnsavedItems(unsavedItems.filter(i => i !== item));
+      if (unsavedItems.some((i) => i === item)) {
+        setUnsavedItems(unsavedItems.filter((i) => i !== item));
         this.setState({
-          originalValues: this.state.originalValues.filter(i => i.item !== item),
+          originalValues: this.state.originalValues.filter((i) => i.item !== item),
         });
       }
     };
-    if (unsavedItems.some(i => i === item)) {
+    if (unsavedItems.some((i) => i === item)) {
       wxConfirm({
         title: '保存文件',
         message: '您的更改会丢失如果不进行保存',
@@ -267,7 +300,7 @@ class Monaco extends React.Component<any, IState> {
           return true;
         },
         onNuetral: () => {
-          monaco.editor.getModels().forEach(model => model.dispose());
+          monaco.editor.getModels().forEach((model) => model.dispose());
           closeAll();
         },
       });
@@ -278,7 +311,7 @@ class Monaco extends React.Component<any, IState> {
 
   render() {
     const { classes } = this.props;
-    return <div ref={el => (this.ref = el)} className={classes.editor}></div>;
+    return <div ref={(el) => (this.ref = el)} className={classes.editor}></div>;
   }
 }
 

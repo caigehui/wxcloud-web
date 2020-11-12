@@ -181,3 +181,12 @@ export function download(filename: string, text: string) {
 
   document.body.removeChild(element);
 }
+
+export function toggleArrayItem(arr: any[], item: any, key?: string) {
+  const exist = arr.some(i => (key ? i[key] === item[key] : i === item));
+  if (exist) {
+    return arr.filter(i => (key ? i[key] !== item[key] : i !== item));
+  } else {
+    return [...arr, item];
+  }
+}

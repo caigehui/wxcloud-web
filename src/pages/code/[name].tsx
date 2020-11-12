@@ -188,36 +188,6 @@ export default ({ location }) => {
       <Helmet>
         <title>{name} - wxcloud studio</title>
       </Helmet>
-      <Box px={2} height={36} width="100%" display="flex" alignItems="center" flexShrink={0}>
-        <Logo width={24} height={24} />
-        <Box ml={3}>
-          <Typography color="textSecondary" variant="body2">
-            文件
-          </Typography>
-        </Box>
-        <Box ml={2}>
-          <Typography color="textSecondary" variant="body2">
-            编辑
-          </Typography>
-        </Box>
-        <Box ml={2}>
-          <Typography color="textSecondary" variant="body2">
-            视图
-          </Typography>
-        </Box>
-        <Typography
-          style={{
-            top: 6,
-            position: 'absolute',
-            left: '50%',
-            transform: 'translate(-60%, 0)',
-          }}
-          variant="body1"
-          color="textSecondary"
-        >
-          {name} - wxcloud studio
-        </Typography>
-      </Box>
       <Box display="flex" width="100%" height="100%">
         <Box
           display="flex"
@@ -227,6 +197,9 @@ export default ({ location }) => {
           height="100%"
           alignItems="center"
         >
+          <Box my={1}>
+            <Logo width={32} height={32} />
+          </Box>
           <Tooltip title="文件" placement="right" enterDelay={500}>
             <Box
               onClick={() => setSiderActiveIndex(0)}
@@ -271,8 +244,8 @@ export default ({ location }) => {
         <Container style={{ height: '100%', flex: 1 }}>
           <Section
             style={{ background: theme.palette.background['dark'] }}
-            defaultSize={250}
-            minSize={200}
+            defaultSize={300}
+            minSize={300}
           >
             {(() => {
               switch (siderActiveIndex) {
@@ -288,7 +261,16 @@ export default ({ location }) => {
                     />
                   );
                 case 1:
-                  return <FileSearch name={name} files={files} />;
+                  return (
+                    <FileSearch
+                      setFocusItem={setFocusItem}
+                      focusItem={focusItem}
+                      openItems={openItems}
+                      setOpenItems={setOpenItems}
+                      name={name}
+                      files={files}
+                    />
+                  );
               }
             })()}
           </Section>

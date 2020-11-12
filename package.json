@@ -19,10 +19,7 @@
     ]
   },
   "dependencies": {
-    "@wxsoft/wxboot": "^1.1.14",
-    "color": "^3.1.3",
-    "react-custom-scrollbars": "^4.2.1",
-    "react-hotkeys-hook": "^2.4.0"
+    "@wxsoft/wxboot": "^1.1.14"
   },
   "devDependencies": {
     "@fingerprintjs/fingerprintjs": "^2.1.4",
@@ -42,7 +39,9 @@
     "@umijs/plugin-model": "^2.5.4",
     "@umijs/test": "^3.2.10",
     "@wxsoft/parse-dashboard": "^2.1.0",
-    "@wxsoft/parse-server": "4.3.7",
+    "color": "^3.1.3",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-hotkeys-hook": "^2.4.0",
     "ahooks": "^2.6.0",
     "axios": "^0.20.0",
     "compression-webpack-plugin": "^6.0.0",
@@ -63,11 +62,12 @@
     "monaco-editor-webpack-plugin": "^2.0.0",
     "notistack": "^1.0.0",
     "nprogress": "^0.2.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.1.2",
     "react": "^16.12.0",
     "react-dom": "^16.13.1",
     "react-feather": "^2.0.8",
     "react-helmet": "^6.1.0",
+    "react-highlight-words": "^0.16.0",
     "react-hook-form": "^6.0.8",
     "react-json-view": "^1.19.1",
     "react-simple-resizer": "^2.1.0",

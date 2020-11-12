@@ -8,6 +8,8 @@ export default function useFileSearch() {
   const [searchString, setSearchString] = useState<string>();
   const [filesToInclude, setFilesToInclude] = useState(null);
   const [filesToExclude, setFilesToExclude] = useState(null);
+  const [hideItems, setHideItems] = useState([]);
+  const [replaceString, setReplaceString] = useState(null);
 
   return {
     ret,
@@ -24,5 +26,9 @@ export default function useFileSearch() {
     setFilesToInclude,
     filesToExclude,
     setFilesToExclude,
+    hideItems,
+    setHideItems,
+    replaceString,
+    setReplaceString,
   };
 }

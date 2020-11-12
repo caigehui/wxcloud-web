@@ -154,7 +154,7 @@ export async function searchFileContent(
       false,
       caseSensitive,
       wholeWord ? '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?' : null,
-      false,
+      true,
     );
     const filepath = model.uri.path;
     if (!validateFile(filepath, filesToIncludeArr, filesToExcludeArr)) continue;
@@ -175,7 +175,7 @@ export async function searchFileContent(
       false,
       caseSensitive,
       wholeWord ? '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?' : null,
-      false,
+      true,
     );
     if (!validateFile(filepath, filesToIncludeArr, filesToExcludeArr)) continue;
     if (matches.length > 0) {
